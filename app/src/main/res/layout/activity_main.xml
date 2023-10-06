@@ -3,7 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/blue_background"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -23,6 +22,7 @@
         android:text="@string/search"
         app:icon="@drawable/search"
         style="@style/MainMenuButtons"
+        android:elevation="10dp"
         />
 
     <Button

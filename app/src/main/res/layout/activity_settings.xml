@@ -48,7 +48,6 @@
         <ImageView
             style="@style/SettingsMenuRowIcon"
             android:src="@drawable/share"
-            app:tint="@color/icon_grey"
             />
     </FrameLayout>
 
