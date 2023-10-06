@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <LinearLayout
         style="@style/NavigationToolBar"
@@ -24,17 +25,19 @@
         style="@style/PlaceholderAfterNavigationToolBar"/>
 
     <FrameLayout
-        style="@style/SettingsMenuRow">
+        style="@style/SettingsMenuRow"
+        >
 
         <TextView
             style="@style/SettingsMenuRowText"
             android:text="@string/dark_theme"/>
 
-        <ImageView
-            style="@style/SettingsMenuRowIcon"
-            android:src="@drawable/control"
-            android:paddingEnd="6dp"
-            android:paddingStart="9dp"
+        <androidx.appcompat.widget.SwitchCompat
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            app:thumbTint="?attr/thumbTint"
+            app:trackTint="?attr/trackTint"
             />
     </FrameLayout>
 
