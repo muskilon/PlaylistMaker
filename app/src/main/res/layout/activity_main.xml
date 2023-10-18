@@ -22,7 +22,6 @@
         android:text="@string/search"
         app:icon="@drawable/search"
         style="@style/MainMenuButtons"
-        android:elevation="10dp"
         />
 
     <Button

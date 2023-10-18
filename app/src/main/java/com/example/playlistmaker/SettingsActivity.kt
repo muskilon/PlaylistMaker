@@ -5,8 +5,6 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.widget.SwitchCompat
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,17 +20,18 @@ class SettingsActivity : AppCompatActivity() {
 
         val termsOfUseArrow = findViewById<ImageView>(R.id.terms_of_use_arrow)
         termsOfUseArrow.setOnClickListener {
-            val termsOfUse = Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_of_use_url)))
+            val termsOfUse =
+                Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_of_use_url)))
             startActivity(termsOfUse)
         }
 
         val shareAppIcon = findViewById<ImageView>(R.id.share_app_icon)
         shareAppIcon.setOnClickListener {
             val sendApp: Intent = Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, getString(R.string.share_app_url))
-            type = "text/plain"
-        }
+                action = Intent.ACTION_SEND
+                putExtra(Intent.EXTRA_TEXT, getString(R.string.share_app_url))
+                type = "text/plain"
+            }
             val shareApp = Intent.createChooser(sendApp, null)
             startActivity(shareApp)
         }
@@ -45,18 +44,6 @@ class SettingsActivity : AppCompatActivity() {
                 putExtra(Intent.EXTRA_TEXT, getString(R.string.email_text))
             }
             startActivity(sendFeedback)
-        }
-        //this block still not working correctly
-        val themeSwitcher = findViewById<SwitchCompat>(R.id.themeSwitch)
-        themeSwitcher.isChecked = AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES
-
-        themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-
         }
 
     }
