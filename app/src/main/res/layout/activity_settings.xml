@@ -33,6 +33,7 @@
             android:text="@string/dark_theme"/>
 
         <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/themeSwitch"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="end"
@@ -49,6 +50,7 @@
             android:text="@string/share_app"/>
 
         <ImageView
+            android:id="@+id/share_app_icon"
             style="@style/SettingsMenuRowIcon"
             android:src="@drawable/share"
             />
@@ -62,6 +64,7 @@
             android:text="@string/write_to_support"/>
 
         <ImageView
+            android:id="@+id/write_to_support_icon"
             style="@style/SettingsMenuRowIcon"
             android:src="@drawable/support"
             />
@@ -74,6 +77,7 @@
             android:text="@string/user_agreement"/>
 
         <ImageView
+            android:id="@+id/terms_of_use_arrow"
             style="@style/SettingsMenuRowIcon"
             android:src="@drawable/arrow_forward"
             />

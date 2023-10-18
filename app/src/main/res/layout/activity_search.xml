@@ -20,4 +20,45 @@
 
             />
     </LinearLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/search_bar_input"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            app:hintTextColor="@android:color/transparent"
+            app:hintEnabled="false"
+            app:boxBackgroundColor="?attr/boxBackgroundColor"
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp"
+            app:boxCornerRadiusTopStart="@dimen/search_input_corner_radius"
+            app:boxCornerRadiusBottomStart="@dimen/search_input_corner_radius"
+            app:boxCornerRadiusTopEnd="@dimen/search_input_corner_radius"
+            app:boxCornerRadiusBottomEnd="@dimen/search_input_corner_radius"
+            app:endIconDrawable="@drawable/clear_icon"
+            app:endIconTint="?android:attr/textColorHintInverse"
+            app:endIconMode="clear_text"
+            >
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/search_bar_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:drawableStart="@drawable/search_icon"
+                android:drawableTint="?android:attr/textColorHintInverse"
+                android:hint="@string/search"
+                android:textColorHint="?android:attr/textColorHintInverse"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:drawablePadding="8dp"
+                android:paddingStart="12dp"
+                >
+
+            </com.google.android.material.textfield.TextInputEditText>
+        </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>

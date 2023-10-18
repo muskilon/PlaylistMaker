@@ -7,5 +7,6 @@
     <dimen name="font_size_medium">22sp</dimen>
     <dimen name="font_size_small">16sp</dimen>
     <dimen name="settings_items_height">61sp</dimen>
+    <dimen name="search_input_corner_radius">8dp</dimen>
 
 </resources>
