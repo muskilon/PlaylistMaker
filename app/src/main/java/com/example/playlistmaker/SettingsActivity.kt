@@ -45,6 +45,5 @@ class SettingsActivity : AppCompatActivity() {
             }
             startActivity(sendFeedback)
         }
-
     }
 }
