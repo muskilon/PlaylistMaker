@@ -1,5 +1,4 @@
 package com.example.playlistmaker
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -11,6 +10,7 @@ import com.google.android.material.textfield.TextInputLayout
 
 
 class SearchActivity : AppCompatActivity() {
+    private var searchInput: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -19,15 +19,14 @@ class SearchActivity : AppCompatActivity() {
         val textInputEdit = findViewById<TextInputEditText>(R.id.search_bar_edit)
 
         if (savedInstanceState != null) {
-            searchInput = savedInstanceState.getString(INPUT_STRING, SEARCH_INPUT_DEF)
+            searchInput = savedInstanceState.getString(INPUT_STRING, "")
             textInputEdit.setText(searchInput)
         }
 
 
         val backArrow = findViewById<ImageView>(R.id.arrow_back)
         backArrow.setOnClickListener {
-            val back = Intent(this, MainActivity::class.java)
-            startActivity(back)
+            this.finish()
         }
 
         textInput.setEndIconOnClickListener {
@@ -51,13 +50,11 @@ class SearchActivity : AppCompatActivity() {
         }
         textInputEdit.addTextChangedListener(simpleTextWatcher)
     }
-    private var searchInput: String = SEARCH_INPUT_DEF
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(INPUT_STRING, searchInput)
     }
     companion object {
-        const val INPUT_STRING = "INPUT_STRING"
-        const val SEARCH_INPUT_DEF = ""
+        private const val INPUT_STRING = "INPUT_STRING"
     }
 }
