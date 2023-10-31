@@ -11,7 +11,7 @@
         <item name="android:backgroundTint">@color/white</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/yp_black</item>
-        <item name="android:textSize">@dimen/font_size_big</item>
+        <item name="android:textSize">@dimen/font_size_medium</item>
         <item name="cornerRadius">@dimen/main_menu_button_corner_radius</item>
         <item name="iconGravity">textStart</item>
         <item name="iconPadding">8dp</item>
@@ -32,10 +32,10 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:textSize">@dimen/font_size_medium</item>
+        <item name="android:textSize">@dimen/font_size_small</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:fontFamily">@font/ys_display_regular</item>
-        <item name="android:fontWeight">@dimen/font_weight_400</item>
+        <item name="android:fontWeight">400</item>
 
     </style>
     <style name="SettingsMenuRowIcon">
@@ -64,11 +64,11 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:textSize">@dimen/font_size_big</item>
+        <item name="android:textSize">@dimen/font_size_medium</item>
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:paddingStart">12dp</item>
         <item name="fontFamily">@font/ys_display_medium</item>
-        <item name="android:fontWeight">@dimen/font_weight_500</item>
+        <item name="android:fontWeight">500</item>
     </style>
     <style name="PlaceholderAfterNavigationToolBar">
         <item name="android:layout_width">match_parent</item>
