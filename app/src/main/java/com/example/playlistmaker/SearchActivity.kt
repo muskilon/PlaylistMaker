@@ -5,6 +5,7 @@ import android.text.TextWatcher
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
@@ -17,6 +18,7 @@ class SearchActivity : AppCompatActivity() {
 
         val textInput = findViewById<TextInputLayout>(R.id.search_bar_input)
         val textInputEdit = findViewById<TextInputEditText>(R.id.search_bar_edit)
+        val searchResultsRecyclerView = findViewById<RecyclerView>(R.id.recyclerView)
 
         if (savedInstanceState != null) {
             searchInput = savedInstanceState.getString(INPUT_STRING, "")
@@ -49,6 +51,9 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         textInputEdit.addTextChangedListener(simpleTextWatcher)
+        val searchResultsAdapter = SearchResultAdapter(searchResultList)
+        searchResultsRecyclerView.adapter = searchResultsAdapter
+
     }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
