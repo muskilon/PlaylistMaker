@@ -16,8 +16,5 @@ class SearchResultAdapter(
         holder.bind(tracks[position])
     }
 
-    override fun getItemCount(): Int {
-        return tracks.size
-    }
-
+    override fun getItemCount(): Int = tracks.size
 }
