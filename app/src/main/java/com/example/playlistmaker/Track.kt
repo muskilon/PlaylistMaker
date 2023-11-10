@@ -16,7 +16,8 @@ data class Track(
 }
 
 class SearchResponse(
-    val results: ArrayList<Track>
+    val results: ArrayList<Track>,
+    val resultCount: Int
 )
 val songs = ArrayList<Track>()
 

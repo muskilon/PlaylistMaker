@@ -4,8 +4,11 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
+import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -35,6 +38,8 @@ class SearchActivity : AppCompatActivity() {
 
         val textInput = findViewById<TextInputLayout>(R.id.search_bar_input)
         val textInputEdit = findViewById<TextInputEditText>(R.id.search_bar_edit)
+        val notFoundPlaceholder = findViewById<FrameLayout>(R.id.not_found_placeholder)
+        val noConnectionPlaceholder = findViewById<FrameLayout>(R.id.no_connection_placeholder)
         val searchResultsRecyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         searchResultsRecyclerView.adapter = searchResultsAdapter
 
@@ -48,6 +53,12 @@ class SearchActivity : AppCompatActivity() {
         backArrow.setOnClickListener {
             this.finish()
         }
+        val refreshButton = findViewById<Button>(R.id.refresh_button)
+        refreshButton.setOnClickListener {
+            notFoundPlaceholder.visibility = View.GONE
+            noConnectionPlaceholder.visibility = View.GONE
+            search(searchInput)
+        }
 
         textInput.setEndIconOnClickListener {
             textInputEdit.text?.clear()
@@ -59,7 +70,9 @@ class SearchActivity : AppCompatActivity() {
         }
         textInputEdit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                search(textInputEdit.text.toString())
+                notFoundPlaceholder.visibility = View.GONE
+                noConnectionPlaceholder.visibility = View.GONE
+                search(searchInput)
                 true
             }
             false
@@ -79,6 +92,8 @@ class SearchActivity : AppCompatActivity() {
         }
         textInputEdit.addTextChangedListener(simpleTextWatcher)
 
+
+
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -89,30 +104,27 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         private const val INPUT_STRING = "INPUT_STRING"
     }
-
     private fun search(queryInput: String) {
         itunesService.getSearch(queryInput).enqueue(object : Callback<SearchResponse> {
-                @SuppressLint("NotifyDataSetChanged")
-                override fun onResponse(
-                    call: Call<SearchResponse>, response: Response<SearchResponse>
-                ) {
-                    when (response.code()) {
-                        200 -> {
-                            println("Ok ${response.body()}")
-                            songs.clear()
-                            songs.addAll(response.body()?.results!!)
-                            searchResultsAdapter.notifyDataSetChanged()
-                        }
-
-                        else -> println(response.toString())
-                    }
-
+            @SuppressLint("NotifyDataSetChanged")
+            override fun onResponse(
+                call: Call<SearchResponse>, response: Response<SearchResponse>
+            ) {
+                val notFoundPlaceholder = findViewById<FrameLayout>(R.id.not_found_placeholder)
+                if (response.body()?.resultCount == 0){
+                    notFoundPlaceholder.visibility = View.VISIBLE
+                } else{
+                    songs.clear()
+                    songs.addAll(response.body()?.results!!)
+                    searchResultsAdapter.notifyDataSetChanged()
                 }
+            }
 
-                override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                    println("Что-то пошло не так ${t.message.toString()}")
-                }
+            override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+                val noConnectionPlaceholder = findViewById<FrameLayout>(R.id.no_connection_placeholder)
+                noConnectionPlaceholder.visibility = View.VISIBLE
+            }
 
-            })
+        })
     }
 }
