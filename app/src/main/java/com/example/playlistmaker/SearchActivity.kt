@@ -93,7 +93,6 @@ class SearchActivity : AppCompatActivity() {
         textInputEdit.addTextChangedListener(simpleTextWatcher)
 
 
-
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -104,6 +103,7 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         private const val INPUT_STRING = "INPUT_STRING"
     }
+
     private fun search(queryInput: String) {
         itunesService.getSearch(queryInput).enqueue(object : Callback<SearchResponse> {
             @SuppressLint("NotifyDataSetChanged")
@@ -111,9 +111,9 @@ class SearchActivity : AppCompatActivity() {
                 call: Call<SearchResponse>, response: Response<SearchResponse>
             ) {
                 val notFoundPlaceholder = findViewById<FrameLayout>(R.id.not_found_placeholder)
-                if (response.body()?.resultCount == 0){
+                if (response.body()?.resultCount == 0) {
                     notFoundPlaceholder.visibility = View.VISIBLE
-                } else{
+                } else {
                     songs.clear()
                     songs.addAll(response.body()?.results!!)
                     searchResultsAdapter.notifyDataSetChanged()
@@ -121,7 +121,8 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                val noConnectionPlaceholder = findViewById<FrameLayout>(R.id.no_connection_placeholder)
+                val noConnectionPlaceholder =
+                    findViewById<FrameLayout>(R.id.no_connection_placeholder)
                 noConnectionPlaceholder.visibility = View.VISIBLE
             }
 
