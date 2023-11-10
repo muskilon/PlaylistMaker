@@ -48,6 +48,8 @@
                 android:paddingBottom="8dp"
                 android:inputType="text"
                 android:maxLines="1"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
                 android:textColor="@color/black"
                 android:textSize="@dimen/font_size_medium"
                 android:drawableStart="@drawable/search_icon"
