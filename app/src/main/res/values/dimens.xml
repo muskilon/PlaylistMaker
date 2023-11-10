@@ -7,6 +7,7 @@
     <dimen name="font_size_big">22sp</dimen>
     <dimen name="font_size_medium">16sp</dimen>
     <dimen name="font_size_small">11sp</dimen>
+    <dimen name="font_size_error">19sp</dimen>
     <dimen name="settings_items_height">61dp</dimen>
     <dimen name="search_input_corner_radius">8dp</dimen>
     <dimen name="search_snippet_artwork_corner_radius">2dp</dimen>

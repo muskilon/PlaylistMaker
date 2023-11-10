@@ -1,6 +1,5 @@
 package com.example.playlistmaker
 
-import com.google.gson.annotations.SerializedName
 import java.text.SimpleDateFormat
 import java.util.ArrayList
 import java.util.Locale
@@ -11,7 +10,7 @@ data class Track(
     val trackTimeMillis: Long, // Продолжительность трека
     val artworkUrl100: String // Ссылка на изображение обложки
 ){
-    var trackTime: String = ""
+    var trackTime: String = "--:--"
         get(){return SimpleDateFormat("mm:ss", Locale.getDefault()).format(this.trackTimeMillis) }
 
 }

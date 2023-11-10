@@ -37,8 +37,7 @@
             app:boxCornerRadiusBottomEnd="@dimen/search_input_corner_radius"
             app:endIconDrawable="@drawable/clear_icon"
             app:endIconTint="?android:attr/textColorHintInverse"
-            app:endIconMode="clear_text"
-            >
+            app:endIconMode="clear_text">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/search_bar_edit"
@@ -58,18 +57,28 @@
                 android:textColorHint="?android:attr/textColorHintInverse"
                 android:textCursorDrawable="@drawable/color_cursor"
                 android:drawablePadding="8dp"
-                android:paddingStart="12dp"
-                >
+                android:paddingStart="12dp"/>
 
-            </com.google.android.material.textfield.TextInputEditText>
         </com.google.android.material.textfield.TextInputLayout>
+    <FrameLayout android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_marginTop="16dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
-
-    </androidx.recyclerview.widget.RecyclerView>
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:visibility="visible"
+        />
+        <include
+            layout="@layout/not_found_placeholder"
+            tools:visibility="gone"
+            />
+        <include
+            layout="@layout/no_connection_placeholder"
+            tools:visibility="gone"
+            />
+    </FrameLayout>
 </LinearLayout>

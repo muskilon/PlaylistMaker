@@ -1,4 +1,5 @@
 package com.example.playlistmaker
+
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
@@ -20,14 +21,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 class SearchActivity : AppCompatActivity() {
     private var searchInput: String = ""
     private val itunesBaseUrl = "https://itunes.apple.com"
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(itunesBaseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    private val retrofit =
+        Retrofit.Builder().baseUrl(itunesBaseUrl).addConverterFactory(GsonConverterFactory.create())
+            .build()
     private val itunesService = retrofit.create(ItunesAPI::class.java)
     val searchResultsAdapter = SearchResultAdapter(songs)
 
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -35,7 +36,6 @@ class SearchActivity : AppCompatActivity() {
         val textInput = findViewById<TextInputLayout>(R.id.search_bar_input)
         val textInputEdit = findViewById<TextInputEditText>(R.id.search_bar_edit)
         val searchResultsRecyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-
         searchResultsRecyclerView.adapter = searchResultsAdapter
 
         if (savedInstanceState != null) {
@@ -51,9 +51,11 @@ class SearchActivity : AppCompatActivity() {
 
         textInput.setEndIconOnClickListener {
             textInputEdit.text?.clear()
-                textInputEdit.clearFocus()
-                val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(textInputEdit.windowToken, 0)
+            textInputEdit.clearFocus()
+            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(textInputEdit.windowToken, 0)
+            songs.clear()
+            searchResultsAdapter.notifyDataSetChanged()
         }
         textInputEdit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -78,34 +80,37 @@ class SearchActivity : AppCompatActivity() {
         textInputEdit.addTextChangedListener(simpleTextWatcher)
 
     }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(INPUT_STRING, searchInput)
     }
+
     companion object {
         private const val INPUT_STRING = "INPUT_STRING"
     }
+
     private fun search(queryInput: String) {
-        itunesService.getSearch(queryInput)
-            .enqueue(object : Callback<SearchResponse> {
+        itunesService.getSearch(queryInput).enqueue(object : Callback<SearchResponse> {
                 @SuppressLint("NotifyDataSetChanged")
-                override fun onResponse(call: Call<SearchResponse>,
-                                        response: Response<SearchResponse>
+                override fun onResponse(
+                    call: Call<SearchResponse>, response: Response<SearchResponse>
                 ) {
                     when (response.code()) {
                         200 -> {
-                            println("Ok ${ response.body() }")
+                            println("Ok ${response.body()}")
                             songs.clear()
                             songs.addAll(response.body()?.results!!)
                             searchResultsAdapter.notifyDataSetChanged()
                         }
-                        else -> println(response.toString() )
+
+                        else -> println(response.toString())
                     }
 
                 }
 
                 override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                    println("Что-то пошло не так ${ t.message.toString() }")
+                    println("Что-то пошло не так ${t.message.toString()}")
                 }
 
             })
