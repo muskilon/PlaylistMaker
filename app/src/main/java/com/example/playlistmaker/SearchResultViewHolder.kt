@@ -18,7 +18,7 @@ class SearchResultViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) 
         trackName.text = model.trackName
         artistName.text = model.artistName
         trackTime.text = model.trackTime
-        val cornerRadius = itemView.context.resources.getDimension(R.dimen.search_snippet_artwork_corner_radius)
+        val cornerRadius = itemView.resources.getDimension(R.dimen.search_snippet_artwork_corner_radius)
 
         Glide.with(artworkUrl100)
             .load(model.artworkUrl100)
