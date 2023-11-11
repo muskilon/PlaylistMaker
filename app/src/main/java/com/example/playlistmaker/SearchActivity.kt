@@ -111,9 +111,12 @@ class SearchActivity : AppCompatActivity() {
                 call: Call<SearchResponse>, response: Response<SearchResponse>
             ) {
                 val notFoundPlaceholder = findViewById<FrameLayout>(R.id.not_found_placeholder)
+                val searchResultsRecyclerView = findViewById<RecyclerView>(R.id.recyclerView)
                 if (response.body()?.resultCount == 0) {
+                    searchResultsRecyclerView.visibility = View.GONE
                     notFoundPlaceholder.visibility = View.VISIBLE
                 } else {
+                    searchResultsRecyclerView.visibility = View.VISIBLE
                     songs.clear()
                     songs.addAll(response.body()?.results!!)
                     searchResultsAdapter.notifyDataSetChanged()
@@ -123,6 +126,8 @@ class SearchActivity : AppCompatActivity() {
             override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
                 val noConnectionPlaceholder =
                     findViewById<FrameLayout>(R.id.no_connection_placeholder)
+                val searchResultsRecyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+                searchResultsRecyclerView.visibility = View.GONE
                 noConnectionPlaceholder.visibility = View.VISIBLE
             }
 

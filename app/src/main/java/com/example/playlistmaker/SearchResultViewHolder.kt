@@ -25,6 +25,7 @@ class SearchResultViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) 
             .placeholder(R.drawable.placeholder)
             .transform(RoundedCorners(cornerRadius.toInt()))
             .into(artworkUrl100)
+        artistName.requestLayout()
     }
 
 }
