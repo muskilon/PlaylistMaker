@@ -27,7 +27,7 @@ class SearchActivity : AppCompatActivity() {
     private val retrofit =
         Retrofit.Builder().baseUrl(itunesBaseUrl).addConverterFactory(GsonConverterFactory.create())
             .build()
-    private val itunesService = retrofit.create(ItunesAPI::class.java)
+    val itunesService = retrofit.create(ItunesAPI::class.java)
     val searchResultsAdapter = SearchResultAdapter(songs)
 
 
@@ -41,6 +41,8 @@ class SearchActivity : AppCompatActivity() {
         val notFoundPlaceholder = findViewById<FrameLayout>(R.id.not_found_placeholder)
         val noConnectionPlaceholder = findViewById<FrameLayout>(R.id.no_connection_placeholder)
         val searchResultsRecyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        val backArrow = findViewById<ImageView>(R.id.arrow_back)
+        val refreshButton = findViewById<Button>(R.id.refresh_button)
         searchResultsRecyclerView.adapter = searchResultsAdapter
 
         if (savedInstanceState != null) {
@@ -48,12 +50,10 @@ class SearchActivity : AppCompatActivity() {
             textInputEdit.setText(searchInput)
         }
 
-
-        val backArrow = findViewById<ImageView>(R.id.arrow_back)
         backArrow.setOnClickListener {
             this.finish()
         }
-        val refreshButton = findViewById<Button>(R.id.refresh_button)
+
         refreshButton.setOnClickListener {
             notFoundPlaceholder.visibility = View.GONE
             noConnectionPlaceholder.visibility = View.GONE
@@ -68,6 +68,7 @@ class SearchActivity : AppCompatActivity() {
             songs.clear()
             searchResultsAdapter.notifyDataSetChanged()
         }
+
         textInputEdit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 notFoundPlaceholder.visibility = View.GONE
@@ -77,6 +78,7 @@ class SearchActivity : AppCompatActivity() {
             }
             false
         }
+
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // empty
@@ -90,9 +92,8 @@ class SearchActivity : AppCompatActivity() {
                 // empty
             }
         }
+
         textInputEdit.addTextChangedListener(simpleTextWatcher)
-
-
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -102,35 +103,5 @@ class SearchActivity : AppCompatActivity() {
 
     companion object {
         private const val INPUT_STRING = "INPUT_STRING"
-    }
-
-    private fun search(queryInput: String) {
-        itunesService.getSearch(queryInput).enqueue(object : Callback<SearchResponse> {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onResponse(
-                call: Call<SearchResponse>, response: Response<SearchResponse>
-            ) {
-                val notFoundPlaceholder = findViewById<FrameLayout>(R.id.not_found_placeholder)
-                val searchResultsRecyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-                if (response.body()?.resultCount == 0) {
-                    searchResultsRecyclerView.visibility = View.GONE
-                    notFoundPlaceholder.visibility = View.VISIBLE
-                } else {
-                    searchResultsRecyclerView.visibility = View.VISIBLE
-                    songs.clear()
-                    songs.addAll(response.body()?.results!!)
-                    searchResultsAdapter.notifyDataSetChanged()
-                }
-            }
-
-            override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                val noConnectionPlaceholder =
-                    findViewById<FrameLayout>(R.id.no_connection_placeholder)
-                val searchResultsRecyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-                searchResultsRecyclerView.visibility = View.GONE
-                noConnectionPlaceholder.visibility = View.VISIBLE
-            }
-
-        })
     }
 }
