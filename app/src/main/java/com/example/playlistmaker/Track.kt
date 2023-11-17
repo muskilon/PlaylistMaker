@@ -12,7 +12,6 @@ data class Track(
 ){
     var trackTime: String = "--:--"
         get(){return SimpleDateFormat("mm:ss", Locale.getDefault()).format(this.trackTimeMillis) }
-
 }
 
 class SearchResponse(
@@ -20,4 +19,3 @@ class SearchResponse(
     val resultCount: Int
 )
 val songs = ArrayList<Track>()
-

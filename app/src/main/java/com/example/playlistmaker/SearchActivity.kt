@@ -14,9 +14,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -27,7 +24,7 @@ class SearchActivity : AppCompatActivity() {
     private val retrofit =
         Retrofit.Builder().baseUrl(itunesBaseUrl).addConverterFactory(GsonConverterFactory.create())
             .build()
-    val itunesService = retrofit.create(ItunesAPI::class.java)
+    val itunesService: ItunesAPI = retrofit.create(ItunesAPI::class.java)
     val searchResultsAdapter = SearchResultAdapter(songs)
 
 

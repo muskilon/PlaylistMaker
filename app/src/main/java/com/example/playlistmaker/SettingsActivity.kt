@@ -15,6 +15,8 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
+        val sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
+
         val backArrow = findViewById<ImageView>(R.id.arrow_back)
         backArrow.setOnClickListener {
             this.finish()
@@ -65,8 +67,14 @@ class SettingsActivity : AppCompatActivity() {
         themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                sharedPreferences.edit()
+                    .putString(NIGHT_MODE_KEY, "true")
+                    .apply()
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                sharedPreferences.edit()
+                    .putString(NIGHT_MODE_KEY, "false")
+                    .apply()
             }
 
         }
