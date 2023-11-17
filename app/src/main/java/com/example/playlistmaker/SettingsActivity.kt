@@ -68,12 +68,12 @@ class SettingsActivity : AppCompatActivity() {
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 sharedPreferences.edit()
-                    .putString(NIGHT_MODE_KEY, "true")
+                    .putBoolean(NIGHT_MODE_KEY, true)
                     .apply()
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
                 sharedPreferences.edit()
-                    .putString(NIGHT_MODE_KEY, "false")
+                    .putBoolean(NIGHT_MODE_KEY, false)
                     .apply()
             }
 

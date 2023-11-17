@@ -17,10 +17,11 @@ class MainActivity : AppCompatActivity() {
         val mediaLibraryButton = findViewById<Button>(R.id.medialibrary_button)
         val settingsButton = findViewById<Button>(R.id.settings_button)
 
-        if ((sharedPreferences.getString(NIGHT_MODE_KEY,"")) == "true") {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-        } else if ((sharedPreferences.getString(NIGHT_MODE_KEY,"")) == "false"){
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        if (sharedPreferences.contains(NIGHT_MODE_KEY)) {
+            when(sharedPreferences.getBoolean(NIGHT_MODE_KEY, false)) {
+                true -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                false -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
         }
 
         searchButton.setOnClickListener {
