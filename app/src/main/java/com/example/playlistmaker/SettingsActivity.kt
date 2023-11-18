@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -14,8 +15,6 @@ class SettingsActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
-
-        val sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
 
         val backArrow = findViewById<ImageView>(R.id.arrow_back)
         backArrow.setOnClickListener {
@@ -63,7 +62,7 @@ class SettingsActivity : AppCompatActivity() {
                 themeSwitcher.isChecked = false
             }
         }
-
+        val sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
         themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
