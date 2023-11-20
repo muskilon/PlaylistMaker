@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -25,8 +26,26 @@ class SearchActivity : AppCompatActivity() {
         Retrofit.Builder().baseUrl(itunesBaseUrl).addConverterFactory(GsonConverterFactory.create())
             .build()
     val itunesService: ItunesAPI = retrofit.create(ItunesAPI::class.java)
-    val searchResultsAdapter = SearchResultAdapter(songs)
-
+    val onItemClickListener = object : OnItemClickListener {
+        override fun onTrackClick(track: Track) {
+            if (songsHistory.isEmpty()) {
+                songsHistory.add(track)
+            }
+            else
+                if (songsHistory.contains(track)){
+                    songsHistory.remove(track)
+                    songsHistory.add(track)
+                }
+                else if (songsHistory.size == 10){
+                    songsHistory.removeAt(songsHistory.size - 1)
+                    songsHistory.add(track)
+                }
+                else songsHistory.add(track)
+            Log.d("TAG", songsHistory.toString())
+        }
+    }
+    val searchResultsAdapter = SearchResultAdapter(songs, onItemClickListener)
+    val songsHistoryAdapter = SearchResultAdapter(songsHistory, onItemClickListener)
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,14 +57,18 @@ class SearchActivity : AppCompatActivity() {
         val notFoundPlaceholder = findViewById<FrameLayout>(R.id.not_found_placeholder)
         val noConnectionPlaceholder = findViewById<FrameLayout>(R.id.no_connection_placeholder)
         val searchResultsRecyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        val songsHistoryRecyclerView = findViewById<RecyclerView>(R.id.songsHistoryRecyclerView)
         val backArrow = findViewById<ImageView>(R.id.arrow_back)
         val refreshButton = findViewById<Button>(R.id.refresh_button)
+
         searchResultsRecyclerView.adapter = searchResultsAdapter
+        songsHistoryRecyclerView.adapter = songsHistoryAdapter
 
         if (savedInstanceState != null) {
             searchInput = savedInstanceState.getString(INPUT_STRING, "")
             textInputEdit.setText(searchInput)
         }
+
 
         backArrow.setOnClickListener {
             this.finish()
@@ -71,7 +94,7 @@ class SearchActivity : AppCompatActivity() {
                 notFoundPlaceholder.visibility = View.GONE
                 noConnectionPlaceholder.visibility = View.GONE
                 search(searchInput)
-                true
+                searchResultsAdapter.notifyDataSetChanged()
             }
             false
         }

@@ -19,7 +19,7 @@
         android:textSize="@dimen/font_size_error" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewHistory"
+        android:id="@+id/songsHistoryRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
