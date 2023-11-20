@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
@@ -34,14 +35,14 @@ class SearchActivity : AppCompatActivity() {
             else
                 if (songsHistory.contains(track)){
                     songsHistory.remove(track)
-                    songsHistory.add(track)
+                    songsHistory.add(0, track)
                 }
                 else if (songsHistory.size == 10){
                     songsHistory.removeAt(songsHistory.size - 1)
-                    songsHistory.add(track)
+                    songsHistory.add(0, track)
                 }
-                else songsHistory.add(track)
-            Log.d("TAG", songsHistory.toString())
+                else songsHistory.add(0, track)
+            Log.d("TAG", "${songsHistory.size}${songsHistory}")
         }
     }
     val searchResultsAdapter = SearchResultAdapter(songs, onItemClickListener)
@@ -60,6 +61,8 @@ class SearchActivity : AppCompatActivity() {
         val songsHistoryRecyclerView = findViewById<RecyclerView>(R.id.songsHistoryRecyclerView)
         val backArrow = findViewById<ImageView>(R.id.arrow_back)
         val refreshButton = findViewById<Button>(R.id.refresh_button)
+        val clearHistoryButton = findViewById<Button>(R.id.clearHistoryButton)
+        val songHistoryView = findViewById<LinearLayout>(R.id.searchHistory)
 
         searchResultsRecyclerView.adapter = searchResultsAdapter
         songsHistoryRecyclerView.adapter = songsHistoryAdapter
@@ -75,9 +78,12 @@ class SearchActivity : AppCompatActivity() {
         }
 
         refreshButton.setOnClickListener {
-            notFoundPlaceholder.visibility = View.GONE
-            noConnectionPlaceholder.visibility = View.GONE
+            showSearch()
             search(searchInput)
+        }
+        clearHistoryButton.setOnClickListener {
+            songsHistory.clear()
+            showSearch()
         }
 
         textInput.setEndIconOnClickListener {
@@ -91,12 +97,18 @@ class SearchActivity : AppCompatActivity() {
 
         textInputEdit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                notFoundPlaceholder.visibility = View.GONE
-                noConnectionPlaceholder.visibility = View.GONE
+                showSearch()
                 search(searchInput)
                 searchResultsAdapter.notifyDataSetChanged()
             }
             false
+        }
+        textInputEdit.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && textInputEdit.text!!.isEmpty() && songsHistory.isNotEmpty()){
+                showSongHistory()
+            } else {
+                showSearch()
+            }
         }
 
         val simpleTextWatcher = object : TextWatcher {
@@ -106,6 +118,11 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchInput = s.toString()
+                if (textInputEdit.hasFocus() && s?.isEmpty() == true && songsHistory.isNotEmpty()){
+                    showSongHistory()
+                } else {
+                    showSearch()
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
