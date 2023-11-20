@@ -5,13 +5,10 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
-import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputEditText
@@ -27,21 +24,31 @@ class SearchActivity : AppCompatActivity() {
         Retrofit.Builder().baseUrl(itunesBaseUrl).addConverterFactory(GsonConverterFactory.create())
             .build()
     val itunesService: ItunesAPI = retrofit.create(ItunesAPI::class.java)
-    val onItemClickListener = object : OnItemClickListener {
+    private val onItemClickListener = object : OnItemClickListener {
         override fun onTrackClick(track: Track) {
+            val sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
+            val historyPreferences = HistoryPreferences()
+
             if (songsHistory.isEmpty()) {
                 songsHistory.add(track)
+                historyPreferences.write(sharedPreferences, SearchHistory(songsHistory))
             }
             else
                 if (songsHistory.contains(track)){
                     songsHistory.remove(track)
                     songsHistory.add(0, track)
+                    historyPreferences.write(sharedPreferences, SearchHistory(songsHistory))
                 }
                 else if (songsHistory.size == 10){
                     songsHistory.removeAt(songsHistory.size - 1)
                     songsHistory.add(0, track)
+                    historyPreferences.write(sharedPreferences, SearchHistory(songsHistory))
                 }
-                else songsHistory.add(0, track)
+                else {
+                    songsHistory.add(0, track)
+
+                    historyPreferences.write(sharedPreferences, SearchHistory(songsHistory))
+                }
             Log.d("TAG", "${songsHistory.size}${songsHistory}")
         }
     }
@@ -55,14 +62,11 @@ class SearchActivity : AppCompatActivity() {
 
         val textInput = findViewById<TextInputLayout>(R.id.search_bar_input)
         val textInputEdit = findViewById<TextInputEditText>(R.id.search_bar_edit)
-        val notFoundPlaceholder = findViewById<FrameLayout>(R.id.not_found_placeholder)
-        val noConnectionPlaceholder = findViewById<FrameLayout>(R.id.no_connection_placeholder)
         val searchResultsRecyclerView = findViewById<RecyclerView>(R.id.recyclerView)
         val songsHistoryRecyclerView = findViewById<RecyclerView>(R.id.songsHistoryRecyclerView)
         val backArrow = findViewById<ImageView>(R.id.arrow_back)
         val refreshButton = findViewById<Button>(R.id.refresh_button)
         val clearHistoryButton = findViewById<Button>(R.id.clearHistoryButton)
-        val songHistoryView = findViewById<LinearLayout>(R.id.searchHistory)
 
         searchResultsRecyclerView.adapter = searchResultsAdapter
         songsHistoryRecyclerView.adapter = songsHistoryAdapter
@@ -71,7 +75,12 @@ class SearchActivity : AppCompatActivity() {
             searchInput = savedInstanceState.getString(INPUT_STRING, "")
             textInputEdit.setText(searchInput)
         }
-
+        val sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
+        val historyPreferences = HistoryPreferences()
+        if (sharedPreferences.getString(SEARCH_HISTORY_KEY,null) != null) {
+            historyPreferences.read(sharedPreferences).songsHistorySaved
+            songsHistory.addAll(historyPreferences.read(sharedPreferences).songsHistorySaved)
+        }
 
         backArrow.setOnClickListener {
             this.finish()
@@ -88,15 +97,16 @@ class SearchActivity : AppCompatActivity() {
 
         textInput.setEndIconOnClickListener {
             textInputEdit.text?.clear()
-            textInputEdit.clearFocus()
             val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(textInputEdit.windowToken, 0)
+            textInputEdit.clearFocus()
             songs.clear()
             searchResultsAdapter.notifyDataSetChanged()
         }
 
         textInputEdit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
+                textInputEdit.clearFocus()
                 showSearch()
                 search(searchInput)
                 searchResultsAdapter.notifyDataSetChanged()

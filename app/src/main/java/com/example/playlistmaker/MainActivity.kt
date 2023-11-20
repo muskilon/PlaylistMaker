@@ -1,14 +1,14 @@
 package com.example.playlistmaker
 
 import android.content.Intent
-import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 
 const val SHARED_PREFERENCES = "sharedPreferences"
 const val NIGHT_MODE_KEY = "nightMode"
+const val SEARCH_HISTORY_KEY = "searchHistory"
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

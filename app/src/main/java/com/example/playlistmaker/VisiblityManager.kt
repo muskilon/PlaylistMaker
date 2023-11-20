@@ -1,20 +1,24 @@
 package com.example.playlistmaker
 
+import android.annotation.SuppressLint
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 
 
+@SuppressLint("NotifyDataSetChanged")
 fun SearchActivity.showSearch() {
     val notFoundPlaceholder = findViewById<FrameLayout>(R.id.not_found_placeholder)
     val noConnectionPlaceholder = findViewById<FrameLayout>(R.id.no_connection_placeholder)
     val searchResultsRecyclerView = findViewById<RecyclerView>(R.id.recyclerView)
     val songHistoryView = findViewById<LinearLayout>(R.id.searchHistory)
+
     notFoundPlaceholder.visibility = View.GONE
     noConnectionPlaceholder.visibility = View.GONE
     searchResultsRecyclerView.visibility = View.VISIBLE
     songHistoryView.visibility = View.GONE
+    searchResultsAdapter.notifyDataSetChanged()
 }
 
 fun SearchActivity.showNotFound() {
@@ -39,6 +43,7 @@ fun SearchActivity.showNoConnection() {
     songHistoryView.visibility = View.GONE
 }
 
+@SuppressLint("NotifyDataSetChanged")
 fun SearchActivity.showSongHistory() {
     val notFoundPlaceholder = findViewById<FrameLayout>(R.id.not_found_placeholder)
     val noConnectionPlaceholder = findViewById<FrameLayout>(R.id.no_connection_placeholder)
@@ -48,4 +53,5 @@ fun SearchActivity.showSongHistory() {
     noConnectionPlaceholder.visibility = View.GONE
     searchResultsRecyclerView.visibility = View.GONE
     songHistoryView.visibility = View.VISIBLE
+    songsHistoryAdapter.notifyDataSetChanged()
 }

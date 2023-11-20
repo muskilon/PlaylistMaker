@@ -1,9 +1,6 @@
 package com.example.playlistmaker
 
 import android.annotation.SuppressLint
-import android.view.View
-import android.widget.FrameLayout
-import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
