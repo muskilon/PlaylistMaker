@@ -55,7 +55,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         if (sharedPreferences.getString(SEARCH_HISTORY_KEY,null) != null) {
-            historyPreferences.read(sharedPreferences).songsHistorySaved
+            //historyPreferences.read(sharedPreferences).songsHistorySaved
             songsHistory.addAll(historyPreferences.read(sharedPreferences).songsHistorySaved)
         }
 

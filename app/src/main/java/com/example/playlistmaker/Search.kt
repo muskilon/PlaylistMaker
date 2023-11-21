@@ -5,6 +5,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+val songs = ArrayList<Track>()
+class SearchResponse(
+    val results: ArrayList<Track>,
+    val resultCount: Int
+)
 fun SearchActivity.search(queryInput: String) {
     itunesService.getSearch(queryInput).enqueue(object : Callback<SearchResponse> {
         @SuppressLint("NotifyDataSetChanged")

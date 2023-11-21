@@ -1,10 +1,27 @@
 package com.example.playlistmaker
 
 import android.content.SharedPreferences
-import android.util.Log
+import com.google.gson.Gson
 
 interface OnItemClickListener {
     fun onTrackClick(track: Track)
+}
+val songsHistory = mutableListOf<Track>()
+class SearchHistory(
+    val songsHistorySaved: MutableList<Track>
+)
+class HistoryPreferences {
+    fun read(sharedPreferences: SharedPreferences): SearchHistory {
+        val json = sharedPreferences.getString(SEARCH_HISTORY_KEY, null)
+        return Gson().fromJson(json, SearchHistory::class.java)
+    }
+
+    fun write(sharedPreferences: SharedPreferences, songsHistory: SearchHistory) {
+        val json = Gson().toJson(songsHistory)
+        sharedPreferences.edit()
+            .putString(SEARCH_HISTORY_KEY, json)
+            .apply()
+    }
 }
 fun onItemClickListener (sharedPreferences: SharedPreferences):OnItemClickListener {
     val onItemClickListener = object : OnItemClickListener {
@@ -28,7 +45,6 @@ fun onItemClickListener (sharedPreferences: SharedPreferences):OnItemClickListen
 
                     historyPreferences.write(sharedPreferences, SearchHistory(songsHistory))
                 }
-            Log.d("TAG", "${songsHistory.size}${songsHistory}")
         }
     }
     return onItemClickListener
