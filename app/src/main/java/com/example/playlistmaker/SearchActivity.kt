@@ -67,6 +67,7 @@ class SearchActivity : AppCompatActivity() {
         }
         clearHistoryButton.setOnClickListener {
             songsHistory.clear()
+            historyPreferences.clear()
             showSearch()
         }
 

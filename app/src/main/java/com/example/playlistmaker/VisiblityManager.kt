@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 
 
@@ -12,7 +13,7 @@ fun SearchActivity.showSearch() {
     val notFoundPlaceholder = findViewById<FrameLayout>(R.id.not_found_placeholder)
     val noConnectionPlaceholder = findViewById<FrameLayout>(R.id.no_connection_placeholder)
     val searchResultsRecyclerView = findViewById<RecyclerView>(R.id.searchResultsRecyclerView)
-    val songHistoryView = findViewById<LinearLayout>(R.id.searchHistory)
+    val songHistoryView = findViewById<ConstraintLayout>(R.id.searchHistory)
 
     notFoundPlaceholder.visibility = View.GONE
     noConnectionPlaceholder.visibility = View.GONE
@@ -26,7 +27,7 @@ fun SearchActivity.showSongHistory() {
     val notFoundPlaceholder = findViewById<FrameLayout>(R.id.not_found_placeholder)
     val noConnectionPlaceholder = findViewById<FrameLayout>(R.id.no_connection_placeholder)
     val searchResultsRecyclerView = findViewById<RecyclerView>(R.id.searchResultsRecyclerView)
-    val songHistoryView = findViewById<LinearLayout>(R.id.searchHistory)
+    val songHistoryView = findViewById<ConstraintLayout>(R.id.searchHistory)
     notFoundPlaceholder.visibility = View.GONE
     noConnectionPlaceholder.visibility = View.GONE
     searchResultsRecyclerView.visibility = View.GONE
@@ -38,7 +39,7 @@ fun SearchActivity.showNotFound() {
     val notFoundPlaceholder = findViewById<FrameLayout>(R.id.not_found_placeholder)
     val noConnectionPlaceholder = findViewById<FrameLayout>(R.id.no_connection_placeholder)
     val searchResultsRecyclerView = findViewById<RecyclerView>(R.id.searchResultsRecyclerView)
-    val songHistoryView = findViewById<LinearLayout>(R.id.searchHistory)
+    val songHistoryView = findViewById<ConstraintLayout>(R.id.searchHistory)
     notFoundPlaceholder.visibility = View.VISIBLE
     noConnectionPlaceholder.visibility = View.GONE
     searchResultsRecyclerView.visibility = View.GONE
@@ -48,7 +49,7 @@ fun SearchActivity.showNoConnection() {
     val notFoundPlaceholder = findViewById<FrameLayout>(R.id.not_found_placeholder)
     val noConnectionPlaceholder = findViewById<FrameLayout>(R.id.no_connection_placeholder)
     val searchResultsRecyclerView = findViewById<RecyclerView>(R.id.searchResultsRecyclerView)
-    val songHistoryView = findViewById<LinearLayout>(R.id.searchHistory)
+    val songHistoryView = findViewById<ConstraintLayout>(R.id.searchHistory)
     notFoundPlaceholder.visibility = View.GONE
     noConnectionPlaceholder.visibility = View.VISIBLE
     searchResultsRecyclerView.visibility = View.GONE

@@ -1,5 +1,6 @@
 package com.example.playlistmaker
 
+import android.util.Log
 import com.google.gson.Gson
 
 interface OnItemClickListener {
@@ -19,6 +20,11 @@ class HistoryPreferences {
         val json = Gson().toJson(songsHistory)
         sharedPreferences.edit()
             .putString(SEARCH_HISTORY_KEY, json)
+            .apply()
+    }
+    fun clear(){
+        sharedPreferences.edit()
+            .remove(SEARCH_HISTORY_KEY)
             .apply()
     }
 }
@@ -46,6 +52,7 @@ fun onItemClickListener ():OnItemClickListener {
                     historyPreferences.write(SearchHistory(songsHistory))
                 }
             }
+            Log.d("TAG", "${songsHistory.size}")
         }
     }
     return onItemClickListener
