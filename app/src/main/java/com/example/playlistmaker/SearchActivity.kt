@@ -32,8 +32,7 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
-        onItemClickListener = onItemClickListener(sharedPreferences)
+        onItemClickListener = onItemClickListener()
         searchResultsAdapter = SearchResultAdapter(songs, onItemClickListener)
         songsHistoryAdapter = SearchResultAdapter(songsHistory, onItemClickListener)
         val historyPreferences = HistoryPreferences()
@@ -55,8 +54,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         if (sharedPreferences.getString(SEARCH_HISTORY_KEY,null) != null) {
-            //historyPreferences.read(sharedPreferences).songsHistorySaved
-            songsHistory.addAll(historyPreferences.read(sharedPreferences).songsHistorySaved)
+            songsHistory.addAll(historyPreferences.read().songsHistorySaved)
         }
 
         backArrow.setOnClickListener {

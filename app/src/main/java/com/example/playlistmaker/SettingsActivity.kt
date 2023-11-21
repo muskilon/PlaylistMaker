@@ -61,7 +61,7 @@ class SettingsActivity : AppCompatActivity() {
                 themeSwitcher.isChecked = false
             }
         }
-        val sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
+
         themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
