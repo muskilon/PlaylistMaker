@@ -12,7 +12,7 @@
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
-            android:id="@+id/arrow_back"
+            android:id="@+id/backArrow"
             style="@style/NavigationToolBarIcon"/>
 
         <TextView
@@ -50,7 +50,7 @@
             android:text="@string/share_app"/>
 
         <ImageView
-            android:id="@+id/share_app_icon"
+            android:id="@+id/shareAppIcon"
             style="@style/SettingsMenuRowIcon"
             android:src="@drawable/share"
             />
@@ -64,7 +64,7 @@
             android:text="@string/write_to_support"/>
 
         <ImageView
-            android:id="@+id/write_to_support_icon"
+            android:id="@+id/writeToSupportIcon"
             style="@style/SettingsMenuRowIcon"
             android:src="@drawable/support"
             />
@@ -77,7 +77,7 @@
             android:text="@string/user_agreement"/>
 
         <ImageView
-            android:id="@+id/terms_of_use_arrow"
+            android:id="@+id/termsOfUseArrow"
             style="@style/SettingsMenuRowIcon"
             android:src="@drawable/arrow_forward"
             />

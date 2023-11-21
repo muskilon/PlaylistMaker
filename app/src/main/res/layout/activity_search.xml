@@ -11,7 +11,7 @@
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
-            android:id="@+id/arrow_back"
+            android:id="@+id/backArrow"
             style="@style/NavigationToolBarIcon" />
 
         <TextView
@@ -22,7 +22,7 @@
     </LinearLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/search_bar_input"
+        android:id="@+id/searchBarInput"
         android:layout_width="match_parent"
         android:layout_height="52dp"
         android:paddingHorizontal="16dp"
@@ -41,7 +41,7 @@
         app:hintTextColor="@android:color/transparent">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/search_bar_edit"
+            android:id="@+id/searchBarEdit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableStart="@drawable/search_icon"
@@ -71,7 +71,7 @@
             tools:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+            android:id="@+id/searchResultsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="16dp"

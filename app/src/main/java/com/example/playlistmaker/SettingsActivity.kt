@@ -15,19 +15,19 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        val backArrow = findViewById<ImageView>(R.id.arrow_back)
+        val backArrow = findViewById<ImageView>(R.id.backArrow)
         backArrow.setOnClickListener {
             this.finish()
         }
 
-        val termsOfUseArrow = findViewById<ImageView>(R.id.terms_of_use_arrow)
+        val termsOfUseArrow = findViewById<ImageView>(R.id.termsOfUseArrow)
         termsOfUseArrow.setOnClickListener {
             val termsOfUse =
                 Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_of_use_url)))
             startActivity(termsOfUse)
         }
 
-        val shareAppIcon = findViewById<ImageView>(R.id.share_app_icon)
+        val shareAppIcon = findViewById<ImageView>(R.id.shareAppIcon)
         shareAppIcon.setOnClickListener {
             val sendApp: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
@@ -38,7 +38,7 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(sendApp)
         }
 
-        val feedbackIcon = findViewById<ImageView>(R.id.write_to_support_icon)
+        val feedbackIcon = findViewById<ImageView>(R.id.writeToSupportIcon)
         feedbackIcon.setOnClickListener {
             val sendFeedback = Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse("mailto:")
