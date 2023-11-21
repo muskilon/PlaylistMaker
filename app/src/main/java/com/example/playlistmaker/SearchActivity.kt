@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -54,7 +55,9 @@ class SearchActivity : AppCompatActivity() {
         }
 
         if (sharedPreferences.getString(SEARCH_HISTORY_KEY,null) != null) {
+            songsHistory.clear()
             songsHistory.addAll(historyPreferences.read().songsHistorySaved)
+            Log.d("TAG", "${songsHistory.size}")
         }
 
         backArrow.setOnClickListener {
