@@ -26,24 +26,26 @@ fun onItemClickListener ():OnItemClickListener {
     val onItemClickListener = object : OnItemClickListener {
         override fun onTrackClick(track: Track) {
             val historyPreferences = HistoryPreferences()
-
-            if (songsHistory.isEmpty()) {
-                songsHistory.add(track)
-                historyPreferences.write(SearchHistory(songsHistory))
-            } else
-                if (songsHistory.contains(track)) {
+            when{
+                songsHistory.isEmpty() ->{
+                    songsHistory.add(track)
+                    historyPreferences.write(SearchHistory(songsHistory))
+                }
+                songsHistory.contains(track) -> {
                     songsHistory.remove(track)
                     songsHistory.add(0, track)
                     historyPreferences.write(SearchHistory(songsHistory))
-                } else if (songsHistory.size == 10) {
-                    songsHistory.removeAt(songsHistory.size - 1)
+                }
+                songsHistory.size == 10 -> {
+                    songsHistory.removeLast()
                     songsHistory.add(0, track)
-                    historyPreferences.write(SearchHistory(songsHistory))
-                } else {
-                    songsHistory.add(0, track)
-
                     historyPreferences.write(SearchHistory(songsHistory))
                 }
+                else -> {
+                    songsHistory.add(0, track)
+                    historyPreferences.write(SearchHistory(songsHistory))
+                }
+            }
         }
     }
     return onItemClickListener
