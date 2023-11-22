@@ -38,7 +38,7 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
         val onItemClickListenerImpl = ItemClickListenerImpl()
-        onItemClickListener = onItemClickListenerImpl.onItemClickListener()
+        onItemClickListener = onItemClickListenerImpl
         searchResultsAdapter = SearchResultAdapter(songs, onItemClickListener)
         songsHistoryAdapter = SearchResultAdapter(songsHistory, onItemClickListener)
 

@@ -3,9 +3,7 @@ package com.example.playlistmaker
 import android.util.Log
 import com.example.playlistmaker.HistoryPreferences.songsHistory
 
-class ItemClickListenerImpl {
-    fun onItemClickListener ():OnItemClickListener {
-        val onItemClickListener = object : OnItemClickListener {
+class ItemClickListenerImpl : OnItemClickListener{
             override fun onTrackClick(track: Track) {
                 when{
                     songsHistory.isEmpty() ->{
@@ -29,9 +27,6 @@ class ItemClickListenerImpl {
                 }
                 Log.d("TAG", "${songsHistory.size}")
             }
-        }
-        return onItemClickListener
-    }
     companion object{
         private const val HISTORY_SIZE = 10
     }
