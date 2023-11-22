@@ -7,9 +7,6 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 
-const val SHARED_PREFERENCES = "sharedPreferences"
-const val NIGHT_MODE_KEY = "nightMode"
-const val SEARCH_HISTORY_KEY = "searchHistory"
 lateinit var sharedPreferences : SharedPreferences
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,5 +40,10 @@ class MainActivity : AppCompatActivity() {
             val openSettings = Intent(this, SettingsActivity::class.java)
             startActivity(openSettings)
         }
+    }
+    companion object{
+        const val SHARED_PREFERENCES = "sharedPreferences"
+        const val NIGHT_MODE_KEY = "nightMode"
+        const val SEARCH_HISTORY_KEY = "searchHistory"
     }
 }

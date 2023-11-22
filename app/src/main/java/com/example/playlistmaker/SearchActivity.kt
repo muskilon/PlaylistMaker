@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.MainActivity.Companion.SEARCH_HISTORY_KEY
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import retrofit2.Retrofit
@@ -18,7 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 class SearchActivity : AppCompatActivity() {
-    private var searchInput: String = ""
+    private var searchInput: String = EMPTY
     private val itunesBaseUrl = "https://itunes.apple.com"
     private val retrofit =
         Retrofit.Builder().baseUrl(itunesBaseUrl).addConverterFactory(GsonConverterFactory.create())
@@ -129,5 +130,6 @@ class SearchActivity : AppCompatActivity() {
 
     companion object {
         private const val INPUT_STRING = "INPUT_STRING"
+        private const val EMPTY = ""
     }
 }
