@@ -5,7 +5,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-//val songs = ArrayList<Track>()
 class SearchResponse(
     val results: ArrayList<Track>,
     val resultCount: Int
@@ -19,9 +18,9 @@ object Search {
                 call: Call<SearchResponse>, response: Response<SearchResponse>
             ) {
                 if (response.body()?.resultCount == 0) {
-                    showNotFound()
+                    show(VisibilityManager.NOT_FOUND)
                 } else {
-                    showSearch()
+                    show(VisibilityManager.SEARCH)
                     songs.clear()
                     songs.addAll(response.body()?.results!!)
                     searchResultsAdapter.notifyDataSetChanged()
@@ -29,7 +28,7 @@ object Search {
             }
 
             override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                showNoConnection()
+                show(VisibilityManager.NO_CONNECTIONS)
             }
 
         })

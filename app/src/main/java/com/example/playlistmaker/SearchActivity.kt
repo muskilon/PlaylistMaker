@@ -28,8 +28,8 @@ class SearchActivity : AppCompatActivity() {
         Retrofit.Builder().baseUrl(itunesBaseUrl).addConverterFactory(GsonConverterFactory.create())
             .build()
     val itunesService: ItunesAPI = retrofit.create(ItunesAPI::class.java)
-    lateinit var searchResultsAdapter : SearchResultAdapter
-    lateinit var songsHistoryAdapter : SearchResultAdapter
+    lateinit var searchResultsAdapter: SearchResultAdapter
+    lateinit var songsHistoryAdapter: SearchResultAdapter
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,7 +56,7 @@ class SearchActivity : AppCompatActivity() {
             searchBarEdit.setText(searchInput)
         }
 
-        if (sharedPreferences.getString(SEARCH_HISTORY_KEY,null) != null) {
+        if (sharedPreferences.getString(SEARCH_HISTORY_KEY, null) != null) {
             songsHistory.clear()
             songsHistory.addAll(HistoryPreferences.read().songsHistorySaved)
             Log.d("TAG", "${songsHistory.size}")
@@ -67,13 +67,13 @@ class SearchActivity : AppCompatActivity() {
         }
 
         refreshButton.setOnClickListener {
-            showSearch()
+            show(VisibilityManager.SEARCH)
             search(searchInput)
         }
         clearHistoryButton.setOnClickListener {
             songsHistory.clear()
             HistoryPreferences.clear()
-            showSearch()
+            show(VisibilityManager.SEARCH)
         }
 
         searchBarInput.setEndIconOnClickListener {
@@ -87,27 +87,27 @@ class SearchActivity : AppCompatActivity() {
         searchBarEdit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 searchBarEdit.clearFocus()
-                showSearch()
+                show(VisibilityManager.SEARCH)
                 search(searchInput)
                 searchResultsAdapter.notifyDataSetChanged()
             }
             false
         }
+
         searchBarEdit.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && searchBarEdit.text.isNullOrEmpty() && songsHistory.isNotEmpty()){
-                showSongHistory()
+            if (hasFocus && searchBarEdit.text.isNullOrEmpty() && songsHistory.isNotEmpty()) {
+                show(VisibilityManager.SONG_HISTORY)
             } else {
-                showSearch()
+                show(VisibilityManager.SEARCH)
             }
         }
+
         songsHistoryRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 imm.hideSoftInputFromWindow(searchBarEdit.windowToken, 0)
             }
         })
-
-
 
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -116,10 +116,10 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchInput = s.toString()
-                if (searchBarEdit.hasFocus() && s?.isEmpty() == true && songsHistory.isNotEmpty()){
-                    showSongHistory()
+                if (searchBarEdit.hasFocus() && s?.isEmpty() == true && songsHistory.isNotEmpty()) {
+                    show(VisibilityManager.SONG_HISTORY)
                 } else {
-                    showSearch()
+                    show(VisibilityManager.SEARCH)
                 }
             }
 
