@@ -6,7 +6,6 @@ import com.google.gson.Gson
 interface OnItemClickListener {
     fun onTrackClick(track: Track)
 }
-//val songsHistory = mutableListOf<Track>()
 class SearchHistory(
     val songsHistorySaved: List<Track>
 )
