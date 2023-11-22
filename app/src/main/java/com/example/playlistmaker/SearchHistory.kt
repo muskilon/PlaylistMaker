@@ -16,7 +16,6 @@ object HistoryPreferences {
         val json = sharedPreferences.getString(SEARCH_HISTORY_KEY, null)
         return gson.fromJson(json, SearchHistory::class.java)
     }
-
     fun write(songsHistory: SearchHistory) {
         val json = gson.toJson(songsHistory)
         sharedPreferences.edit()

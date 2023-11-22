@@ -1,6 +1,5 @@
 package com.example.playlistmaker
 
-import android.util.Log
 import com.example.playlistmaker.HistoryPreferences.songsHistory
 
 class ItemClickListenerImpl : OnItemClickListener{
@@ -25,7 +24,6 @@ class ItemClickListenerImpl : OnItemClickListener{
                         HistoryPreferences.write(SearchHistory(songsHistory))
                     }
                 }
-                Log.d("TAG", "${songsHistory.size}")
             }
     companion object{
         private const val HISTORY_SIZE = 10
