@@ -34,10 +34,12 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        onItemClickListener = onItemClickListener()
+        val historyPreferences = HistoryPreferences()
+
+        val onItemClickListenerImpl = ItemClickListenerImpl()
+        onItemClickListener = onItemClickListenerImpl.onItemClickListener()
         searchResultsAdapter = SearchResultAdapter(songs, onItemClickListener)
         songsHistoryAdapter = SearchResultAdapter(songsHistory, onItemClickListener)
-        val historyPreferences = HistoryPreferences()
 
         val searchBarInput = findViewById<TextInputLayout>(R.id.searchBarInput)
         val searchBarEdit = findViewById<TextInputEditText>(R.id.searchBarEdit)
@@ -94,7 +96,7 @@ class SearchActivity : AppCompatActivity() {
             false
         }
         searchBarEdit.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && searchBarEdit.text!!.isEmpty() && songsHistory.isNotEmpty()){
+            if (hasFocus && searchBarEdit.text.isNullOrEmpty() && songsHistory.isNotEmpty()){
                 showSongHistory()
             } else {
                 showSearch()
