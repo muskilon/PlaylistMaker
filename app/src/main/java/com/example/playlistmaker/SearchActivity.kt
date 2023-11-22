@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.HistoryPreferences.songsHistory
 import com.example.playlistmaker.MainActivity.Companion.SEARCH_HISTORY_KEY
+import com.example.playlistmaker.Search.search
+import com.example.playlistmaker.Search.songs
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import retrofit2.Retrofit
