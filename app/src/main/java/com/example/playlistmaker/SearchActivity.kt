@@ -28,7 +28,6 @@ class SearchActivity : AppCompatActivity() {
         Retrofit.Builder().baseUrl(itunesBaseUrl).addConverterFactory(GsonConverterFactory.create())
             .build()
     val itunesService: ItunesAPI = retrofit.create(ItunesAPI::class.java)
-    private lateinit var onItemClickListener : OnItemClickListener
     lateinit var searchResultsAdapter : SearchResultAdapter
     lateinit var songsHistoryAdapter : SearchResultAdapter
 
@@ -36,11 +35,10 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
 
-        val onItemClickListenerImpl = ItemClickListenerImpl()
-        onItemClickListener = onItemClickListenerImpl
-        searchResultsAdapter = SearchResultAdapter(songs, onItemClickListener)
-        songsHistoryAdapter = SearchResultAdapter(songsHistory, onItemClickListener)
+        searchResultsAdapter = SearchResultAdapter(songs, ItemClickListenerImpl())
+        songsHistoryAdapter = SearchResultAdapter(songsHistory, ItemClickListenerImpl())
 
         val searchBarInput = findViewById<TextInputLayout>(R.id.searchBarInput)
         val searchBarEdit = findViewById<TextInputEditText>(R.id.searchBarEdit)
@@ -80,7 +78,6 @@ class SearchActivity : AppCompatActivity() {
 
         searchBarInput.setEndIconOnClickListener {
             searchBarEdit.text?.clear()
-            val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(searchBarEdit.windowToken, 0)
             searchBarEdit.clearFocus()
             songs.clear()
@@ -103,6 +100,14 @@ class SearchActivity : AppCompatActivity() {
                 showSearch()
             }
         }
+        songsHistoryRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                imm.hideSoftInputFromWindow(searchBarEdit.windowToken, 0)
+            }
+        })
+
+
 
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
