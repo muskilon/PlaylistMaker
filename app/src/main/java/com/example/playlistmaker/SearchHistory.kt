@@ -6,12 +6,13 @@ import com.google.gson.Gson
 interface OnItemClickListener {
     fun onTrackClick(track: Track)
 }
-val songsHistory = mutableListOf<Track>()
+//val songsHistory = mutableListOf<Track>()
 class SearchHistory(
     val songsHistorySaved: List<Track>
 )
-class HistoryPreferences {
+object HistoryPreferences {
     private val gson = Gson()
+    val songsHistory = mutableListOf<Track>()
     fun read(): SearchHistory {
         val json = sharedPreferences.getString(SEARCH_HISTORY_KEY, null)
         return gson.fromJson(json, SearchHistory::class.java)

@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.HistoryPreferences.songsHistory
 import com.example.playlistmaker.MainActivity.Companion.SEARCH_HISTORY_KEY
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -33,8 +34,6 @@ class SearchActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-
-        val historyPreferences = HistoryPreferences()
 
         val onItemClickListenerImpl = ItemClickListenerImpl()
         onItemClickListener = onItemClickListenerImpl.onItemClickListener()
@@ -59,7 +58,7 @@ class SearchActivity : AppCompatActivity() {
 
         if (sharedPreferences.getString(SEARCH_HISTORY_KEY,null) != null) {
             songsHistory.clear()
-            songsHistory.addAll(historyPreferences.read().songsHistorySaved)
+            songsHistory.addAll(HistoryPreferences.read().songsHistorySaved)
             Log.d("TAG", "${songsHistory.size}")
         }
 
@@ -73,7 +72,7 @@ class SearchActivity : AppCompatActivity() {
         }
         clearHistoryButton.setOnClickListener {
             songsHistory.clear()
-            historyPreferences.clear()
+            HistoryPreferences.clear()
             showSearch()
         }
 
