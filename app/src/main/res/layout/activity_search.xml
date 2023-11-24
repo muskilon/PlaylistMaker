@@ -11,74 +11,80 @@
         tools:ignore="UseCompoundDrawables">
 
         <ImageView
-            android:id="@+id/arrow_back"
-            style="@style/NavigationToolBarIcon"/>
+            android:id="@+id/backArrow"
+            style="@style/NavigationToolBarIcon" />
 
         <TextView
-            android:text="@string/search"
             style="@style/NavigationToolBarText"
+            android:text="@string/search"
 
             />
     </LinearLayout>
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/search_bar_input"
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/searchBarInput"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="8dp"
+        app:boxBackgroundColor="?attr/boxBackgroundColor"
+        app:boxCornerRadiusBottomEnd="@dimen/search_input_corner_radius"
+        app:boxCornerRadiusBottomStart="@dimen/search_input_corner_radius"
+        app:boxCornerRadiusTopEnd="@dimen/search_input_corner_radius"
+        app:boxCornerRadiusTopStart="@dimen/search_input_corner_radius"
+        app:boxStrokeWidth="0dp"
+        app:boxStrokeWidthFocused="0dp"
+        app:endIconDrawable="@drawable/clear_icon"
+        app:endIconMode="clear_text"
+        app:endIconTint="?android:attr/textColorHintInverse"
+        app:hintEnabled="false"
+        app:hintTextColor="@android:color/transparent">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/searchBarEdit"
             android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"
-            app:hintTextColor="@android:color/transparent"
-            app:hintEnabled="false"
-            app:boxBackgroundColor="?attr/boxBackgroundColor"
-            app:boxStrokeWidth="0dp"
-            app:boxStrokeWidthFocused="0dp"
-            app:boxCornerRadiusTopStart="@dimen/search_input_corner_radius"
-            app:boxCornerRadiusBottomStart="@dimen/search_input_corner_radius"
-            app:boxCornerRadiusTopEnd="@dimen/search_input_corner_radius"
-            app:boxCornerRadiusBottomEnd="@dimen/search_input_corner_radius"
-            app:endIconDrawable="@drawable/clear_icon"
-            app:endIconTint="?android:attr/textColorHintInverse"
-            app:endIconMode="clear_text">
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/search_icon"
+            android:drawablePadding="8dp"
+            android:drawableTint="?android:attr/textColorHintInverse"
+            android:hint="@string/search"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingStart="12dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:singleLine="true"
+            android:textColor="@color/black"
+            android:textColorHint="?android:attr/textColorHintInverse"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="@dimen/font_size_medium" />
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/search_bar_edit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:inputType="text"
-                android:maxLines="1"
-                android:imeOptions="actionDone"
-                android:singleLine="true"
-                android:textColor="@color/black"
-                android:textSize="@dimen/font_size_medium"
-                android:drawableStart="@drawable/search_icon"
-                android:drawableTint="?android:attr/textColorHintInverse"
-                android:hint="@string/search"
-                android:textColorHint="?android:attr/textColorHintInverse"
-                android:textCursorDrawable="@drawable/color_cursor"
-                android:drawablePadding="8dp"
-                android:paddingStart="12dp"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
-        </com.google.android.material.textfield.TextInputLayout>
-    <FrameLayout android:layout_width="match_parent"
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_marginTop="16dp"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:visibility="visible"
-        />
+        <include
+            layout="@layout/you_searched"
+            tools:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchResultsRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:visibility="visible" />
+
         <include
             layout="@layout/not_found_placeholder"
-            tools:visibility="gone"
-            />
+            tools:visibility="gone" />
+
         <include
             layout="@layout/no_connection_placeholder"
-            tools:visibility="gone"
-            />
+            tools:visibility="gone" />
     </FrameLayout>
 </LinearLayout>

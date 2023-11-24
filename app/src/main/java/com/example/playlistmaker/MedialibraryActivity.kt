@@ -8,7 +8,7 @@ class MedialibraryActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_medialibrary)
-        val backArrow = findViewById<ImageView>(R.id.arrow_back)
+        val backArrow = findViewById<ImageView>(R.id.backArrow)
         backArrow.setOnClickListener {
             this.finish()
         }

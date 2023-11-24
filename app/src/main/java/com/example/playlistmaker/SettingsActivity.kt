@@ -3,11 +3,12 @@ package com.example.playlistmaker
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
+import com.example.playlistmaker.MainActivity.Companion.NIGHT_MODE_KEY
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -15,19 +16,19 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
 
-        val backArrow = findViewById<ImageView>(R.id.arrow_back)
+        val backArrow = findViewById<ImageView>(R.id.backArrow)
         backArrow.setOnClickListener {
             this.finish()
         }
 
-        val termsOfUseArrow = findViewById<ImageView>(R.id.terms_of_use_arrow)
+        val termsOfUseArrow = findViewById<ImageView>(R.id.termsOfUseArrow)
         termsOfUseArrow.setOnClickListener {
             val termsOfUse =
                 Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.terms_of_use_url)))
             startActivity(termsOfUse)
         }
 
-        val shareAppIcon = findViewById<ImageView>(R.id.share_app_icon)
+        val shareAppIcon = findViewById<ImageView>(R.id.shareAppIcon)
         shareAppIcon.setOnClickListener {
             val sendApp: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
@@ -38,7 +39,7 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(sendApp)
         }
 
-        val feedbackIcon = findViewById<ImageView>(R.id.write_to_support_icon)
+        val feedbackIcon = findViewById<ImageView>(R.id.writeToSupportIcon)
         feedbackIcon.setOnClickListener {
             val sendFeedback = Intent(Intent.ACTION_SENDTO).apply {
                 data = Uri.parse("mailto:")
@@ -65,8 +66,14 @@ class SettingsActivity : AppCompatActivity() {
         themeSwitcher.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                sharedPreferences.edit()
+                    .putBoolean(NIGHT_MODE_KEY, true)
+                    .apply()
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                sharedPreferences.edit()
+                    .putBoolean(NIGHT_MODE_KEY, false)
+                    .apply()
             }
 
         }
