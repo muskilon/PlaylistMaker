@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -19,10 +20,11 @@ class SearchResultAdapter(
 
     override fun onBindViewHolder(holder: SearchResultViewHolder, position: Int) {
         holder.bind(tracks[position])
+        val currentTrack = tracks[position]
         holder.itemView.setOnClickListener {
             onItemClickListener.onTrackClick(tracks[holder.adapterPosition])
             val openPlayer = Intent(this.context, PlayerActivity::class.java)
-            openPlayer.putExtra("currentTrack", gson.toJson(tracks[position]))
+            openPlayer.putExtra("currentTrack", gson.toJson(currentTrack))
             it.context.startActivity(openPlayer)
         }
     }

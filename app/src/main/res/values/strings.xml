@@ -22,4 +22,5 @@
     <string name="year">Год</string>
     <string name="genre">Жанр</string>
     <string name="country">Страна</string>
+    <string name="template_time_elapsed">00:30</string>
 </resources>

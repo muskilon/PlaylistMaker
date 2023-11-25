@@ -104,4 +104,15 @@
     <style name="TrackSnippet">
         <item name="android:foreground">?attr/selectableItemBackground</item>
     </style>
+
+    <style name="player_list_of_data">
+        <item name="layout_constrainedWidth">true</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">9dp</item>
+        <item name="android:paddingBottom">8dp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+
+    </style>
 </resources>
