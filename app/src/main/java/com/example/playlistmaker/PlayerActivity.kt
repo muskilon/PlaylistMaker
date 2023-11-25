@@ -22,7 +22,7 @@ class PlayerActivity : AppCompatActivity() {
         }
         Glide.with(this)
             .load(currentTrack.artworkUrl512)
-            .placeholder(R.drawable.placeholder)
+            .placeholder(R.drawable.placeholder_big)
             .transform(RoundedCorners(cornerRadius.toInt()))
             .into(binding.albumCover)
         binding.trackName.text = currentTrack.trackName
