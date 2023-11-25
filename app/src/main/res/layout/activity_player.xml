@@ -129,7 +129,7 @@
         android:fontFamily="@font/ys_display_regular"
         android:textColor="@color/yp_text_gray"
         android:textSize="@dimen/font_size_13"
-        tools:text="Длительность" />
+        android:text="@string/duration" />
     <TextView
         android:id="@+id/trackDuration"
         app:layout_constrainedWidth="true"
@@ -157,7 +157,7 @@
         android:fontFamily="@font/ys_display_regular"
         android:textColor="@color/yp_text_gray"
         android:textSize="@dimen/font_size_13"
-        tools:text="Альбом" />
+        android:text="@string/album" />
     <TextView
         android:id="@+id/album"
         app:layout_constrainedWidth="true"
@@ -185,7 +185,7 @@
         android:fontFamily="@font/ys_display_regular"
         android:textColor="@color/yp_text_gray"
         android:textSize="@dimen/font_size_13"
-        tools:text="Год" />
+        android:text="@string/year" />
     <TextView
         android:id="@+id/year"
         app:layout_constrainedWidth="true"
@@ -213,7 +213,7 @@
         android:fontFamily="@font/ys_display_regular"
         android:textColor="@color/yp_text_gray"
         android:textSize="@dimen/font_size_13"
-        tools:text="Жанр" />
+        android:text="@string/genre" />
     <TextView
         android:id="@+id/genre"
         app:layout_constrainedWidth="true"
@@ -241,7 +241,7 @@
         android:fontFamily="@font/ys_display_regular"
         android:textColor="@color/yp_text_gray"
         android:textSize="@dimen/font_size_13"
-        tools:text="Альбом" />
+        android:text="@string/country" />
     <TextView
         android:id="@+id/country"
         app:layout_constrainedWidth="true"
