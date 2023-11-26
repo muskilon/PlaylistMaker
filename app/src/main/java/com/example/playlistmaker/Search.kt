@@ -12,7 +12,7 @@ class SearchResponse(
 object Search {
     val songs = ArrayList<Track>()
     fun SearchActivity.search(queryInput: String) {
-        itunesService.getSearch(queryInput).enqueue(object : Callback<SearchResponse> {
+        itunesService.getSearch(queryInput, "ru").enqueue(object : Callback<SearchResponse> {
             @SuppressLint("NotifyDataSetChanged")
             override fun onResponse(
                 call: Call<SearchResponse>, response: Response<SearchResponse>
