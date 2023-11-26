@@ -17,7 +17,7 @@ object Search {
             override fun onResponse(
                 call: Call<SearchResponse>, response: Response<SearchResponse>
             ) {
-                if (response.body()?.resultCount == 0) {
+                if (response.body()?.resultCount == 0 || response.body() == null) {
                     show(VisibilityManager.NOT_FOUND)
                 } else {
                     show(VisibilityManager.SEARCH)
