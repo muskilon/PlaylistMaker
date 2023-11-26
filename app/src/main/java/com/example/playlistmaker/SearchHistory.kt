@@ -1,7 +1,6 @@
 package com.example.playlistmaker
 
 import com.example.playlistmaker.MainActivity.Companion.SEARCH_HISTORY_KEY
-import com.google.gson.Gson
 
 interface OnItemClickListener {
     fun onTrackClick(track: Track)
@@ -10,7 +9,6 @@ class SearchHistory(
     val songsHistorySaved: List<Track>
 )
 object HistoryPreferences {
-    private val gson = Gson()
     val songsHistory = mutableListOf<Track>()
     fun read(): SearchHistory {
         val json = sharedPreferences.getString(SEARCH_HISTORY_KEY, null)

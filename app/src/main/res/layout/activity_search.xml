@@ -58,7 +58,7 @@
             android:textColor="@color/black"
             android:textColorHint="?android:attr/textColorHintInverse"
             android:textCursorDrawable="@drawable/color_cursor"
-            android:textSize="@dimen/font_size_medium" />
+            android:textSize="@dimen/font_size_16" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

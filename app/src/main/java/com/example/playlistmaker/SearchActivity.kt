@@ -37,8 +37,8 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
 
-        searchResultsAdapter = SearchResultAdapter(songs, ItemClickListenerImpl())
-        songsHistoryAdapter = SearchResultAdapter(songsHistory, ItemClickListenerImpl())
+        searchResultsAdapter = SearchResultAdapter(songs, ItemClickListenerImpl(), this)
+        songsHistoryAdapter = SearchResultAdapter(songsHistory, ItemClickListenerImpl(), this)
 
         val searchBarInput = findViewById<TextInputLayout>(R.id.searchBarInput)
         val searchBarEdit = findViewById<TextInputEditText>(R.id.searchBarEdit)

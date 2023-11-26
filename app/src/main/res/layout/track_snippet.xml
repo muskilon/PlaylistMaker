@@ -37,7 +37,7 @@
             android:paddingBottom="1dp"
             android:textColor="?android:attr/textColorPrimary"
             android:textFontWeight="400"
-            android:textSize="@dimen/font_size_medium"
+            android:textSize="@dimen/font_size_16"
             android:ellipsize="end"
             android:maxLines="1"
             tools:text="Scorpions" />
@@ -55,7 +55,7 @@
                 android:fontFamily="@font/ys_display_regular"
                 android:textColor="?android:attr/solidColor"
                 android:textFontWeight="400"
-                android:textSize="@dimen/font_size_small"
+                android:textSize="@dimen/font_size_11"
                 android:maxLines="1"
                 android:ellipsize="end"
                 tools:text="Nero" />
@@ -73,7 +73,7 @@
                 android:fontFamily="@font/ys_display_regular"
                 android:textColor="?android:attr/solidColor"
                 android:textFontWeight="400"
-                android:textSize="@dimen/font_size_small"
+                android:textSize="@dimen/font_size_11"
                 android:maxLines="1"
                 tools:text="5:01" />
         </LinearLayout>

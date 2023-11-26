@@ -24,6 +24,7 @@ class ItemClickListenerImpl : OnItemClickListener{
                         HistoryPreferences.write(SearchHistory(songsHistory))
                     }
                 }
+                //тут надо открыть плеер
             }
     companion object{
         private const val HISTORY_SIZE = 10
