@@ -26,11 +26,9 @@ object Search {
                     searchResultsAdapter.notifyDataSetChanged()
                 }
             }
-
             override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
                 show(VisibilityManager.NO_CONNECTIONS)
             }
-
         })
     }
 }
