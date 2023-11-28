@@ -5,7 +5,6 @@ import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.IntentCompat
 import com.bumptech.glide.Glide
@@ -71,12 +70,6 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun startPlayer() {
         mediaPlayer.start()
-        Log.d(
-            "TAG", SimpleDateFormat(
-                "mm:ss",
-                Locale.getDefault()
-            ).format(mediaPlayer.currentPosition).toString()
-        )
         startTimer()
         binding.playButton.setImageResource(R.drawable.pause_button)
         playerState = STATE_PLAYING
@@ -100,6 +93,12 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    private fun startTimer() {
+        handler?.post(
+            timerTask()
+        )
+    }
+
     override fun onPause() {
         super.onPause()
         pausePlayer()
@@ -108,12 +107,6 @@ class PlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mediaPlayer.release()
-    }
-
-    private fun startTimer() {
-        handler?.post(
-            timerTask()
-        )
     }
 
     private fun timerTask(): Runnable {
@@ -125,7 +118,7 @@ class PlayerActivity : AppCompatActivity() {
                             "mm:ss",
                             Locale.getDefault()
                         ).format(mediaPlayer.currentPosition).toString()
-                        handler?.postDelayed(this, 500L)
+                        handler?.postDelayed(this, TIMER_PERIOD_UPDATE)
                     }
 
                     STATE_PREPARED, STATE_PAUSED, STATE_DEFAULT -> handler?.removeCallbacks(this)
@@ -137,6 +130,7 @@ class PlayerActivity : AppCompatActivity() {
     companion object {
         const val CURRENT_TRACK = "currentTrack"
         const val START_TIMER = "00:00"
+        const val TIMER_PERIOD_UPDATE = 300L
         private const val STATE_DEFAULT = 0
         private const val STATE_PREPARED = 1
         private const val STATE_PLAYING = 2
