@@ -93,8 +93,9 @@ class SearchActivity : AppCompatActivity() {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 searchBarEdit.clearFocus()
                 show(VisibilityManager.SEARCH)
+                handler?.removeCallbacks(searchRunnable)
                 search(searchInput)
-                searchResultsAdapter.notifyDataSetChanged()
+                //searchResultsAdapter.notifyDataSetChanged()
             }
             false
         }
