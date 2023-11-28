@@ -12,6 +12,7 @@ class SearchResponse(
 object Search {
     val songs = ArrayList<Track>()
     fun SearchActivity.search(queryInput: String) {
+        show(VisibilityManager.PROGRESS_BAR)
         itunesService.getSearch(queryInput, "ru").enqueue(object : Callback<SearchResponse> {
             @SuppressLint("NotifyDataSetChanged")
             override fun onResponse(

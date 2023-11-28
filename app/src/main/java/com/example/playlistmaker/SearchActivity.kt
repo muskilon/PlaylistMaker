@@ -2,9 +2,10 @@ package com.example.playlistmaker
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -30,12 +31,17 @@ class SearchActivity : AppCompatActivity() {
     val itunesService: ItunesAPI = retrofit.create(ItunesAPI::class.java)
     lateinit var searchResultsAdapter: SearchResultAdapter
     lateinit var songsHistoryAdapter: SearchResultAdapter
+    private var handler: Handler? = null
+    private val searchRunnable = Runnable {
+        if (searchInput.isNotEmpty()) search(searchInput)
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        handler = Handler(Looper.getMainLooper())
 
         searchResultsAdapter = SearchResultAdapter(songs, ItemClickListenerImpl(), this)
         songsHistoryAdapter = SearchResultAdapter(songsHistory, ItemClickListenerImpl(), this)
@@ -59,7 +65,6 @@ class SearchActivity : AppCompatActivity() {
         if (sharedPreferences.getString(SEARCH_HISTORY_KEY, null) != null) {
             songsHistory.clear()
             songsHistory.addAll(HistoryPreferences.read().songsHistorySaved)
-            Log.d("TAG", "${songsHistory.size}")
         }
 
         backArrow.setOnClickListener {
@@ -121,6 +126,7 @@ class SearchActivity : AppCompatActivity() {
                 } else {
                     show(VisibilityManager.SEARCH)
                 }
+                searchDebounce()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -136,8 +142,14 @@ class SearchActivity : AppCompatActivity() {
         outState.putString(INPUT_STRING, searchInput)
     }
 
+    private fun searchDebounce() {
+        handler?.removeCallbacks(searchRunnable)
+        handler?.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
     companion object {
         private const val INPUT_STRING = "INPUT_STRING"
         private const val EMPTY = ""
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }
