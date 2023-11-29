@@ -24,7 +24,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
     private var searchInput: String = EMPTY
-    private val itunesBaseUrl = "https://itunes.apple.com"
+    private val itunesBaseUrl = "https://itunes.apple.com/search/"
     private val retrofit =
         Retrofit.Builder().baseUrl(itunesBaseUrl).addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -95,7 +95,6 @@ class SearchActivity : AppCompatActivity() {
                 show(VisibilityManager.SEARCH)
                 handler?.removeCallbacks(searchRunnable)
                 search(searchInput)
-                //searchResultsAdapter.notifyDataSetChanged()
             }
             false
         }
@@ -109,6 +108,13 @@ class SearchActivity : AppCompatActivity() {
         }
 
         songsHistoryRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                imm.hideSoftInputFromWindow(searchBarEdit.windowToken, 0)
+            }
+        })
+
+        searchResultsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 imm.hideSoftInputFromWindow(searchBarEdit.windowToken, 0)

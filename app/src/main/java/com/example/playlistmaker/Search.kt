@@ -13,17 +13,18 @@ object Search {
     val songs = ArrayList<Track>()
     fun SearchActivity.search(queryInput: String) {
         show(VisibilityManager.PROGRESS_BAR)
-        itunesService.getSearch(queryInput, "ru").enqueue(object : Callback<SearchResponse> {
-            @SuppressLint("NotifyDataSetChanged")
-            override fun onResponse(
-                call: Call<SearchResponse>, response: Response<SearchResponse>
-            ) {
-                if (response.body()?.resultCount == 0 || response.body() == null) {
-                    show(VisibilityManager.NOT_FOUND)
-                } else {
-                    show(VisibilityManager.SEARCH)
-                    songs.clear()
-                    songs.addAll(response.body()?.results!!)
+        itunesService.getSearch("song", queryInput, "ru")
+            .enqueue(object : Callback<SearchResponse> {
+                @SuppressLint("NotifyDataSetChanged")
+                override fun onResponse(
+                    call: Call<SearchResponse>, response: Response<SearchResponse>
+                ) {
+                    if (response.body()?.resultCount == 0 || response.body() == null) {
+                        show(VisibilityManager.NOT_FOUND)
+                    } else {
+                        show(VisibilityManager.SEARCH)
+                        songs.clear()
+                        songs.addAll(response.body()?.results!!)
                     searchResultsAdapter.notifyDataSetChanged()
                 }
             }

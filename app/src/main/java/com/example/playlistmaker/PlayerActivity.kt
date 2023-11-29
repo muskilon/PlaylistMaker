@@ -99,16 +99,6 @@ class PlayerActivity : AppCompatActivity() {
         )
     }
 
-    override fun onPause() {
-        super.onPause()
-        pausePlayer()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        mediaPlayer.release()
-    }
-
     private fun timerTask(): Runnable {
         return object : Runnable {
             override fun run() {
@@ -125,6 +115,16 @@ class PlayerActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
     }
 
     companion object {
