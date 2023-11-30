@@ -4,12 +4,9 @@ import android.content.Context
 import android.content.Intent
 import com.example.playlistmaker.HistoryPreferences.songsHistory
 
-interface OnItemClickListener {
-    fun onTrackClick(track: Track, context: Context)
-}
 
-class ItemClickListenerImpl : OnItemClickListener {
-    override fun onTrackClick(track: Track, context: Context) {
+class ItemClickListener {
+    fun onTrackClick(track: Track, context: Context) {
         when {
             songsHistory.isEmpty() -> {
                 songsHistory.add(track)

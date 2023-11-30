@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 class SearchResultAdapter(
     private val tracks: List<Track>,
-    private val onItemClickListener: OnItemClickListener,
+    private val onItemClickListener: ItemClickListener,
     private val context: Context
 ) : RecyclerView.Adapter<SearchResultViewHolder>() {
 
@@ -34,10 +34,8 @@ class SearchResultAdapter(
     override fun onBindViewHolder(holder: SearchResultViewHolder, position: Int) {
         holder.bind(tracks[position])
         holder.itemView.setOnClickListener {
-            if (clickDebounce()) onItemClickListener.onTrackClick(
-                tracks[holder.adapterPosition],
-                this.context
-            )
+            if (clickDebounce())
+                onItemClickListener.onTrackClick(tracks[holder.adapterPosition], this.context)
         }
     }
 
