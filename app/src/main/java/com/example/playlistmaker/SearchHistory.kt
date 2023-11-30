@@ -2,9 +2,6 @@ package com.example.playlistmaker
 
 import com.example.playlistmaker.MainActivity.Companion.SEARCH_HISTORY_KEY
 
-interface OnItemClickListener {
-    fun onTrackClick(track: Track)
-}
 class SearchHistory(
     val songsHistorySaved: List<Track>
 )

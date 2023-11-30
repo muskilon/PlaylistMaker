@@ -2,9 +2,10 @@ package com.example.playlistmaker
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
@@ -23,22 +24,27 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
     private var searchInput: String = EMPTY
-    private val itunesBaseUrl = "https://itunes.apple.com"
+    private val itunesBaseUrl = "https://itunes.apple.com/search/"
     private val retrofit =
         Retrofit.Builder().baseUrl(itunesBaseUrl).addConverterFactory(GsonConverterFactory.create())
             .build()
     val itunesService: ItunesAPI = retrofit.create(ItunesAPI::class.java)
     lateinit var searchResultsAdapter: SearchResultAdapter
     lateinit var songsHistoryAdapter: SearchResultAdapter
+    private var handler: Handler? = null
+    private val searchRunnable = Runnable {
+        if (searchInput.isNotEmpty()) search(searchInput)
+    }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        handler = Handler(Looper.getMainLooper())
 
-        searchResultsAdapter = SearchResultAdapter(songs, ItemClickListenerImpl(), this)
-        songsHistoryAdapter = SearchResultAdapter(songsHistory, ItemClickListenerImpl(), this)
+        searchResultsAdapter = SearchResultAdapter(songs, ItemClickListener(), this)
+        songsHistoryAdapter = SearchResultAdapter(songsHistory, ItemClickListener(), this)
 
         val searchBarInput = findViewById<TextInputLayout>(R.id.searchBarInput)
         val searchBarEdit = findViewById<TextInputEditText>(R.id.searchBarEdit)
@@ -59,7 +65,6 @@ class SearchActivity : AppCompatActivity() {
         if (sharedPreferences.getString(SEARCH_HISTORY_KEY, null) != null) {
             songsHistory.clear()
             songsHistory.addAll(HistoryPreferences.read().songsHistorySaved)
-            Log.d("TAG", "${songsHistory.size}")
         }
 
         backArrow.setOnClickListener {
@@ -88,8 +93,8 @@ class SearchActivity : AppCompatActivity() {
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 searchBarEdit.clearFocus()
                 show(VisibilityManager.SEARCH)
+                handler?.removeCallbacks(searchRunnable)
                 search(searchInput)
-                searchResultsAdapter.notifyDataSetChanged()
             }
             false
         }
@@ -109,6 +114,13 @@ class SearchActivity : AppCompatActivity() {
             }
         })
 
+        searchResultsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                imm.hideSoftInputFromWindow(searchBarEdit.windowToken, 0)
+            }
+        })
+
         val simpleTextWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 // empty
@@ -121,6 +133,7 @@ class SearchActivity : AppCompatActivity() {
                 } else {
                     show(VisibilityManager.SEARCH)
                 }
+                searchDebounce()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -136,8 +149,14 @@ class SearchActivity : AppCompatActivity() {
         outState.putString(INPUT_STRING, searchInput)
     }
 
+    private fun searchDebounce() {
+        handler?.removeCallbacks(searchRunnable)
+        handler?.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
     companion object {
         private const val INPUT_STRING = "INPUT_STRING"
         private const val EMPTY = ""
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 }
