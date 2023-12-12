@@ -86,7 +86,6 @@ class PlayerActivity : AppCompatActivity() {
             STATE_PLAYING -> {
                 pausePlayer()
             }
-
             STATE_PREPARED, STATE_PAUSED -> {
                 startPlayer()
             }
@@ -110,7 +109,6 @@ class PlayerActivity : AppCompatActivity() {
                         ).format(mediaPlayer.currentPosition).toString()
                         handler?.postDelayed(this, TIMER_PERIOD_UPDATE)
                     }
-
                     STATE_PREPARED, STATE_PAUSED, STATE_DEFAULT -> handler?.removeCallbacks(this)
                 }
             }
