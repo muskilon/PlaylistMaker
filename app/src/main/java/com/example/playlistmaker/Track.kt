@@ -3,21 +3,23 @@ package com.example.playlistmaker
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
 @Parcelize
 data class Track(
-    val trackId: String, // Id трека
-    val trackName: String, // Название композиции
-    val artistName: String, // Имя исполнителя
-    val trackTimeMillis: Long, // Продолжительность трека
-    val artworkUrl100: String, // Ссылка на изображение обложки
-    val previewUrl: String,
-    val collectionName: String,
-    val country: String,
-    val primaryGenreName: String,
-    val releaseDate: Date,
+    val trackId: String = "error", // Id трека
+    val trackName: String = "error", // Название композиции
+    val artistName: String = "error", // Имя исполнителя
+    val trackTimeMillis: Long = 0, // Продолжительность трека
+    val artworkUrl100: String = "error", // Ссылка на изображение обложки
+    val previewUrl: String = "error",
+    val collectionName: String = "error",
+    val country: String = "error",
+    val primaryGenreName: String = "error",
+    val releaseDate: Date = Calendar.getInstance().time
+
 ) : Parcelable {
     val trackTime: String
         get() {
