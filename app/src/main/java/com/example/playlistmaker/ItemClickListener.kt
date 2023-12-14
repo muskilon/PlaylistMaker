@@ -3,6 +3,7 @@ package com.example.playlistmaker
 import android.content.Context
 import android.content.Intent
 import com.example.playlistmaker.HistoryPreferences.songsHistory
+import com.example.playlistmaker.domain.models.Track
 
 
 class ItemClickListener {

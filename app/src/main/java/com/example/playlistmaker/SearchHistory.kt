@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import com.example.playlistmaker.MainActivity.Companion.SEARCH_HISTORY_KEY
+import com.example.playlistmaker.domain.models.Track
 
 class SearchHistory(
     val songsHistorySaved: List<Track>

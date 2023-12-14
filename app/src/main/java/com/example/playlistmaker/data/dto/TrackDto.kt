@@ -1,13 +1,10 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.data.dto
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-@Parcelize
-data class Track(
+data class TrackDto(
     val trackId: String, // Id трека
     val trackName: String, // Название композиции
     val artistName: String, // Имя исполнителя
@@ -18,7 +15,7 @@ data class Track(
     val country: String,
     val primaryGenreName: String,
     val releaseDate: Date,
-) : Parcelable {
+) {
     val trackTime: String
         get() {
             return SimpleDateFormat("mm:ss", Locale.getDefault()).format(this.trackTimeMillis)
