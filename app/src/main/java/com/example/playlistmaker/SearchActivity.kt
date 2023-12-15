@@ -27,10 +27,19 @@ class SearchActivity : AppCompatActivity() {
     lateinit var songsHistoryAdapter: SearchResultAdapter
     private var handler: Handler? = null
     private val songs = ArrayList<Track>()
+
     private val consumer = object : TracksInteractor.TracksConsumer {
+        @SuppressLint("NotifyDataSetChanged")
         override fun consume(foundSongs: List<Track>) {
-            songs.clear()
-            songs.addAll(foundSongs)
+            handler?.post {
+                if (foundSongs.isEmpty()) show(VisibilityManager.NOT_FOUND)
+                else {
+                    songs.clear()
+                    songs.addAll(foundSongs)
+                    searchResultsAdapter.notifyDataSetChanged()
+                    show(VisibilityManager.SEARCH)
+                }
+            }
         }
     }
 
