@@ -23,6 +23,17 @@ class PlayerActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        mplayer.mediaPlayer.setOnPreparedListener {
+            binding.playButton.isClickable = true
+            binding.timeElapsed.text = TIMER_ZERO
+            playerState = STATE_PREPARED
+        }
+        mplayer.mediaPlayer.setOnCompletionListener {
+            binding.playButton.setImageResource(R.drawable.play_button)
+            binding.timeElapsed.text = TIMER_ZERO
+            playerState = STATE_PREPARED
+        }
+
         handler = Handler(Looper.getMainLooper())
         val currentTrack =
             IntentCompat.getParcelableExtra(intent, CURRENT_TRACK, Track::class.java) ?: Track()
