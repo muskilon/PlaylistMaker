@@ -23,6 +23,12 @@ class PlayerActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        handler = Handler(Looper.getMainLooper())
+        val currentTrack =
+            IntentCompat.getParcelableExtra(intent, CURRENT_TRACK, Track::class.java) ?: Track()
+
+        mplayer.preparePlayer(currentTrack.previewUrl)
+
         mplayer.mediaPlayer.setOnPreparedListener {
             binding.playButton.isClickable = true
             binding.timeElapsed.text = TIMER_ZERO
@@ -33,12 +39,6 @@ class PlayerActivity : AppCompatActivity() {
             binding.timeElapsed.text = TIMER_ZERO
             playerState = STATE_PREPARED
         }
-
-        handler = Handler(Looper.getMainLooper())
-        val currentTrack =
-            IntentCompat.getParcelableExtra(intent, CURRENT_TRACK, Track::class.java) ?: Track()
-
-        playerState = mplayer.preparePlayer(currentTrack.previewUrl, binding)
 
         binding.arrowBack.setOnClickListener {
             this.finish()
@@ -62,12 +62,6 @@ class PlayerActivity : AppCompatActivity() {
         binding.country.text = currentTrack.country
 
         binding.playButton.setOnClickListener { playbackControl() }
-    }
-
-    fun PlayerActivity.ready() {
-        binding.playButton.isClickable = true
-        binding.timeElapsed.text = TIMER_ZERO
-        playerState = STATE_PREPARED
     }
 
     private fun playbackControl() {
