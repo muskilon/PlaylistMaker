@@ -27,6 +27,7 @@ class SearchActivity : AppCompatActivity() {
     lateinit var songsHistoryAdapter: SearchResultAdapter
     private var handler: Handler? = null
     private val songs = ArrayList<Track>()
+    private val tracksInteractor = Creator.provideTracksInteractor()
 
     private val consumer = object : TracksInteractor.TracksConsumer {
         @SuppressLint("NotifyDataSetChanged")
@@ -46,7 +47,7 @@ class SearchActivity : AppCompatActivity() {
     private val searchRunnable = Runnable {
         if (searchInput.isNotEmpty()) {
             show(VisibilityManager.PROGRESS_BAR)
-            Creator.provideTracksInteractor().searchSongs("song", searchInput, "ru", consumer)
+            tracksInteractor.searchSongs("song", searchInput, "ru", consumer)
         }
     }
 
@@ -87,7 +88,7 @@ class SearchActivity : AppCompatActivity() {
 
         refreshButton.setOnClickListener {
             show(VisibilityManager.SEARCH)
-            Creator.provideTracksInteractor().searchSongs("song", searchInput, "ru", consumer)
+            tracksInteractor.searchSongs("song", searchInput, "ru", consumer)
         }
         clearHistoryButton.setOnClickListener {
             songsHistory.clear()
@@ -108,7 +109,7 @@ class SearchActivity : AppCompatActivity() {
                 searchBarEdit.clearFocus()
                 show(VisibilityManager.SEARCH)
                 handler?.removeCallbacks(searchRunnable)
-                Creator.provideTracksInteractor().searchSongs("song", searchInput, "ru", consumer)
+                tracksInteractor.searchSongs("song", searchInput, "ru", consumer)
             }
             false
         }
