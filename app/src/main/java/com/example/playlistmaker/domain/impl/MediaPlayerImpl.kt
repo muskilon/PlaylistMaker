@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain
+package com.example.playlistmaker.domain.impl
 
 import android.icu.text.SimpleDateFormat
 import android.media.MediaPlayer
@@ -25,6 +25,10 @@ class MediaPlayerImpl : MusicPlayer {
             "mm:ss",
             Locale.getDefault()
         ).format(mediaPlayer.currentPosition).toString()
+    }
+
+    override fun stop() {
+        mediaPlayer.release()
     }
 
 }

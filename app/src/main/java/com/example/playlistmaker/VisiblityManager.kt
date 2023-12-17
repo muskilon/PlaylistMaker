@@ -6,6 +6,8 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.presentation.ui.SearchActivity
+
 enum class VisibilityManager {
     SEARCH,
     SONG_HISTORY,
@@ -13,8 +15,9 @@ enum class VisibilityManager {
     NO_CONNECTIONS,
     PROGRESS_BAR
 }
+
 @SuppressLint("NotifyDataSetChanged")
-fun SearchActivity.show(view:VisibilityManager){
+fun SearchActivity.show(view: VisibilityManager) {
     val notFoundPlaceholder = findViewById<FrameLayout>(R.id.not_found_placeholder)
     val noConnectionPlaceholder = findViewById<FrameLayout>(R.id.no_connection_placeholder)
     val searchResultsRecyclerView = findViewById<RecyclerView>(R.id.searchResultsRecyclerView)

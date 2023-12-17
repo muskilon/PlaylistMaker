@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui
 
 import android.os.Bundle
 import android.os.Handler
@@ -8,8 +8,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.IntentCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
-import com.example.playlistmaker.domain.MediaPlayerImpl
+import com.example.playlistmaker.domain.impl.MediaPlayerImpl
+import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.Runnable
 
 class PlayerActivity : AppCompatActivity() {
@@ -110,7 +112,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mplayer.mediaPlayer.release()
+        mplayer.stop()
     }
 
     companion object {

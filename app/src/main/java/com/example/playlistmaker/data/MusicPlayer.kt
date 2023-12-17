@@ -9,5 +9,6 @@ interface MusicPlayer {
     fun pause()
 
     fun getCurrentPosition(): String
+    fun stop()
 
 }
