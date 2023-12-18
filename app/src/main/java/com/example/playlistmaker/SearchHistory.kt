@@ -6,7 +6,6 @@ import com.example.playlistmaker.presentation.ui.MainActivity.Companion.SEARCH_H
 import com.example.playlistmaker.presentation.ui.gson
 import com.example.playlistmaker.presentation.ui.sharedPreferences
 
-
 object HistoryPreferences {
     val songsHistory = mutableListOf<Track>()
     fun read(): SearchHistory {

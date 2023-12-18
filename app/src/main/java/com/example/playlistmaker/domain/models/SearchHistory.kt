@@ -1,5 +1,5 @@
 package com.example.playlistmaker.domain.models
 
-data class SearchHistory(
+class SearchHistory(
     val songsHistorySaved: List<Track>
 )

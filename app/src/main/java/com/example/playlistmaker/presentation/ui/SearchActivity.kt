@@ -12,35 +12,57 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.Creator
 import com.example.playlistmaker.HistoryPreferences
 import com.example.playlistmaker.HistoryPreferences.songsHistory
 import com.example.playlistmaker.ItemClickListener
 import com.example.playlistmaker.R
-import com.example.playlistmaker.Search.search
-import com.example.playlistmaker.Search.songs
 import com.example.playlistmaker.SearchResultAdapter
-import com.example.playlistmaker.data.network.ItunesAPI
+import com.example.playlistmaker.domain.api.TracksInteractor
+import com.example.playlistmaker.domain.cosumer.Resource
+import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.models.VisibilityState
 import com.example.playlistmaker.presentation.ui.MainActivity.Companion.SEARCH_HISTORY_KEY
 import com.example.playlistmaker.show
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 
 class SearchActivity : AppCompatActivity() {
     private var searchInput: String = EMPTY
-    private val itunesBaseUrl = "https://itunes.apple.com/search/"
-    private val retrofit =
-        Retrofit.Builder().baseUrl(itunesBaseUrl).addConverterFactory(GsonConverterFactory.create())
-            .build()
-    val itunesService: ItunesAPI = retrofit.create(ItunesAPI::class.java)
+
     lateinit var searchResultsAdapter: SearchResultAdapter
     lateinit var songsHistoryAdapter: SearchResultAdapter
     private var handler: Handler? = null
+    private val songs = ArrayList<Track>()
+    private val tracksInteractor = Creator.provideTracksInteractor()
+
+    private val consumer = object : TracksInteractor.TracksConsumer {
+        @SuppressLint("NotifyDataSetChanged")
+        override fun consume(foundSongs: Resource<List<Track>>) {
+            handler?.post {
+                when (foundSongs) {
+                    is Resource.ConnectionError -> show(VisibilityState.NO_CONNECTIONS)
+                    is Resource.NotFound -> show(VisibilityState.NOT_FOUND)
+                    is Resource.Data -> {
+                        if (foundSongs.value.isEmpty()) show(VisibilityState.NOT_FOUND)
+                        else {
+                            songs.clear()
+                            songs.addAll(foundSongs.value)
+                            searchResultsAdapter.notifyDataSetChanged()
+                            show(VisibilityState.SEARCH)
+                        }
+                    }
+                }
+            }
+            }
+        }
+
     private val searchRunnable = Runnable {
-        if (searchInput.isNotEmpty()) search(searchInput)
+        if (searchInput.isNotEmpty()) {
+            show(VisibilityState.PROGRESS_BAR)
+            tracksInteractor.searchSongs("song", searchInput, "ru", consumer)
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -80,7 +102,7 @@ class SearchActivity : AppCompatActivity() {
 
         refreshButton.setOnClickListener {
             show(VisibilityState.SEARCH)
-            search(searchInput)
+            tracksInteractor.searchSongs("song", searchInput, "ru", consumer)
         }
         clearHistoryButton.setOnClickListener {
             songsHistory.clear()
@@ -101,7 +123,7 @@ class SearchActivity : AppCompatActivity() {
                 searchBarEdit.clearFocus()
                 show(VisibilityState.SEARCH)
                 handler?.removeCallbacks(searchRunnable)
-                search(searchInput)
+                tracksInteractor.searchSongs("song", searchInput, "ru", consumer)
             }
             false
         }
