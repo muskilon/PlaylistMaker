@@ -21,6 +21,7 @@ class RetrofitNetworkClient : NetworkClient {
             if (dto is SearchRequest) {
                 val resp = iTunesService.getSearch(dto.entity, dto.term, dto.lang).execute()
                 val body = resp.body() ?: Response()
+
                 body.apply { resultCode = resp.code() }
             } else {
                 Response().apply { resultCode = 400 }

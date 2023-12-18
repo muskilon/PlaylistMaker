@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.HistoryPreferences.songsHistory
 import com.example.playlistmaker.MainActivity.Companion.SEARCH_HISTORY_KEY
 import com.example.playlistmaker.domain.api.TracksInteractor
+import com.example.playlistmaker.domain.cosumer.Resource
 import com.example.playlistmaker.domain.models.Track
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -31,18 +32,21 @@ class SearchActivity : AppCompatActivity() {
 
     private val consumer = object : TracksInteractor.TracksConsumer {
         @SuppressLint("NotifyDataSetChanged")
-        override fun consume(foundSongs: List<Track>) {
+        override fun consume(foundSongs: Resource<List<Track>>) {
             handler?.post {
-                if (foundSongs.isEmpty()) show(VisibilityManager.NOT_FOUND)
-                else {
-                    songs.clear()
-                    songs.addAll(foundSongs)
-                    searchResultsAdapter.notifyDataSetChanged()
-                    show(VisibilityManager.SEARCH)
+                when (foundSongs) {
+                    is Resource.NotFound -> show(VisibilityManager.NOT_FOUND)
+                    is Resource.ConnectionError -> show(VisibilityManager.NO_CONNECTIONS)
+                    is Resource.Data -> {
+                        songs.clear()
+                        songs.addAll(foundSongs.value)
+                        searchResultsAdapter.notifyDataSetChanged()
+                        show(VisibilityManager.SEARCH)
+                    }
                 }
             }
+            }
         }
-    }
 
     private val searchRunnable = Runnable {
         if (searchInput.isNotEmpty()) {

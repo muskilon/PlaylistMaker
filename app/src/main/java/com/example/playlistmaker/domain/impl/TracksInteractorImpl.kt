@@ -2,6 +2,7 @@ package com.example.playlistmaker.domain.impl
 
 import com.example.playlistmaker.domain.api.TrackRepository
 import com.example.playlistmaker.domain.api.TracksInteractor
+import com.example.playlistmaker.domain.cosumer.Resource
 import java.util.concurrent.Executors
 
 class TracksInteractorImpl(private val repository: TrackRepository) : TracksInteractor {
@@ -15,7 +16,12 @@ class TracksInteractorImpl(private val repository: TrackRepository) : TracksInte
         consumer: TracksInteractor.TracksConsumer
     ) {
         executor.execute {
-            consumer.consume(repository.searchSongs(entity, term, lang))
+            when (val result = repository.searchSongs(entity, term, lang)) {
+                is Resource.Data -> consumer.consume(result)
+                is Resource.NotFound -> consumer.consume(Resource.NotFound(""))
+                is Resource.ConnectionError -> consumer.consume(Resource.ConnectionError(""))
+            }
+            //  consumer.consume(repository.searchSongs(entity, term, lang))
         }
     }
 }
