@@ -1,9 +1,7 @@
-package com.example.playlistmaker.domain.impl
+package com.example.playlistmaker.data
 
 import android.icu.text.SimpleDateFormat
 import android.media.MediaPlayer
-import com.example.playlistmaker.data.MusicPlayer
-import com.example.playlistmaker.data.OnStateChangeListener
 import com.example.playlistmaker.domain.models.PlayerState
 import java.util.Locale
 

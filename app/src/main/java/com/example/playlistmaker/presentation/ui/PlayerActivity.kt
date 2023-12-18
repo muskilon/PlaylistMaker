@@ -9,9 +9,9 @@ import androidx.core.content.IntentCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.data.MusicPlayerImpl
 import com.example.playlistmaker.data.OnStateChangeListener
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
-import com.example.playlistmaker.domain.impl.MusicPlayerImpl
 import com.example.playlistmaker.domain.models.PlayerState
 import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.Runnable

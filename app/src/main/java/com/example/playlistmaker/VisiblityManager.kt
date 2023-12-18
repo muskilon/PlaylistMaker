@@ -20,20 +20,20 @@ fun SearchActivity.show(view: VisibilityState) {
 
     when (view) {
         VisibilityState.SEARCH -> {
+            searchResultsAdapter.notifyDataSetChanged()
             notFoundPlaceholder.visibility = View.GONE
             noConnectionPlaceholder.visibility = View.GONE
             searchResultsRecyclerView.visibility = View.VISIBLE
             songHistoryView.visibility = View.GONE
             progressBar.visibility = View.GONE
-            searchResultsAdapter.notifyDataSetChanged()
         }
 
         VisibilityState.SONG_HISTORY -> {
+            songsHistoryAdapter.notifyDataSetChanged()
             notFoundPlaceholder.visibility = View.GONE
             noConnectionPlaceholder.visibility = View.GONE
             searchResultsRecyclerView.visibility = View.GONE
             songHistoryView.visibility = View.VISIBLE
-            songsHistoryAdapter.notifyDataSetChanged()
         }
 
         VisibilityState.NOT_FOUND -> {
