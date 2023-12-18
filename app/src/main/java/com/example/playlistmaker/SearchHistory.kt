@@ -1,11 +1,11 @@
 package com.example.playlistmaker
 
-import com.example.playlistmaker.MainActivity.Companion.SEARCH_HISTORY_KEY
+import com.example.playlistmaker.domain.models.SearchHistory
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.presentation.ui.MainActivity.Companion.SEARCH_HISTORY_KEY
+import com.example.playlistmaker.presentation.ui.gson
+import com.example.playlistmaker.presentation.ui.sharedPreferences
 
-class SearchHistory(
-    val songsHistorySaved: List<Track>
-)
 object HistoryPreferences {
     val songsHistory = mutableListOf<Track>()
     fun read(): SearchHistory {

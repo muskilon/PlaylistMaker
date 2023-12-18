@@ -6,23 +6,20 @@ import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.recyclerview.widget.RecyclerView
-enum class VisibilityManager {
-    SEARCH,
-    SONG_HISTORY,
-    NOT_FOUND,
-    NO_CONNECTIONS,
-    PROGRESS_BAR
-}
+import com.example.playlistmaker.domain.models.VisibilityState
+import com.example.playlistmaker.presentation.ui.SearchActivity
+
+
 @SuppressLint("NotifyDataSetChanged")
-fun SearchActivity.show(view:VisibilityManager){
+fun SearchActivity.show(view: VisibilityState) {
     val notFoundPlaceholder = findViewById<FrameLayout>(R.id.not_found_placeholder)
     val noConnectionPlaceholder = findViewById<FrameLayout>(R.id.no_connection_placeholder)
     val searchResultsRecyclerView = findViewById<RecyclerView>(R.id.searchResultsRecyclerView)
     val songHistoryView = findViewById<LinearLayout>(R.id.searchHistory)
     val progressBar = findViewById<ProgressBar>(R.id.progressBar)
 
-    when (view){
-        VisibilityManager.SEARCH -> {
+    when (view) {
+        VisibilityState.SEARCH -> {
             notFoundPlaceholder.visibility = View.GONE
             noConnectionPlaceholder.visibility = View.GONE
             searchResultsRecyclerView.visibility = View.VISIBLE
@@ -30,14 +27,16 @@ fun SearchActivity.show(view:VisibilityManager){
             progressBar.visibility = View.GONE
             searchResultsAdapter.notifyDataSetChanged()
         }
-        VisibilityManager.SONG_HISTORY -> {
+
+        VisibilityState.SONG_HISTORY -> {
             notFoundPlaceholder.visibility = View.GONE
             noConnectionPlaceholder.visibility = View.GONE
             searchResultsRecyclerView.visibility = View.GONE
             songHistoryView.visibility = View.VISIBLE
             songsHistoryAdapter.notifyDataSetChanged()
         }
-        VisibilityManager.NOT_FOUND ->{
+
+        VisibilityState.NOT_FOUND -> {
             notFoundPlaceholder.visibility = View.VISIBLE
             noConnectionPlaceholder.visibility = View.GONE
             searchResultsRecyclerView.visibility = View.GONE
@@ -45,7 +44,7 @@ fun SearchActivity.show(view:VisibilityManager){
             progressBar.visibility = View.GONE
         }
 
-        VisibilityManager.NO_CONNECTIONS -> {
+        VisibilityState.NO_CONNECTIONS -> {
             notFoundPlaceholder.visibility = View.GONE
             noConnectionPlaceholder.visibility = View.VISIBLE
             searchResultsRecyclerView.visibility = View.GONE
@@ -53,7 +52,7 @@ fun SearchActivity.show(view:VisibilityManager){
             progressBar.visibility = View.GONE
         }
 
-        VisibilityManager.PROGRESS_BAR -> {
+        VisibilityState.PROGRESS_BAR -> {
             notFoundPlaceholder.visibility = View.GONE
             noConnectionPlaceholder.visibility = View.GONE
             searchResultsRecyclerView.visibility = View.GONE

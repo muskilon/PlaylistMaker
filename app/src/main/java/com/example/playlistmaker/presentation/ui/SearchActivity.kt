@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.presentation.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -12,11 +12,18 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.HistoryPreferences
 import com.example.playlistmaker.HistoryPreferences.songsHistory
-import com.example.playlistmaker.MainActivity.Companion.SEARCH_HISTORY_KEY
+import com.example.playlistmaker.ItemClickListener
+import com.example.playlistmaker.R
+import com.example.playlistmaker.SearchResultAdapter
 import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.cosumer.Resource
 import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.models.VisibilityState
+import com.example.playlistmaker.presentation.ui.MainActivity.Companion.SEARCH_HISTORY_KEY
+import com.example.playlistmaker.show
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
@@ -35,15 +42,15 @@ class SearchActivity : AppCompatActivity() {
         override fun consume(foundSongs: Resource<List<Track>>) {
             handler?.post {
                 when (foundSongs) {
-                    is Resource.ConnectionError -> show(VisibilityManager.NO_CONNECTIONS)
-                    is Resource.NotFound -> show(VisibilityManager.NOT_FOUND)
+                    is Resource.ConnectionError -> show(VisibilityState.NO_CONNECTIONS)
+                    is Resource.NotFound -> show(VisibilityState.NOT_FOUND)
                     is Resource.Data -> {
-                        if (foundSongs.value.isEmpty()) show(VisibilityManager.NOT_FOUND)
+                        if (foundSongs.value.isEmpty()) show(VisibilityState.NOT_FOUND)
                         else {
                             songs.clear()
                             songs.addAll(foundSongs.value)
                             searchResultsAdapter.notifyDataSetChanged()
-                            show(VisibilityManager.SEARCH)
+                            show(VisibilityState.SEARCH)
                         }
                     }
                 }
@@ -53,7 +60,7 @@ class SearchActivity : AppCompatActivity() {
 
     private val searchRunnable = Runnable {
         if (searchInput.isNotEmpty()) {
-            show(VisibilityManager.PROGRESS_BAR)
+            show(VisibilityState.PROGRESS_BAR)
             tracksInteractor.searchSongs("song", searchInput, "ru", consumer)
         }
     }
@@ -94,13 +101,13 @@ class SearchActivity : AppCompatActivity() {
         }
 
         refreshButton.setOnClickListener {
-            show(VisibilityManager.SEARCH)
+            show(VisibilityState.SEARCH)
             tracksInteractor.searchSongs("song", searchInput, "ru", consumer)
         }
         clearHistoryButton.setOnClickListener {
             songsHistory.clear()
             HistoryPreferences.clear()
-            show(VisibilityManager.SEARCH)
+            show(VisibilityState.SEARCH)
         }
 
         searchBarInput.setEndIconOnClickListener {
@@ -114,7 +121,7 @@ class SearchActivity : AppCompatActivity() {
         searchBarEdit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 searchBarEdit.clearFocus()
-                show(VisibilityManager.SEARCH)
+                show(VisibilityState.SEARCH)
                 handler?.removeCallbacks(searchRunnable)
                 tracksInteractor.searchSongs("song", searchInput, "ru", consumer)
             }
@@ -123,9 +130,9 @@ class SearchActivity : AppCompatActivity() {
 
         searchBarEdit.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && searchBarEdit.text.isNullOrEmpty() && songsHistory.isNotEmpty()) {
-                show(VisibilityManager.SONG_HISTORY)
+                show(VisibilityState.SONG_HISTORY)
             } else {
-                show(VisibilityManager.SEARCH)
+                show(VisibilityState.SEARCH)
             }
         }
 
@@ -151,9 +158,9 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchInput = s.toString()
                 if (searchBarEdit.hasFocus() && s?.isEmpty() == true && songsHistory.isNotEmpty()) {
-                    show(VisibilityManager.SONG_HISTORY)
+                    show(VisibilityState.SONG_HISTORY)
                 } else {
-                    show(VisibilityManager.SEARCH)
+                    show(VisibilityState.SEARCH)
                 }
                 searchDebounce()
             }
