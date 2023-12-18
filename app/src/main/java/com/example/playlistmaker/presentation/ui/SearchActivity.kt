@@ -15,11 +15,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.HistoryPreferences
 import com.example.playlistmaker.HistoryPreferences.songsHistory
 import com.example.playlistmaker.ItemClickListener
-import com.example.playlistmaker.ItunesAPI
 import com.example.playlistmaker.R
 import com.example.playlistmaker.Search.search
 import com.example.playlistmaker.Search.songs
 import com.example.playlistmaker.SearchResultAdapter
+import com.example.playlistmaker.data.network.ItunesAPI
 import com.example.playlistmaker.domain.models.VisibilityState
 import com.example.playlistmaker.presentation.ui.MainActivity.Companion.SEARCH_HISTORY_KEY
 import com.example.playlistmaker.show
