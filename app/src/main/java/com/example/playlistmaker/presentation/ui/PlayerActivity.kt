@@ -3,7 +3,6 @@ package com.example.playlistmaker.presentation.ui
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.IntentCompat
 import com.bumptech.glide.Glide
@@ -104,7 +103,6 @@ class PlayerActivity : AppCompatActivity() {
             override fun run() {
                 when (playerState) {
                     STATE_PLAYING -> {
-                        Log.d("TAG", binding.timeElapsed.text.toString())
                         binding.timeElapsed.text = mplayer.getCurrentPosition()
                         handler?.postDelayed(this, TIMER_PERIOD_UPDATE)
                     }

@@ -21,7 +21,6 @@ class TracksInteractorImpl(private val repository: TrackRepository) : TracksInte
                 is Resource.NotFound -> consumer.consume(Resource.NotFound(""))
                 is Resource.ConnectionError -> consumer.consume(Resource.ConnectionError(""))
             }
-            //  consumer.consume(repository.searchSongs(entity, term, lang))
         }
     }
 }
