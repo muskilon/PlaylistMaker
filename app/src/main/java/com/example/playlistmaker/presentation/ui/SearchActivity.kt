@@ -20,7 +20,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.Search.search
 import com.example.playlistmaker.Search.songs
 import com.example.playlistmaker.SearchResultAdapter
-import com.example.playlistmaker.VisibilityState
+import com.example.playlistmaker.domain.models.VisibilityState
 import com.example.playlistmaker.presentation.ui.MainActivity.Companion.SEARCH_HISTORY_KEY
 import com.example.playlistmaker.show
 import com.google.android.material.textfield.TextInputEditText
