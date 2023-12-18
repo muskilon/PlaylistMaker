@@ -14,7 +14,7 @@ class SearchResponse(
 object Search {
     val songs = ArrayList<Track>()
     fun SearchActivity.search(queryInput: String) {
-        show(VisibilityManager.PROGRESS_BAR)
+        show(VisibilityState.PROGRESS_BAR)
         itunesService.getSearch("song", queryInput, "ru")
             .enqueue(object : Callback<SearchResponse> {
                 @SuppressLint("NotifyDataSetChanged")
@@ -22,16 +22,16 @@ object Search {
                     call: Call<SearchResponse>, response: Response<SearchResponse>
                 ) {
                     if (response.body()?.resultCount == 0 || response.body() == null) {
-                        show(VisibilityManager.NOT_FOUND)
+                        show(VisibilityState.NOT_FOUND)
                     } else {
-                        show(VisibilityManager.SEARCH)
+                        show(VisibilityState.SEARCH)
                         songs.clear()
                         songs.addAll(response.body()?.results!!)
                     searchResultsAdapter.notifyDataSetChanged()
                 }
             }
             override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                show(VisibilityManager.NO_CONNECTIONS)
+                show(VisibilityState.NO_CONNECTIONS)
             }
         })
     }

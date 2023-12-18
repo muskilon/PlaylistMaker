@@ -20,7 +20,7 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.Search.search
 import com.example.playlistmaker.Search.songs
 import com.example.playlistmaker.SearchResultAdapter
-import com.example.playlistmaker.VisibilityManager
+import com.example.playlistmaker.VisibilityState
 import com.example.playlistmaker.presentation.ui.MainActivity.Companion.SEARCH_HISTORY_KEY
 import com.example.playlistmaker.show
 import com.google.android.material.textfield.TextInputEditText
@@ -79,13 +79,13 @@ class SearchActivity : AppCompatActivity() {
         }
 
         refreshButton.setOnClickListener {
-            show(VisibilityManager.SEARCH)
+            show(VisibilityState.SEARCH)
             search(searchInput)
         }
         clearHistoryButton.setOnClickListener {
             songsHistory.clear()
             HistoryPreferences.clear()
-            show(VisibilityManager.SEARCH)
+            show(VisibilityState.SEARCH)
         }
 
         searchBarInput.setEndIconOnClickListener {
@@ -99,7 +99,7 @@ class SearchActivity : AppCompatActivity() {
         searchBarEdit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 searchBarEdit.clearFocus()
-                show(VisibilityManager.SEARCH)
+                show(VisibilityState.SEARCH)
                 handler?.removeCallbacks(searchRunnable)
                 search(searchInput)
             }
@@ -108,9 +108,9 @@ class SearchActivity : AppCompatActivity() {
 
         searchBarEdit.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && searchBarEdit.text.isNullOrEmpty() && songsHistory.isNotEmpty()) {
-                show(VisibilityManager.SONG_HISTORY)
+                show(VisibilityState.SONG_HISTORY)
             } else {
-                show(VisibilityManager.SEARCH)
+                show(VisibilityState.SEARCH)
             }
         }
 
@@ -136,9 +136,9 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchInput = s.toString()
                 if (searchBarEdit.hasFocus() && s?.isEmpty() == true && songsHistory.isNotEmpty()) {
-                    show(VisibilityManager.SONG_HISTORY)
+                    show(VisibilityState.SONG_HISTORY)
                 } else {
-                    show(VisibilityManager.SEARCH)
+                    show(VisibilityState.SEARCH)
                 }
                 searchDebounce()
             }

@@ -9,8 +9,10 @@ import androidx.core.content.IntentCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.data.OnStateChangeListener
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
-import com.example.playlistmaker.domain.impl.MediaPlayerImpl
+import com.example.playlistmaker.domain.impl.MusicPlayerImpl
+import com.example.playlistmaker.domain.models.PlayerState
 import com.example.playlistmaker.domain.models.Track
 import kotlinx.coroutines.Runnable
 
@@ -18,7 +20,7 @@ class PlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlayerBinding
     private var playerState = STATE_DEFAULT
     private var handler: Handler? = null
-    val mplayer = MediaPlayerImpl()
+    val mplayer = MusicPlayerImpl()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
@@ -30,17 +32,25 @@ class PlayerActivity : AppCompatActivity() {
             IntentCompat.getParcelableExtra(intent, CURRENT_TRACK, Track::class.java) ?: Track()
 
         mplayer.preparePlayer(currentTrack.previewUrl)
+        mplayer.setListener(
+            object : OnStateChangeListener {
+                override fun onChange(state: PlayerState) {
+                    when (state) {
+                        PlayerState.STATE_PREPARED -> {
+                            binding.playButton.isClickable = true
+                            binding.timeElapsed.text = TIMER_ZERO
+                            playerState = STATE_PREPARED
+                        }
 
-        mplayer.mediaPlayer.setOnPreparedListener {
-            binding.playButton.isClickable = true
-            binding.timeElapsed.text = TIMER_ZERO
-            playerState = STATE_PREPARED
-        }
-        mplayer.mediaPlayer.setOnCompletionListener {
-            binding.playButton.setImageResource(R.drawable.play_button)
-            binding.timeElapsed.text = TIMER_ZERO
-            playerState = STATE_PREPARED
-        }
+                        PlayerState.STATE_END_OF_SONG -> {
+                            binding.playButton.setImageResource(R.drawable.play_button)
+                            binding.timeElapsed.text = TIMER_ZERO
+                            playerState = STATE_PREPARED
+                        }
+                    }
+                }
+            }
+        )
 
         binding.arrowBack.setOnClickListener {
             this.finish()

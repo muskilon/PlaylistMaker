@@ -1,5 +1,6 @@
 package com.example.playlistmaker.data
 
+
 interface MusicPlayer {
 
     fun preparePlayer(source: String)
@@ -10,5 +11,6 @@ interface MusicPlayer {
 
     fun getCurrentPosition(): String
     fun stop()
+    fun setListener(onStateChangeListener: OnStateChangeListener)
 
 }
