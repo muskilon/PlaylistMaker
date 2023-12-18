@@ -17,7 +17,7 @@ import kotlinx.coroutines.Runnable
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlayerBinding
-    private var playerState = STATE_DEFAULT
+    private var playerState: PlayerState = PlayerState.STATE_DEFAULT
     private var handler: Handler? = null
     val mplayer = MusicPlayerImpl()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,13 +38,17 @@ class PlayerActivity : AppCompatActivity() {
                         PlayerState.STATE_PREPARED -> {
                             binding.playButton.isClickable = true
                             binding.timeElapsed.text = TIMER_ZERO
-                            playerState = STATE_PREPARED
+                            playerState = PlayerState.STATE_PREPARED
                         }
 
                         PlayerState.STATE_END_OF_SONG -> {
                             binding.playButton.setImageResource(R.drawable.play_button)
                             binding.timeElapsed.text = TIMER_ZERO
-                            playerState = STATE_PREPARED
+                            playerState = PlayerState.STATE_PREPARED
+                        }
+
+                        else -> {
+                            //nothing
                         }
                     }
                 }
@@ -77,17 +81,21 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun playbackControl() {
         when (playerState) {
-            STATE_PLAYING -> {
+            PlayerState.STATE_PLAYING -> {
                 mplayer.pause()
                 binding.playButton.setImageResource(R.drawable.play_button)
-                playerState = STATE_PAUSED
+                playerState = PlayerState.STATE_PAUSED
             }
 
-            STATE_PREPARED, STATE_PAUSED -> {
+            PlayerState.STATE_PREPARED, PlayerState.STATE_PAUSED -> {
                 mplayer.start()
                 binding.playButton.setImageResource(R.drawable.pause_button)
-                playerState = STATE_PLAYING
+                playerState = PlayerState.STATE_PLAYING
                 startTimer()
+            }
+
+            else -> {
+                //nothing
             }
         }
     }
@@ -102,11 +110,14 @@ class PlayerActivity : AppCompatActivity() {
         return object : Runnable {
             override fun run() {
                 when (playerState) {
-                    STATE_PLAYING -> {
+                    PlayerState.STATE_PLAYING -> {
                         binding.timeElapsed.text = mplayer.getCurrentPosition()
                         handler?.postDelayed(this, TIMER_PERIOD_UPDATE)
                     }
-                    STATE_PREPARED, STATE_PAUSED, STATE_DEFAULT -> handler?.removeCallbacks(this)
+
+                    PlayerState.STATE_PREPARED, PlayerState.STATE_PAUSED, PlayerState.STATE_DEFAULT, PlayerState.STATE_END_OF_SONG -> handler?.removeCallbacks(
+                        this
+                    )
                 }
             }
         }
@@ -115,7 +126,7 @@ class PlayerActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         mplayer.pause()
-        playerState = STATE_PAUSED
+        playerState = PlayerState.STATE_PAUSED
     }
 
     override fun onDestroy() {
@@ -127,9 +138,9 @@ class PlayerActivity : AppCompatActivity() {
         const val CURRENT_TRACK = "currentTrack"
         const val TIMER_ZERO = "00:00"
         const val TIMER_PERIOD_UPDATE = 300L
-        const val STATE_DEFAULT = 0
-        const val STATE_PREPARED = 1
-        const val STATE_PLAYING = 2
-        const val STATE_PAUSED = 3
+//        const val STATE_DEFAULT = 0
+//        const val STATE_PREPARED = 1
+//        const val STATE_PLAYING = 2
+//        const val STATE_PAUSED = 3
     }
 }

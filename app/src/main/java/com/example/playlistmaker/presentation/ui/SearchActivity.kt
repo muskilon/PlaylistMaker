@@ -12,18 +12,17 @@ import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.Creator
-import com.example.playlistmaker.HistoryPreferences
-import com.example.playlistmaker.HistoryPreferences.songsHistory
-import com.example.playlistmaker.ItemClickListener
 import com.example.playlistmaker.R
-import com.example.playlistmaker.SearchResultAdapter
+import com.example.playlistmaker.creator.Creator
+import com.example.playlistmaker.data.HistoryPreferences
+import com.example.playlistmaker.data.HistoryPreferences.songsHistory
+import com.example.playlistmaker.data.ItemClickListener
+import com.example.playlistmaker.data.SearchResultAdapter
 import com.example.playlistmaker.domain.api.TracksInteractor
 import com.example.playlistmaker.domain.cosumer.Resource
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.domain.models.VisibilityState
 import com.example.playlistmaker.presentation.ui.MainActivity.Companion.SEARCH_HISTORY_KEY
-import com.example.playlistmaker.show
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
@@ -38,7 +37,6 @@ class SearchActivity : AppCompatActivity() {
     private val tracksInteractor = Creator.provideTracksInteractor()
 
     private val consumer = object : TracksInteractor.TracksConsumer {
-        @SuppressLint("NotifyDataSetChanged")
         override fun consume(foundSongs: Resource<List<Track>>) {
             handler?.post {
                 when (foundSongs) {
@@ -49,7 +47,6 @@ class SearchActivity : AppCompatActivity() {
                         else {
                             songs.clear()
                             songs.addAll(foundSongs.value)
-                            searchResultsAdapter.notifyDataSetChanged()
                             show(VisibilityState.SEARCH)
                         }
                     }
