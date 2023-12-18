@@ -35,13 +35,16 @@ class SearchActivity : AppCompatActivity() {
         override fun consume(foundSongs: Resource<List<Track>>) {
             handler?.post {
                 when (foundSongs) {
-                    is Resource.NotFound -> show(VisibilityManager.NOT_FOUND)
                     is Resource.ConnectionError -> show(VisibilityManager.NO_CONNECTIONS)
+                    is Resource.NotFound -> show(VisibilityManager.NOT_FOUND)
                     is Resource.Data -> {
-                        songs.clear()
-                        songs.addAll(foundSongs.value)
-                        searchResultsAdapter.notifyDataSetChanged()
-                        show(VisibilityManager.SEARCH)
+                        if (foundSongs.value.isEmpty()) show(VisibilityManager.NOT_FOUND)
+                        else {
+                            songs.clear()
+                            songs.addAll(foundSongs.value)
+                            searchResultsAdapter.notifyDataSetChanged()
+                            show(VisibilityManager.SEARCH)
+                        }
                     }
                 }
             }
