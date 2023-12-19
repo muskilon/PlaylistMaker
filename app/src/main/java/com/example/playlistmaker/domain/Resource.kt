@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.cosumer
+package com.example.playlistmaker.domain
 
 sealed interface Resource<T> {
     data class Data<T>(val value: T) : Resource<T>

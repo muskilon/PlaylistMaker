@@ -1,8 +1,5 @@
-package com.example.playlistmaker.domain.impl
+package com.example.playlistmaker.domain
 
-import com.example.playlistmaker.domain.api.TrackRepository
-import com.example.playlistmaker.domain.api.TracksInteractor
-import com.example.playlistmaker.domain.cosumer.Resource
 import java.util.concurrent.Executors
 
 class TracksInteractorImpl(private val repository: TrackRepository) : TracksInteractor {

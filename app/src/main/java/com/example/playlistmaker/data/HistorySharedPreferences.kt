@@ -1,7 +1,7 @@
 package com.example.playlistmaker.data
 
-import com.example.playlistmaker.domain.models.SearchHistory
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.SearchHistory
+import com.example.playlistmaker.domain.Track
 import com.example.playlistmaker.presentation.ui.MainActivity.Companion.SEARCH_HISTORY_KEY
 import com.example.playlistmaker.presentation.ui.gson
 import com.example.playlistmaker.presentation.ui.sharedPreferences

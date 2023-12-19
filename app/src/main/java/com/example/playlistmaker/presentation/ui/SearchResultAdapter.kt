@@ -1,4 +1,4 @@
-package com.example.playlistmaker.data
+package com.example.playlistmaker.presentation.ui
 
 import android.content.Context
 import android.os.Handler
@@ -7,7 +7,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.Track
 
 class SearchResultAdapter(
     private val tracks: List<Track>,

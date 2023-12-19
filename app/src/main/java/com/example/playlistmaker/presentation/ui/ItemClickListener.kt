@@ -1,11 +1,11 @@
-package com.example.playlistmaker.data
+package com.example.playlistmaker.presentation.ui
 
 import android.content.Context
 import android.content.Intent
+import com.example.playlistmaker.data.HistorySharedPreferences
 import com.example.playlistmaker.data.HistorySharedPreferences.songsHistory
-import com.example.playlistmaker.domain.models.SearchHistory
-import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.presentation.ui.PlayerActivity
+import com.example.playlistmaker.domain.SearchHistory
+import com.example.playlistmaker.domain.Track
 
 
 class ItemClickListener {

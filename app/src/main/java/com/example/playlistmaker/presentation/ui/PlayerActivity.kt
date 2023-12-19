@@ -11,8 +11,8 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.data.MusicPlayerImpl
 import com.example.playlistmaker.data.OnStateChangeListener
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
-import com.example.playlistmaker.domain.models.PlayerState
-import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.domain.PlayerState
+import com.example.playlistmaker.domain.Track
 import kotlinx.coroutines.Runnable
 
 class PlayerActivity : AppCompatActivity() {

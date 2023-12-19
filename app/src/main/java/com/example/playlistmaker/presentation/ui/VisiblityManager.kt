@@ -7,7 +7,7 @@ import android.widget.ProgressBar
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
-import com.example.playlistmaker.domain.models.VisibilityState
+import com.example.playlistmaker.domain.VisibilityState
 
 
 @SuppressLint("NotifyDataSetChanged")
