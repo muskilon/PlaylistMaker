@@ -138,9 +138,5 @@ class PlayerActivity : AppCompatActivity() {
         const val CURRENT_TRACK = "currentTrack"
         const val TIMER_ZERO = "00:00"
         const val TIMER_PERIOD_UPDATE = 300L
-//        const val STATE_DEFAULT = 0
-//        const val STATE_PREPARED = 1
-//        const val STATE_PLAYING = 2
-//        const val STATE_PAUSED = 3
     }
 }

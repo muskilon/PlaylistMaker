@@ -14,8 +14,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
 import com.example.playlistmaker.creator.Creator
-import com.example.playlistmaker.data.HistoryPreferences
-import com.example.playlistmaker.data.HistoryPreferences.songsHistory
+import com.example.playlistmaker.data.HistorySharedPreferences
+import com.example.playlistmaker.data.HistorySharedPreferences.songsHistory
 import com.example.playlistmaker.data.ItemClickListener
 import com.example.playlistmaker.data.SearchResultAdapter
 import com.example.playlistmaker.domain.api.TracksInteractor
@@ -90,7 +90,7 @@ class SearchActivity : AppCompatActivity() {
 
         if (sharedPreferences.getString(SEARCH_HISTORY_KEY, null) != null) {
             songsHistory.clear()
-            songsHistory.addAll(HistoryPreferences.read().songsHistorySaved)
+            songsHistory.addAll(HistorySharedPreferences.read().songsHistorySaved)
         }
 
         backArrow.setOnClickListener {
@@ -103,7 +103,7 @@ class SearchActivity : AppCompatActivity() {
         }
         clearHistoryButton.setOnClickListener {
             songsHistory.clear()
-            HistoryPreferences.clear()
+            HistorySharedPreferences.clear()
             show(VisibilityState.SEARCH)
         }
 
