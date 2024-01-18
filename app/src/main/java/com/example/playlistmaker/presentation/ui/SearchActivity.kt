@@ -8,44 +8,42 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Creator
-import com.example.playlistmaker.R
 import com.example.playlistmaker.data.HistorySharedPreferences
 import com.example.playlistmaker.data.HistorySharedPreferences.songsHistory
+import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.Resource
 import com.example.playlistmaker.domain.Track
 import com.example.playlistmaker.domain.TracksInteractor
 import com.example.playlistmaker.domain.VisibilityState
 import com.example.playlistmaker.presentation.ui.MainActivity.Companion.SEARCH_HISTORY_KEY
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 
 
-class SearchActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity(), RenderState {
     private var searchInput: String = EMPTY
+    private lateinit var binding: ActivitySearchBinding
 
-    lateinit var searchResultsAdapter: SearchResultAdapter
-    lateinit var songsHistoryAdapter: SearchResultAdapter
+    private lateinit var searchResultsAdapter: SearchResultAdapter
+    private lateinit var songsHistoryAdapter: SearchResultAdapter
     private var handler: Handler? = null
     private val songs = ArrayList<Track>()
-    private val tracksInteractor = Creator.provideTracksInteractor()
+    private val tracksInteractor = Creator.provideTracksInteractor(this)
 
     private val consumer = object : TracksInteractor.TracksConsumer {
         override fun consume(foundSongs: Resource<List<Track>>) {
             handler?.post {
                 when (foundSongs) {
-                    is Resource.ConnectionError -> show(VisibilityState.NO_CONNECTIONS)
-                    is Resource.NotFound -> show(VisibilityState.NOT_FOUND)
+                    is Resource.ConnectionError -> render(VisibilityState.NO_CONNECTIONS)
+                    is Resource.NotFound -> render(VisibilityState.NOT_FOUND)
                     is Resource.Data -> {
-                        if (foundSongs.value.isEmpty()) show(VisibilityState.NOT_FOUND)
+                        if (foundSongs.value.isEmpty()) render(VisibilityState.NOT_FOUND)
                         else {
                             songs.clear()
                             songs.addAll(foundSongs.value)
-                            show(VisibilityState.SEARCH)
+                            render(VisibilityState.SEARCH)
                         }
                     }
                 }
@@ -55,7 +53,7 @@ class SearchActivity : AppCompatActivity() {
 
     private val searchRunnable = Runnable {
         if (searchInput.isNotEmpty()) {
-            show(VisibilityState.PROGRESS_BAR)
+            render(VisibilityState.PROGRESS_BAR)
             tracksInteractor.searchSongs("song", searchInput, "ru", consumer)
         }
     }
@@ -63,27 +61,23 @@ class SearchActivity : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
+
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         handler = Handler(Looper.getMainLooper())
 
         searchResultsAdapter = SearchResultAdapter(songs, ItemClickListener(), this)
         songsHistoryAdapter = SearchResultAdapter(songsHistory, ItemClickListener(), this)
 
-        val searchBarInput = findViewById<TextInputLayout>(R.id.searchBarInput)
-        val searchBarEdit = findViewById<TextInputEditText>(R.id.searchBarEdit)
-        val searchResultsRecyclerView = findViewById<RecyclerView>(R.id.searchResultsRecyclerView)
-        val songsHistoryRecyclerView = findViewById<RecyclerView>(R.id.songsHistoryRecyclerView)
-        val backArrow = findViewById<ImageView>(R.id.backArrow)
-        val refreshButton = findViewById<Button>(R.id.refreshButton)
-        val clearHistoryButton = findViewById<Button>(R.id.clearHistoryButton)
-
-        searchResultsRecyclerView.adapter = searchResultsAdapter
-        songsHistoryRecyclerView.adapter = songsHistoryAdapter
+        binding.searchResultsRecyclerView.adapter = searchResultsAdapter
+        binding.youSearched.songsHistoryRecyclerView.adapter = songsHistoryAdapter
 
         if (savedInstanceState != null) {
             searchInput = savedInstanceState.getString(INPUT_STRING, "")
-            searchBarEdit.setText(searchInput)
+            binding.searchBarEdit.setText(searchInput)
         }
 
         if (sharedPreferences.getString(SEARCH_HISTORY_KEY, null) != null) {
@@ -91,57 +85,59 @@ class SearchActivity : AppCompatActivity() {
             songsHistory.addAll(HistorySharedPreferences.read().songsHistorySaved)
         }
 
-        backArrow.setOnClickListener {
+        binding.backArrow.setOnClickListener {
             this.finish()
         }
 
-        refreshButton.setOnClickListener {
-            show(VisibilityState.SEARCH)
+        binding.noConnectionPlaceholder.refreshButton.setOnClickListener {
+            render(VisibilityState.SEARCH)
             tracksInteractor.searchSongs("song", searchInput, "ru", consumer)
         }
-        clearHistoryButton.setOnClickListener {
+        binding.youSearched.clearHistoryButton.setOnClickListener {
             songsHistory.clear()
             HistorySharedPreferences.clear()
-            show(VisibilityState.SEARCH)
+            render(VisibilityState.SEARCH)
         }
 
-        searchBarInput.setEndIconOnClickListener {
-            searchBarEdit.text?.clear()
-            imm.hideSoftInputFromWindow(searchBarEdit.windowToken, 0)
-            searchBarEdit.clearFocus()
+        binding.searchBarInput.setEndIconOnClickListener {
+            binding.searchBarEdit.text?.clear()
+            imm.hideSoftInputFromWindow(binding.searchBarEdit.windowToken, 0)
+            binding.searchBarEdit.clearFocus()
             songs.clear()
             searchResultsAdapter.notifyDataSetChanged()
         }
 
-        searchBarEdit.setOnEditorActionListener { _, actionId, _ ->
+        binding.searchBarEdit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                searchBarEdit.clearFocus()
-                show(VisibilityState.SEARCH)
+                binding.searchBarEdit.clearFocus()
+                render(VisibilityState.SEARCH)
                 handler?.removeCallbacks(searchRunnable)
                 tracksInteractor.searchSongs("song", searchInput, "ru", consumer)
             }
             false
         }
 
-        searchBarEdit.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus && searchBarEdit.text.isNullOrEmpty() && songsHistory.isNotEmpty()) {
-                show(VisibilityState.SONG_HISTORY)
+        binding.searchBarEdit.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && binding.searchBarEdit.text.isNullOrEmpty() && songsHistory.isNotEmpty()) {
+                render(VisibilityState.SONG_HISTORY)
             } else {
-                show(VisibilityState.SEARCH)
+                render(VisibilityState.SEARCH)
             }
         }
 
-        songsHistoryRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.youSearched.songsHistoryRecyclerView.addOnScrollListener(object :
+            RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                imm.hideSoftInputFromWindow(searchBarEdit.windowToken, 0)
+                imm.hideSoftInputFromWindow(binding.searchBarEdit.windowToken, 0)
             }
         })
 
-        searchResultsRecyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        binding.searchResultsRecyclerView.addOnScrollListener(object :
+            RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                imm.hideSoftInputFromWindow(searchBarEdit.windowToken, 0)
+                imm.hideSoftInputFromWindow(binding.searchBarEdit.windowToken, 0)
             }
         })
 
@@ -152,10 +148,10 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchInput = s.toString()
-                if (searchBarEdit.hasFocus() && s?.isEmpty() == true && songsHistory.isNotEmpty()) {
-                    show(VisibilityState.SONG_HISTORY)
+                if (binding.searchBarEdit.hasFocus() && s?.isEmpty() == true && songsHistory.isNotEmpty()) {
+                    render(VisibilityState.SONG_HISTORY)
                 } else {
-                    show(VisibilityState.SEARCH)
+                    render(VisibilityState.SEARCH)
                 }
                 searchDebounce()
             }
@@ -165,7 +161,7 @@ class SearchActivity : AppCompatActivity() {
             }
         }
 
-        searchBarEdit.addTextChangedListener(simpleTextWatcher)
+        binding.searchBarEdit.addTextChangedListener(simpleTextWatcher)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -177,6 +173,60 @@ class SearchActivity : AppCompatActivity() {
         handler?.removeCallbacks(searchRunnable)
         handler?.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
+
+    @SuppressLint("NotifyDataSetChanged")
+    override fun showSearch() {
+        searchResultsAdapter.notifyDataSetChanged()
+        binding.notFoundPlaceholder.notFoundPlaceholder.isVisible = false
+        binding.noConnectionPlaceholder.noConnectionPlaceholder.isVisible = false
+        binding.searchResultsRecyclerView.isVisible = true
+        binding.youSearched.searchHistory.isVisible = false
+        binding.progressBar.isVisible = false
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    override fun showHistory() {
+        songsHistoryAdapter.notifyDataSetChanged()
+        binding.notFoundPlaceholder.notFoundPlaceholder.isVisible = false
+        binding.noConnectionPlaceholder.noConnectionPlaceholder.isVisible = false
+        binding.searchResultsRecyclerView.isVisible = false
+        binding.youSearched.searchHistory.isVisible = true
+    }
+
+    override fun showNotFound() {
+        binding.notFoundPlaceholder.notFoundPlaceholder.isVisible = true
+        binding.noConnectionPlaceholder.noConnectionPlaceholder.isVisible = false
+        binding.searchResultsRecyclerView.isVisible = false
+        binding.youSearched.searchHistory.isVisible = false
+        binding.progressBar.isVisible = false
+    }
+
+    override fun showNetworkError() {
+        binding.notFoundPlaceholder.notFoundPlaceholder.isVisible = false
+        binding.noConnectionPlaceholder.noConnectionPlaceholder.isVisible = true
+        binding.searchResultsRecyclerView.isVisible = false
+        binding.youSearched.searchHistory.isVisible = false
+        binding.progressBar.isVisible = false
+    }
+
+    override fun showProgressBar() {
+        binding.notFoundPlaceholder.notFoundPlaceholder.isVisible = false
+        binding.noConnectionPlaceholder.noConnectionPlaceholder.isVisible = false
+        binding.searchResultsRecyclerView.isVisible = false
+        binding.youSearched.searchHistory.isVisible = false
+        binding.progressBar.isVisible = true
+    }
+
+    override fun render(state: VisibilityState) {
+        when (state) {
+            VisibilityState.SEARCH -> showSearch()
+            VisibilityState.SONG_HISTORY -> showHistory()
+            VisibilityState.NOT_FOUND -> showNotFound()
+            VisibilityState.NO_CONNECTIONS -> showNetworkError()
+            VisibilityState.PROGRESS_BAR -> showProgressBar()
+        }
+    }
+
 
     companion object {
         private const val INPUT_STRING = "INPUT_STRING"

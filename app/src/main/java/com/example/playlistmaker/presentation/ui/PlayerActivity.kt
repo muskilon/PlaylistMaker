@@ -17,6 +17,8 @@ import kotlinx.coroutines.Runnable
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlayerBinding
+
+    //private lateinit var viewModel: PlayerViewModel
     private var playerState: PlayerState = PlayerState.STATE_DEFAULT
     private var handler: Handler? = null
     val mplayer = MusicPlayerImpl()
@@ -29,6 +31,7 @@ class PlayerActivity : AppCompatActivity() {
         handler = Handler(Looper.getMainLooper())
         val currentTrack =
             IntentCompat.getParcelableExtra(intent, CURRENT_TRACK, Track::class.java) ?: Track()
+        //viewModel = ViewModelProvider(this, PlayerViewModel.getViewModelFactory(currentTrack))[PlayerViewModel::class.java]
 
         mplayer.preparePlayer(currentTrack.previewUrl)
         mplayer.setListener(
