@@ -1,33 +1,29 @@
 package com.example.playlistmaker.presentation.ui
 
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.TrackSnippetBinding
 import com.example.playlistmaker.domain.Track
 
-class SearchResultViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-
-    private val trackName: TextView = itemView.findViewById(R.id.snippetTrackName)
-    private val artistName: TextView = itemView.findViewById(R.id.snippetArtistName)
-    private val artworkUrl100: ImageView = itemView.findViewById(R.id.snippetImage)
-    private val trackTime: TextView = itemView.findViewById(R.id.snippetTrackTime)
+class SearchResultViewHolder(private val binding: TrackSnippetBinding) :
+    RecyclerView.ViewHolder(binding.root) {
 
     fun bind(model: Track) {
-        trackName.text = model.trackName
-        artistName.text = model.artistName
-        trackTime.text = model.trackTime
-        val cornerRadius = itemView.resources.getDimension(R.dimen.search_snippet_artwork_corner_radius)
 
-        Glide.with(artworkUrl100)
+        binding.snippetTrackName.text = model.trackName
+        binding.snippetArtistName.text = model.artistName
+        binding.snippetTrackTime.text = model.trackTime
+        val cornerRadius =
+            itemView.resources.getDimension(R.dimen.search_snippet_artwork_corner_radius)
+
+        Glide.with(binding.snippetImage)
             .load(model.artworkUrl100)
             .placeholder(R.drawable.placeholder)
             .transform(RoundedCorners(cornerRadius.toInt()))
-            .into(artworkUrl100)
-        artistName.requestLayout()
+            .into(binding.snippetImage)
+        binding.snippetArtistName.requestLayout()
     }
 
 }

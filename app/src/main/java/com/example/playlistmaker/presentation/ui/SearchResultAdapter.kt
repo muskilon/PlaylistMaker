@@ -6,7 +6,7 @@ import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.R
+import com.example.playlistmaker.databinding.TrackSnippetBinding
 import com.example.playlistmaker.domain.Track
 
 class SearchResultAdapter(
@@ -28,9 +28,14 @@ class SearchResultAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchResultViewHolder {
-        val view =
-            LayoutInflater.from(parent.context).inflate(R.layout.track_snippet, parent, false)
-        return SearchResultViewHolder(view)
+        val layoutInspector = LayoutInflater.from(parent.context)
+        // 1
+        return SearchResultViewHolder(TrackSnippetBinding.inflate(layoutInspector, parent, false))
+
+
+//        val view =
+//            LayoutInflater.from(parent.context).inflate(R.layout.track_snippet, parent, false)
+//        return SearchResultViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: SearchResultViewHolder, position: Int) {
