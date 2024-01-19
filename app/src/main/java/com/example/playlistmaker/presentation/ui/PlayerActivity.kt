@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.IntentCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
@@ -12,16 +11,17 @@ import com.example.playlistmaker.data.MusicPlayerImpl
 import com.example.playlistmaker.data.OnStateChangeListener
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
 import com.example.playlistmaker.domain.PlayerState
-import com.example.playlistmaker.domain.Track
+import com.example.playlistmaker.domain.TrackModelInteractor
 import kotlinx.coroutines.Runnable
 
 class PlayerActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPlayerBinding
 
-    //private lateinit var viewModel: PlayerViewModel
+    private lateinit var viewModel: PlayerViewModel
     private var playerState: PlayerState = PlayerState.STATE_DEFAULT
     private var handler: Handler? = null
     val mplayer = MusicPlayerImpl()
+    private val currentTrack = TrackModelInteractor.getTrackModel()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
@@ -29,8 +29,7 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(view)
 
         handler = Handler(Looper.getMainLooper())
-        val currentTrack =
-            IntentCompat.getParcelableExtra(intent, CURRENT_TRACK, Track::class.java) ?: Track()
+        //val currentTrack = TrackModelInteractor.getTrackModel()
         //viewModel = ViewModelProvider(this, PlayerViewModel.getViewModelFactory(currentTrack))[PlayerViewModel::class.java]
 
         mplayer.preparePlayer(currentTrack.previewUrl)
@@ -63,7 +62,7 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         Glide.with(this)
-            .load(currentTrack.artworkUrl512)
+            .load(currentTrack.pictureUrl)
             .placeholder(R.drawable.placeholder_big)
             .transform(
                 RoundedCorners(
@@ -72,11 +71,11 @@ class PlayerActivity : AppCompatActivity() {
             )
             .into(binding.albumCover)
         binding.trackName.text = currentTrack.trackName
-        binding.artistName.text = currentTrack.artistName
-        binding.trackDuration.text = currentTrack.trackTime
-        binding.album.text = currentTrack.collectionName
+        binding.artistName.text = currentTrack.artist
+        binding.trackDuration.text = currentTrack.duration
+        binding.album.text = currentTrack.album
         binding.year.text = currentTrack.year
-        binding.genre.text = currentTrack.primaryGenreName
+        binding.genre.text = currentTrack.genre
         binding.country.text = currentTrack.country
 
         binding.playButton.setOnClickListener { playbackControl() }

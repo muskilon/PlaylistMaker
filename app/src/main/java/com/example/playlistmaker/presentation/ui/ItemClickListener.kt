@@ -6,6 +6,7 @@ import com.example.playlistmaker.data.HistorySharedPreferences
 import com.example.playlistmaker.data.HistorySharedPreferences.songsHistory
 import com.example.playlistmaker.domain.SearchHistory
 import com.example.playlistmaker.domain.Track
+import com.example.playlistmaker.domain.TrackModelInteractor
 
 
 class ItemClickListener {
@@ -33,8 +34,8 @@ class ItemClickListener {
                 HistorySharedPreferences.write(SearchHistory(songsHistory))
             }
         }
+        TrackModelInteractor.setTrackModel(track)
         val openPlayer = Intent(context, PlayerActivity::class.java)
-        openPlayer.putExtra(PlayerActivity.CURRENT_TRACK, track)
         context.startActivity(openPlayer)
     }
     companion object{

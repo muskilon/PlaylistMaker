@@ -28,14 +28,10 @@ class SearchResultAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchResultViewHolder {
+
         val layoutInspector = LayoutInflater.from(parent.context)
-        // 1
         return SearchResultViewHolder(TrackSnippetBinding.inflate(layoutInspector, parent, false))
 
-
-//        val view =
-//            LayoutInflater.from(parent.context).inflate(R.layout.track_snippet, parent, false)
-//        return SearchResultViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: SearchResultViewHolder, position: Int) {
