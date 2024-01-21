@@ -1,10 +1,10 @@
 package com.example.playlistmaker.presentation.ui
 
-import com.example.playlistmaker.domain.VisibilityState
+import com.example.playlistmaker.domain.SearchState
 
 interface RenderState {
 
-    fun render(state: VisibilityState)
+    fun render(state: SearchState)
     fun showSearch()
 
     fun showHistory()

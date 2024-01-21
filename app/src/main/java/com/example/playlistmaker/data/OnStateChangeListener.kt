@@ -1,7 +1,7 @@
 package com.example.playlistmaker.data
 
-import com.example.playlistmaker.domain.PlayerState
+import com.example.playlistmaker.domain.MusicPlayerState
 
 interface OnStateChangeListener {
-    fun onChange(state: PlayerState)
+    fun onChange(state: MusicPlayerState)
 }

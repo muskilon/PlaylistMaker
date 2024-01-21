@@ -2,7 +2,7 @@ package com.example.playlistmaker.data
 
 import android.icu.text.SimpleDateFormat
 import android.media.MediaPlayer
-import com.example.playlistmaker.domain.PlayerState
+import com.example.playlistmaker.domain.MusicPlayerState
 import java.util.Locale
 
 class MusicPlayerImpl : MusicPlayer {
@@ -12,10 +12,10 @@ class MusicPlayerImpl : MusicPlayer {
         mediaPlayer.setDataSource(source)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
-            listener?.onChange(PlayerState.STATE_PREPARED)
+            listener?.onChange(MusicPlayerState.STATE_PREPARED)
         }
         mediaPlayer.setOnCompletionListener {
-            listener?.onChange(PlayerState.STATE_END_OF_SONG)
+            listener?.onChange(MusicPlayerState.STATE_END_OF_SONG)
         }
     }
 

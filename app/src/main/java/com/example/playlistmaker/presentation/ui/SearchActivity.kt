@@ -16,9 +16,9 @@ import com.example.playlistmaker.data.HistorySharedPreferences
 import com.example.playlistmaker.data.HistorySharedPreferences.songsHistory
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.Resource
+import com.example.playlistmaker.domain.SearchState
 import com.example.playlistmaker.domain.Track
 import com.example.playlistmaker.domain.TracksInteractor
-import com.example.playlistmaker.domain.VisibilityState
 import com.example.playlistmaker.presentation.ui.MainActivity.Companion.SEARCH_HISTORY_KEY
 
 
@@ -36,14 +36,14 @@ class SearchActivity : AppCompatActivity(), RenderState {
         override fun consume(foundSongs: Resource<List<Track>>) {
             handler?.post {
                 when (foundSongs) {
-                    is Resource.ConnectionError -> render(VisibilityState.NO_CONNECTIONS)
-                    is Resource.NotFound -> render(VisibilityState.NOT_FOUND)
+                    is Resource.ConnectionError -> render(SearchState.NO_CONNECTIONS)
+                    is Resource.NotFound -> render(SearchState.NOT_FOUND)
                     is Resource.Data -> {
-                        if (foundSongs.value.isEmpty()) render(VisibilityState.NOT_FOUND)
+                        if (foundSongs.value.isEmpty()) render(SearchState.NOT_FOUND)
                         else {
                             songs.clear()
                             songs.addAll(foundSongs.value)
-                            render(VisibilityState.SEARCH)
+                            render(SearchState.SEARCH)
                         }
                     }
                 }
@@ -53,7 +53,7 @@ class SearchActivity : AppCompatActivity(), RenderState {
 
     private val searchRunnable = Runnable {
         if (searchInput.isNotEmpty()) {
-            render(VisibilityState.PROGRESS_BAR)
+            render(SearchState.PROGRESS_BAR)
             tracksInteractor.searchSongs("song", searchInput, "ru", consumer)
         }
     }
@@ -90,13 +90,13 @@ class SearchActivity : AppCompatActivity(), RenderState {
         }
 
         binding.noConnectionPlaceholder.refreshButton.setOnClickListener {
-            render(VisibilityState.SEARCH)
+            render(SearchState.SEARCH)
             tracksInteractor.searchSongs("song", searchInput, "ru", consumer)
         }
         binding.youSearched.clearHistoryButton.setOnClickListener {
             songsHistory.clear()
             HistorySharedPreferences.clear()
-            render(VisibilityState.SEARCH)
+            render(SearchState.SEARCH)
         }
 
         binding.searchBarInput.setEndIconOnClickListener {
@@ -110,7 +110,7 @@ class SearchActivity : AppCompatActivity(), RenderState {
         binding.searchBarEdit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 binding.searchBarEdit.clearFocus()
-                render(VisibilityState.SEARCH)
+                render(SearchState.SEARCH)
                 handler?.removeCallbacks(searchRunnable)
                 tracksInteractor.searchSongs("song", searchInput, "ru", consumer)
             }
@@ -119,9 +119,9 @@ class SearchActivity : AppCompatActivity(), RenderState {
 
         binding.searchBarEdit.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && binding.searchBarEdit.text.isNullOrEmpty() && songsHistory.isNotEmpty()) {
-                render(VisibilityState.SONG_HISTORY)
+                render(SearchState.SONG_HISTORY)
             } else {
-                render(VisibilityState.SEARCH)
+                render(SearchState.SEARCH)
             }
         }
 
@@ -149,9 +149,9 @@ class SearchActivity : AppCompatActivity(), RenderState {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 searchInput = s.toString()
                 if (binding.searchBarEdit.hasFocus() && s?.isEmpty() == true && songsHistory.isNotEmpty()) {
-                    render(VisibilityState.SONG_HISTORY)
+                    render(SearchState.SONG_HISTORY)
                 } else {
-                    render(VisibilityState.SEARCH)
+                    render(SearchState.SEARCH)
                 }
                 searchDebounce()
             }
@@ -217,13 +217,13 @@ class SearchActivity : AppCompatActivity(), RenderState {
         binding.progressBar.isVisible = true
     }
 
-    override fun render(state: VisibilityState) {
+    override fun render(state: SearchState) {
         when (state) {
-            VisibilityState.SEARCH -> showSearch()
-            VisibilityState.SONG_HISTORY -> showHistory()
-            VisibilityState.NOT_FOUND -> showNotFound()
-            VisibilityState.NO_CONNECTIONS -> showNetworkError()
-            VisibilityState.PROGRESS_BAR -> showProgressBar()
+            SearchState.SEARCH -> showSearch()
+            SearchState.SONG_HISTORY -> showHistory()
+            SearchState.NOT_FOUND -> showNotFound()
+            SearchState.NO_CONNECTIONS -> showNetworkError()
+            SearchState.PROGRESS_BAR -> showProgressBar()
         }
     }
 

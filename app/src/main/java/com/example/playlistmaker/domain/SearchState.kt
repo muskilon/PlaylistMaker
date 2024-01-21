@@ -1,6 +1,6 @@
 package com.example.playlistmaker.domain
 
-enum class VisibilityState {
+enum class SearchState {
     SEARCH,
     SONG_HISTORY,
     NOT_FOUND,

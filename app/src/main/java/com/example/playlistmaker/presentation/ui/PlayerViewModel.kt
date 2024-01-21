@@ -1,24 +1,22 @@
 package com.example.playlistmaker.presentation.ui
 
 import android.os.Handler
-import android.os.Looper
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.MusicPlayerImpl
 import com.example.playlistmaker.data.OnStateChangeListener
-import com.example.playlistmaker.domain.PlayerState
+import com.example.playlistmaker.domain.MusicPlayerState
 import com.example.playlistmaker.domain.TrackModel
-import com.example.playlistmaker.domain.TrackModelInteractor
 
-class PlayerViewModel : ViewModel() {
-    private var playerState: PlayerState = PlayerState.STATE_DEFAULT
-    private val mplayer = MusicPlayerImpl()
-    private val currentTrack = TrackModelInteractor.getTrackModel()
+class PlayerViewModel(
+    private val currentTrack: TrackModel,
+    private val mplayer: MusicPlayerImpl,
+    private val handler: Handler
+) : ViewModel() {
+    private var musicPlayerState = MusicPlayerState.STATE_DEFAULT
     private val liveCurrentTrack = MutableLiveData(currentTrack)
-    private val handler = Handler(Looper.getMainLooper())
     private var liveTimeElapsed = MutableLiveData<String>()
     private var livePlayButtonClickableState = MutableLiveData<Boolean>()
     private var livePlayButtonImage = MutableLiveData<Int>()
@@ -26,24 +24,19 @@ class PlayerViewModel : ViewModel() {
     fun setListener() {
         mplayer.setListener(
             object : OnStateChangeListener {
-                override fun onChange(state: PlayerState) {
-                    when (state) {
-                        PlayerState.STATE_PREPARED -> {
-                            livePlayButtonClickableState.value = true
-                            liveTimeElapsed.value = TIMER_ZERO
-                            playerState = PlayerState.STATE_PREPARED
-                        }
-
-                        PlayerState.STATE_END_OF_SONG -> {
-                            livePlayButtonImage = MutableLiveData(R.drawable.play_button)
-                            liveTimeElapsed.value = TIMER_ZERO
-                            playerState = PlayerState.STATE_PREPARED
-                        }
-
-                        else -> {
-                            //nothing
-                        }
+                override fun onChange(state: MusicPlayerState) {
+                    if (state == MusicPlayerState.STATE_PREPARED) {
+                        livePlayButtonClickableState.postValue(true)
+                        liveTimeElapsed.postValue(TIMER_ZERO)
+                        musicPlayerState = MusicPlayerState.STATE_PREPARED
                     }
+
+                    if (state == MusicPlayerState.STATE_END_OF_SONG) {
+                        livePlayButtonImage.postValue(R.drawable.play_button)
+                        liveTimeElapsed.postValue(TIMER_ZERO)
+                        musicPlayerState = MusicPlayerState.STATE_PREPARED
+                    }
+
                 }
             }
         )
@@ -51,17 +44,18 @@ class PlayerViewModel : ViewModel() {
     }
 
     fun playbackControl() {
-        when (playerState) {
-            PlayerState.STATE_PLAYING -> {
+
+        when (musicPlayerState) {
+            MusicPlayerState.STATE_PLAYING -> {
                 mplayer.pause()
-                livePlayButtonImage.value = R.drawable.play_button
-                playerState = PlayerState.STATE_PAUSED
+                livePlayButtonImage.postValue(R.drawable.play_button)
+                musicPlayerState = MusicPlayerState.STATE_PAUSED
             }
 
-            PlayerState.STATE_PREPARED, PlayerState.STATE_PAUSED -> {
+            MusicPlayerState.STATE_PAUSED, MusicPlayerState.STATE_PREPARED -> {
                 mplayer.start()
-                livePlayButtonImage.value = R.drawable.pause_button
-                playerState = PlayerState.STATE_PLAYING
+                livePlayButtonImage.postValue(R.drawable.pause_button)
+                musicPlayerState = MusicPlayerState.STATE_PLAYING
                 startTimer()
             }
 
@@ -69,7 +63,7 @@ class PlayerViewModel : ViewModel() {
                 //nothing
             }
         }
-    }
+        }
 
     private fun startTimer() {
         handler.post(
@@ -80,14 +74,15 @@ class PlayerViewModel : ViewModel() {
     private fun timerTask(): Runnable {
         return object : Runnable {
             override fun run() {
-                when (playerState) {
-                    PlayerState.STATE_PLAYING -> {
-                        liveTimeElapsed.value = mplayer.getCurrentPosition()
-                        Log.d("TAG", mplayer.getCurrentPosition())
+                when (musicPlayerState) {
+                    MusicPlayerState.STATE_PLAYING -> {
+                        liveTimeElapsed.postValue(mplayer.getCurrentPosition())
+//                        Log.d("TAG", mplayer.getCurrentPosition())
+//                        Log.d("TAG", musicPlayerState.name)
                         handler.postDelayed(this, TIMER_PERIOD_UPDATE)
                     }
 
-                    PlayerState.STATE_PREPARED, PlayerState.STATE_PAUSED, PlayerState.STATE_DEFAULT, PlayerState.STATE_END_OF_SONG -> handler.removeCallbacks(
+                    MusicPlayerState.STATE_PREPARED, MusicPlayerState.STATE_PAUSED, MusicPlayerState.STATE_DEFAULT, MusicPlayerState.STATE_END_OF_SONG -> handler.removeCallbacks(
                         this
                     )
                 }
@@ -95,21 +90,13 @@ class PlayerViewModel : ViewModel() {
         }
     }
 
-    fun getPlayButtonImage(): LiveData<Int> {
-        return livePlayButtonImage
-    }
+    fun getPlayButtonImage(): LiveData<Int> = livePlayButtonImage
 
-    fun getPlayButtonState(): LiveData<Boolean> {
-        return livePlayButtonClickableState
-    }
+    fun getPlayButtonState(): LiveData<Boolean> = livePlayButtonClickableState
 
-    fun getTimeElapsed(): LiveData<String> {
-        return liveTimeElapsed
-    }
+    fun getTimeElapsed(): LiveData<String> = liveTimeElapsed
 
-    fun getCurrentTrack(): LiveData<TrackModel> {
-        return liveCurrentTrack
-    }
+    fun getCurrentTrack(): LiveData<TrackModel> = liveCurrentTrack
 
     fun preparePlayer() {
         mplayer.preparePlayer(currentTrack.previewUrl)
@@ -117,7 +104,7 @@ class PlayerViewModel : ViewModel() {
 
     fun pausePlayer() {
         mplayer.pause()
-        playerState = PlayerState.STATE_PAUSED
+        musicPlayerState = MusicPlayerState.STATE_PAUSED
     }
 
     fun stopPlayer() {
