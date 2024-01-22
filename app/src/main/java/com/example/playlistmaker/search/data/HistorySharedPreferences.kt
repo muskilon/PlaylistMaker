@@ -1,10 +1,10 @@
 package com.example.playlistmaker.search.data
 
-import com.example.playlistmaker.main.ui.MainActivity.Companion.SEARCH_HISTORY_KEY
 import com.example.playlistmaker.main.ui.gson
 import com.example.playlistmaker.main.ui.sharedPreferences
 import com.example.playlistmaker.search.domain.SearchHistory
 import com.example.playlistmaker.search.domain.Track
+import com.example.playlistmaker.search.ui.SearchActivity.Companion.SEARCH_HISTORY_KEY
 
 object HistorySharedPreferences {
     val songsHistory = mutableListOf<Track>()

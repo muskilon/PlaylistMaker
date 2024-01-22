@@ -2,62 +2,31 @@ package com.example.playlistmaker.search.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.main.ui.MainActivity.Companion.SEARCH_HISTORY_KEY
 import com.example.playlistmaker.main.ui.sharedPreferences
 import com.example.playlistmaker.search.data.HistorySharedPreferences
 import com.example.playlistmaker.search.data.HistorySharedPreferences.songsHistory
-import com.example.playlistmaker.search.domain.Resource
+import com.example.playlistmaker.search.domain.SearchScreenState
 import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
-import com.example.playlistmaker.search.domain.TracksInteractor
 
 
 class SearchActivity : AppCompatActivity(), RenderState {
     private var searchInput: String = EMPTY
     private lateinit var binding: ActivitySearchBinding
+    private lateinit var viewModel: SearchViewModel
 
     private lateinit var searchResultsAdapter: SearchResultAdapter
     private lateinit var songsHistoryAdapter: SearchResultAdapter
-    private var handler: Handler? = null
     private val songs = ArrayList<Track>()
-    private val tracksInteractor = Creator.provideTracksInteractor(this)
-
-    private val consumer = object : TracksInteractor.TracksConsumer {
-        override fun consume(foundSongs: Resource<List<Track>>) {
-            handler?.post {
-                when (foundSongs) {
-                    is Resource.ConnectionError -> render(SearchState.NO_CONNECTIONS)
-                    is Resource.NotFound -> render(SearchState.NOT_FOUND)
-                    is Resource.Data -> {
-                        if (foundSongs.value.isEmpty()) render(SearchState.NOT_FOUND)
-                        else {
-                            songs.clear()
-                            songs.addAll(foundSongs.value)
-                            render(SearchState.SEARCH)
-                        }
-                    }
-                }
-            }
-            }
-        }
-
-    private val searchRunnable = Runnable {
-        if (searchInput.isNotEmpty()) {
-            render(SearchState.PROGRESS_BAR)
-            tracksInteractor.searchSongs("song", searchInput, "ru", consumer)
-        }
-    }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,14 +36,28 @@ class SearchActivity : AppCompatActivity(), RenderState {
         val view = binding.root
         setContentView(view)
 
+        viewModel =
+            ViewModelProvider(this, SearchViewModelFactory(this))[SearchViewModel::class.java]
+
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        handler = Handler(Looper.getMainLooper())
 
         searchResultsAdapter = SearchResultAdapter(songs, ItemClickListener(), this)
         songsHistoryAdapter = SearchResultAdapter(songsHistory, ItemClickListener(), this)
 
         binding.searchResultsRecyclerView.adapter = searchResultsAdapter
         binding.youSearched.songsHistoryRecyclerView.adapter = songsHistoryAdapter
+
+        viewModel.getState().observe(this) { state ->
+            when (state) {
+                is SearchScreenState.Loading -> render(SearchState.PROGRESS_BAR)
+                is SearchScreenState.Error -> render(state.error)
+                is SearchScreenState.Content -> {
+                    songs.clear()
+                    songs.addAll(state.songs)
+                    render(SearchState.SEARCH)
+                }
+            }
+        }
 
         if (savedInstanceState != null) {
             searchInput = savedInstanceState.getString(INPUT_STRING, "")
@@ -91,8 +74,7 @@ class SearchActivity : AppCompatActivity(), RenderState {
         }
 
         binding.noConnectionPlaceholder.refreshButton.setOnClickListener {
-            render(SearchState.SEARCH)
-            tracksInteractor.searchSongs("song", searchInput, "ru", consumer)
+            viewModel.searchSongs("song", searchInput, "ru")
         }
         binding.youSearched.clearHistoryButton.setOnClickListener {
             songsHistory.clear()
@@ -111,9 +93,7 @@ class SearchActivity : AppCompatActivity(), RenderState {
         binding.searchBarEdit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 binding.searchBarEdit.clearFocus()
-                render(SearchState.SEARCH)
-                handler?.removeCallbacks(searchRunnable)
-                tracksInteractor.searchSongs("song", searchInput, "ru", consumer)
+                viewModel.searchSongs("song", searchInput, "ru")
             }
             false
         }
@@ -154,7 +134,7 @@ class SearchActivity : AppCompatActivity(), RenderState {
                 } else {
                     render(SearchState.SEARCH)
                 }
-                searchDebounce()
+                viewModel.searchDebounce(searchInput)
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -170,10 +150,6 @@ class SearchActivity : AppCompatActivity(), RenderState {
         outState.putString(INPUT_STRING, searchInput)
     }
 
-    private fun searchDebounce() {
-        handler?.removeCallbacks(searchRunnable)
-        handler?.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
-    }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun showSearch() {
@@ -232,6 +208,6 @@ class SearchActivity : AppCompatActivity(), RenderState {
     companion object {
         private const val INPUT_STRING = "INPUT_STRING"
         private const val EMPTY = ""
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        const val SEARCH_HISTORY_KEY = "searchHistory"
     }
 }
