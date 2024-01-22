@@ -6,4 +6,8 @@ interface TracksInteractor {
     interface TracksConsumer {
         fun consume(foundSongs: Resource<List<Track>>)
     }
+
+    fun readHistory(): SearchHistory
+    fun writeHistory(songsHistory: SearchHistory)
+    fun clearHistory()
 }

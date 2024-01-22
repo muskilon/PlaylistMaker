@@ -1,10 +1,25 @@
 package com.example.playlistmaker.search.data
 
 import com.example.playlistmaker.search.domain.Resource
+import com.example.playlistmaker.search.domain.SearchHistory
 import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.domain.TrackRepository
 
-class TrackRepositoryImpl(private val networkClient: NetworkClient) : TrackRepository {
+class TrackRepositoryImpl(
+    private val networkClient: NetworkClient,
+    private val historySharedPreferences: HistorySharedPreferences
+) : TrackRepository {
+    override fun readHistory(): SearchHistory {
+        return historySharedPreferences.readHistory()
+    }
+
+    override fun writeHistory(songsHistory: SearchHistory) {
+        historySharedPreferences.writeHistory(songsHistory)
+    }
+
+    override fun clearHistory() {
+        historySharedPreferences.clearHistory()
+    }
 
     override fun searchSongs(entity: String, term: String, lang: String): Resource<List<Track>> {
         val response = networkClient.doRequest(SearchRequest(entity, term, lang))

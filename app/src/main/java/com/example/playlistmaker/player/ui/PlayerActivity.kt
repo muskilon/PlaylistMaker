@@ -51,6 +51,9 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         binding.playButton.setOnClickListener { viewModel.playbackControl() }
+        binding.arrowBack.setOnClickListener {
+            this.finish()
+        }
     }
 
     override fun onPause() {

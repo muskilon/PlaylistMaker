@@ -6,6 +6,18 @@ class TracksInteractorImpl(private val repository: TrackRepository) : TracksInte
 
     private val executor = Executors.newCachedThreadPool()
 
+    override fun readHistory(): SearchHistory {
+        return repository.readHistory()
+    }
+
+    override fun writeHistory(songsHistory: SearchHistory) {
+        repository.writeHistory(songsHistory)
+    }
+
+    override fun clearHistory() {
+        repository.clearHistory()
+    }
+
     override fun searchSongs(
         entity: String,
         term: String,

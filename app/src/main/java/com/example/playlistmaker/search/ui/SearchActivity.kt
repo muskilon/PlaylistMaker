@@ -210,6 +210,5 @@ class SearchActivity : AppCompatActivity(), RenderState {
     companion object {
         private const val INPUT_STRING = "INPUT_STRING"
         private const val EMPTY = ""
-        const val SEARCH_HISTORY_KEY = "searchHistory"
     }
 }
