@@ -12,6 +12,7 @@ class SearchViewModelFactory(
 ) : ViewModelProvider.Factory {
     private val tracksInteractor = Creator.provideTracksInteractor(context)
     private val handler = Handler(Looper.getMainLooper())
+
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return SearchViewModel(
             tracksInteractor = tracksInteractor,

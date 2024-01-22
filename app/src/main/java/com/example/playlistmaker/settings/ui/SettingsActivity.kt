@@ -9,14 +9,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SwitchCompat
 import com.example.playlistmaker.R
+import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.main.ui.MainActivity.Companion.NIGHT_MODE_KEY
-import com.example.playlistmaker.main.ui.sharedPreferences
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+        val sharedPreferences = Creator.getSharedPreferences()
 
         val backArrow = findViewById<ImageView>(R.id.backArrow)
         backArrow.setOnClickListener {

@@ -1,17 +1,20 @@
 package com.example.playlistmaker.search.ui
 
 import android.content.Context
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.databinding.TrackSnippetBinding
+import com.example.playlistmaker.player.domain.TrackModelInteractor
+import com.example.playlistmaker.player.ui.PlayerActivity
 import com.example.playlistmaker.search.domain.Track
 
 class SearchResultAdapter(
     private val tracks: List<Track>,
-    private val onItemClickListener: ItemClickListener,
+    private val viewModel: SearchViewModel,
     private val context: Context
 ) : RecyclerView.Adapter<SearchResultViewHolder>() {
 
@@ -38,7 +41,10 @@ class SearchResultAdapter(
         holder.bind(tracks[position])
         holder.itemView.setOnClickListener {
             if (clickDebounce())
-                onItemClickListener.onTrackClick(tracks[holder.adapterPosition], this.context)
+                viewModel.onTrackClick(tracks[holder.adapterPosition])
+            TrackModelInteractor.setTrackModel(tracks[holder.adapterPosition])
+            val openPlayer = Intent(context, PlayerActivity::class.java)
+            context.startActivity(openPlayer)
         }
     }
 

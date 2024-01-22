@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
@@ -11,9 +12,6 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.main.ui.sharedPreferences
-import com.example.playlistmaker.search.data.HistorySharedPreferences
-import com.example.playlistmaker.search.data.HistorySharedPreferences.songsHistory
 import com.example.playlistmaker.search.domain.SearchScreenState
 import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
@@ -28,6 +26,8 @@ class SearchActivity : AppCompatActivity(), RenderState {
     private lateinit var songsHistoryAdapter: SearchResultAdapter
     private val songs = ArrayList<Track>()
 
+    private val songsHistory = ArrayList<Track>()
+
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +39,16 @@ class SearchActivity : AppCompatActivity(), RenderState {
         viewModel =
             ViewModelProvider(this, SearchViewModelFactory(this))[SearchViewModel::class.java]
 
+        viewModel.getSongsHistory().observe(this) { liveSongsHistory ->
+            songsHistory.clear()
+            songsHistory.addAll(liveSongsHistory)
+            Log.d("TAG", songsHistory.size.toString())
+        }
+
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
 
-        searchResultsAdapter = SearchResultAdapter(songs, ItemClickListener(), this)
-        songsHistoryAdapter = SearchResultAdapter(songsHistory, ItemClickListener(), this)
+        searchResultsAdapter = SearchResultAdapter(songs, viewModel, this)
+        songsHistoryAdapter = SearchResultAdapter(songsHistory, viewModel, this)
 
         binding.searchResultsRecyclerView.adapter = searchResultsAdapter
         binding.youSearched.songsHistoryRecyclerView.adapter = songsHistoryAdapter
@@ -64,9 +70,10 @@ class SearchActivity : AppCompatActivity(), RenderState {
             binding.searchBarEdit.setText(searchInput)
         }
 
-        if (sharedPreferences.getString(SEARCH_HISTORY_KEY, null) != null) {
-            songsHistory.clear()
-            songsHistory.addAll(HistorySharedPreferences.read().songsHistorySaved)
+        viewModel.getSongsHistorySharedPreferences()
+
+        binding.youSearched.clearHistoryButton.setOnClickListener {
+            viewModel.clearHistory()
         }
 
         binding.backArrow.setOnClickListener {
@@ -75,11 +82,6 @@ class SearchActivity : AppCompatActivity(), RenderState {
 
         binding.noConnectionPlaceholder.refreshButton.setOnClickListener {
             viewModel.searchSongs("song", searchInput, "ru")
-        }
-        binding.youSearched.clearHistoryButton.setOnClickListener {
-            songsHistory.clear()
-            HistorySharedPreferences.clear()
-            render(SearchState.SEARCH)
         }
 
         binding.searchBarInput.setEndIconOnClickListener {

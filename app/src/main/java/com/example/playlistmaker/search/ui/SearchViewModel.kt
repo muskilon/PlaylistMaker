@@ -4,7 +4,9 @@ import android.os.Handler
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.playlistmaker.search.data.HistorySharedPreferences
 import com.example.playlistmaker.search.domain.Resource
+import com.example.playlistmaker.search.domain.SearchHistory
 import com.example.playlistmaker.search.domain.SearchScreenState
 import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
@@ -17,6 +19,8 @@ class SearchViewModel(
     private var liveState = MutableLiveData<SearchScreenState>()
     private var searchInput = EMPTY
     private val songs = ArrayList<Track>()
+    private val liveHistorySongs = MutableLiveData<List<Track>>()
+    private val tempSongs = mutableListOf<Track>()
 
     private val consumer = object : TracksInteractor.TracksConsumer {
         override fun consume(foundSongs: Resource<List<Track>>) {
@@ -62,9 +66,51 @@ class SearchViewModel(
     }
 
     fun getState(): LiveData<SearchScreenState> = liveState
+    fun getSongsHistory(): LiveData<List<Track>> = liveHistorySongs
+
+    fun getSongsHistorySharedPreferences() {
+        tempSongs.addAll(HistorySharedPreferences.read().songsHistorySaved)
+        liveHistorySongs.postValue(tempSongs)
+    }
+
+    fun clearHistory() {
+        HistorySharedPreferences.clear()
+        tempSongs.clear()
+        liveHistorySongs.postValue(tempSongs)
+        liveState.postValue(SearchScreenState.Content(songs.toList()))
+    }
+
+    fun onTrackClick(track: Track) {
+        when {
+            tempSongs.isEmpty() -> {
+                tempSongs.add(track)
+                HistorySharedPreferences.write(SearchHistory(tempSongs.toList()))
+            }
+
+            tempSongs.contains(track) -> {
+                tempSongs.remove(track)
+                tempSongs.add(0, track)
+                HistorySharedPreferences.write(SearchHistory(tempSongs.toList()))
+            }
+
+            tempSongs.size == HISTORY_SIZE -> {
+                tempSongs.removeLast()
+                tempSongs.add(0, track)
+                HistorySharedPreferences.write(SearchHistory(tempSongs.toList()))
+            }
+
+            else -> {
+                tempSongs.add(0, track)
+                HistorySharedPreferences.write(SearchHistory(tempSongs.toList()))
+            }
+        }
+        liveHistorySongs.postValue(tempSongs)
+    }
 
     companion object {
         private const val EMPTY = ""
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        const val SEARCH_HISTORY_KEY = "searchHistory"
+        private const val HISTORY_SIZE = 10
     }
 }
