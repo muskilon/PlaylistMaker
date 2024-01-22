@@ -24,14 +24,13 @@ class SearchActivity : AppCompatActivity(), RenderState {
 
     private lateinit var searchResultsAdapter: SearchResultAdapter
     private lateinit var songsHistoryAdapter: SearchResultAdapter
-    private val songs = ArrayList<Track>()
 
+    private val songs = ArrayList<Track>()
     private val songsHistory = ArrayList<Track>()
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivitySearchBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
@@ -65,10 +64,10 @@ class SearchActivity : AppCompatActivity(), RenderState {
             }
         }
 
-        if (savedInstanceState != null) {
-            searchInput = savedInstanceState.getString(INPUT_STRING, "")
-            binding.searchBarEdit.setText(searchInput)
-        }
+//        if (savedInstanceState != null) {
+//            searchInput = savedInstanceState.getString(INPUT_STRING, "")
+//            binding.searchBarEdit.setText(searchInput)
+//        }
 
         viewModel.getSongsHistorySharedPreferences()
 
@@ -147,10 +146,10 @@ class SearchActivity : AppCompatActivity(), RenderState {
         binding.searchBarEdit.addTextChangedListener(simpleTextWatcher)
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putString(INPUT_STRING, searchInput)
-    }
+//    override fun onSaveInstanceState(outState: Bundle) {
+//        super.onSaveInstanceState(outState)
+//        outState.putString(INPUT_STRING, searchInput)
+//    }
 
 
     @SuppressLint("NotifyDataSetChanged")
@@ -208,7 +207,7 @@ class SearchActivity : AppCompatActivity(), RenderState {
 
 
     companion object {
-        private const val INPUT_STRING = "INPUT_STRING"
+        //        private const val INPUT_STRING = "INPUT_STRING"
         private const val EMPTY = ""
     }
 }

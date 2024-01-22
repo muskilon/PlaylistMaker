@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
     companion object{
-        const val SHARED_PREFERENCES = "sharedPreferences"
         const val NIGHT_MODE_KEY = "nightMode"
     }
 }
