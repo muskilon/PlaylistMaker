@@ -6,13 +6,13 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
-import com.example.playlistmaker.main.ui.MainActivity.Companion.NIGHT_MODE_KEY
 
 class SettingsActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySettingsBinding
+    private lateinit var viewModel: SettingsViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -20,7 +20,8 @@ class SettingsActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        val sharedPreferences = Creator.getSharedPreferences()
+        viewModel =
+            ViewModelProvider(this, SettingsViewModelFactory(this))[SettingsViewModel::class.java]
 
         binding.backArrow.setOnClickListener {
             this.finish()
@@ -67,14 +68,10 @@ class SettingsActivity : AppCompatActivity() {
         binding.themeSwitch.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                sharedPreferences.edit()
-                    .putBoolean(NIGHT_MODE_KEY, true)
-                    .apply()
+                viewModel.updateThemeSetting(true)
             } else {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                sharedPreferences.edit()
-                    .putBoolean(NIGHT_MODE_KEY, false)
-                    .apply()
+                viewModel.updateThemeSetting(false)
             }
 
         }
