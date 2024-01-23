@@ -3,8 +3,8 @@ package com.example.playlistmaker.settings.ui
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.ViewModelProvider
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
@@ -21,9 +21,6 @@ class SettingsActivity : AppCompatActivity() {
 
         viewModel =
             ViewModelProvider(this, SettingsViewModelFactory(this))[SettingsViewModel::class.java]
-
-        binding.themeSwitch.isChecked = viewModel.getThemeSettings()
-
 
         binding.backArrow.setOnClickListener {
             this.finish()
@@ -54,16 +51,26 @@ class SettingsActivity : AppCompatActivity() {
             }
             startActivity(sendFeedback)
         }
+        observeNightTheme()
 
         binding.themeSwitch.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                viewModel.updateThemeSetting(true)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                viewModel.updateThemeSetting(false)
-            }
+            Log.d("TAG", "Свичер переключился в положение: $isChecked")
+            viewModel.updateThemeSetting(isChecked)
+        }
+    }
 
+    private fun observeNightTheme() {
+        viewModel.getThemeState().observe(this) {
+            Log.d("TAG", "Обновление liveData =$it")
+            Log.d(
+                "TAG",
+                "Статус свичера до изменения в обсервере ${binding.themeSwitch.isChecked}"
+            )
+            binding.themeSwitch.isChecked = it
+            Log.d(
+                "TAG",
+                "Статус свичера после изменения в обсервере ${binding.themeSwitch.isChecked}"
+            )
         }
     }
 }

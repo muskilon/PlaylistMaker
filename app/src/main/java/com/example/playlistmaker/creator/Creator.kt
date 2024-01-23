@@ -16,7 +16,6 @@ import com.example.playlistmaker.settings.domain.SettingsRepository
 import com.google.gson.Gson
 
 object Creator {
-    fun getSharedPreferences() = MyApplication.sharedPreferences
     fun getGson() = Gson()
     private fun getTracksRepository(context: Context): TrackRepository {
         return TrackRepositoryImpl(

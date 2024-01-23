@@ -7,9 +7,9 @@ class SettingsStorage(private val sharedPreferences: SharedPreferences) {
         return sharedPreferences.getBoolean(NIGHT_MODE_KEY, false)
     }
 
-    fun updateThemeSetting(settings: Boolean) {
+    fun updateThemeSetting(isNightTheme: Boolean) {
         sharedPreferences.edit()
-            .putBoolean(NIGHT_MODE_KEY, settings)
+            .putBoolean(NIGHT_MODE_KEY, isNightTheme)
             .apply()
     }
 
