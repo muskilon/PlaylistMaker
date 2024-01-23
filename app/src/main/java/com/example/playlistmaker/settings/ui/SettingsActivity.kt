@@ -1,7 +1,6 @@
 package com.example.playlistmaker.settings.ui
 
 import android.content.Intent
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +21,9 @@ class SettingsActivity : AppCompatActivity() {
 
         viewModel =
             ViewModelProvider(this, SettingsViewModelFactory(this))[SettingsViewModel::class.java]
+
+        binding.themeSwitch.isChecked = viewModel.getThemeSettings()
+
 
         binding.backArrow.setOnClickListener {
             this.finish()
@@ -51,18 +53,6 @@ class SettingsActivity : AppCompatActivity() {
                 putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.email_address)))
             }
             startActivity(sendFeedback)
-        }
-
-        when (this.resources?.configuration?.uiMode?.and(Configuration.UI_MODE_NIGHT_MASK)) {
-            Configuration.UI_MODE_NIGHT_YES -> {
-                binding.themeSwitch.isChecked = true
-            }
-            Configuration.UI_MODE_NIGHT_NO -> {
-                binding.themeSwitch.isChecked = false
-            }
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> {
-                binding.themeSwitch.isChecked = false
-            }
         }
 
         binding.themeSwitch.setOnCheckedChangeListener { _, isChecked ->
