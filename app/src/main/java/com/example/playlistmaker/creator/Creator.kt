@@ -8,11 +8,14 @@ import com.example.playlistmaker.search.data.TrackRepositoryImpl
 import com.example.playlistmaker.search.domain.TrackRepository
 import com.example.playlistmaker.search.domain.TracksInteractor
 import com.example.playlistmaker.search.domain.TracksInteractorImpl
+import com.example.playlistmaker.settings.data.ExternalNavigator
 import com.example.playlistmaker.settings.data.SettingsRepositoryImpl
 import com.example.playlistmaker.settings.data.SettingsStorage
+import com.example.playlistmaker.settings.data.SharingInteractorImpl
 import com.example.playlistmaker.settings.domain.SettingsInteractor
 import com.example.playlistmaker.settings.domain.SettingsInteractorImpl
 import com.example.playlistmaker.settings.domain.SettingsRepository
+import com.example.playlistmaker.settings.domain.SharingInteractor
 import com.google.gson.Gson
 
 object Creator {
@@ -47,4 +50,14 @@ object Creator {
     fun provideSettingsInteractor(context: Context): SettingsInteractor {
         return SettingsInteractorImpl(getSettingsRepository(context))
     }
+
+    private fun getExternalNavigator(context: Context): ExternalNavigator {
+        return ExternalNavigator(context)
+    }
+
+    fun provideSharingInteractor(context: Context): SharingInteractor {
+        return SharingInteractorImpl(getExternalNavigator(context))
+    }
+
+
 }

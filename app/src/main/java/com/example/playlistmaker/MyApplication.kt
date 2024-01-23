@@ -2,6 +2,7 @@ package com.example.playlistmaker
 
 import android.app.Application
 import android.content.res.Configuration
+import android.content.res.Resources
 import androidx.appcompat.app.AppCompatDelegate
 import com.example.playlistmaker.settings.data.SettingsStorage
 
@@ -9,6 +10,7 @@ import com.example.playlistmaker.settings.data.SettingsStorage
 class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+        resourcess = resources
 
         val sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
         val settingsStorage = SettingsStorage(sharedPreferences)
@@ -36,12 +38,17 @@ class MyApplication : Application() {
     companion object {
         const val SHARED_PREFERENCES = "sharedPreferences"
         const val NIGHT_MODE_KEY = "nightMode"
+        private lateinit var resourcess: Resources
 
         fun changeTheme(isNightMode: Boolean) {
             when (isNightMode) {
                 true -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                 false -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
+        }
+
+        fun getAppResources(): Resources {
+            return resourcess
         }
     }
 }
