@@ -27,12 +27,9 @@ class PlayerActivity : AppCompatActivity() {
             binding.timeElapsed.text = status.timeElapsed
             binding.playButton.isClickable = status.playButtonClickableState
             binding.playButton.setImageResource(status.playButtonImage)
-        }
 
-
-        viewModel.getCurrentTrack().observe(this) { currentTrack ->
             Glide.with(this)
-                .load(currentTrack.pictureUrl)
+                .load(status.currentTrack.pictureUrl)
                 .placeholder(R.drawable.placeholder_big)
                 .transform(
                     RoundedCorners(
@@ -41,13 +38,13 @@ class PlayerActivity : AppCompatActivity() {
                     )
                 )
                 .into(binding.albumCover)
-            binding.trackName.text = currentTrack.trackName
-            binding.artistName.text = currentTrack.artist
-            binding.trackDuration.text = currentTrack.duration
-            binding.album.text = currentTrack.album
-            binding.year.text = currentTrack.year
-            binding.genre.text = currentTrack.genre
-            binding.country.text = currentTrack.country
+            binding.trackName.text = status.currentTrack.trackName
+            binding.artistName.text = status.currentTrack.artist
+            binding.trackDuration.text = status.currentTrack.duration
+            binding.album.text = status.currentTrack.album
+            binding.year.text = status.currentTrack.year
+            binding.genre.text = status.currentTrack.genre
+            binding.country.text = status.currentTrack.country
         }
 
         binding.playButton.setOnClickListener { viewModel.playbackControl() }

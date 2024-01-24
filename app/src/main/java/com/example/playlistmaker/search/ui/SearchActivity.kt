@@ -69,7 +69,7 @@ class SearchActivity : AppCompatActivity(), RenderState {
 //            binding.searchBarEdit.setText(searchInput)
 //        }
 
-        viewModel.getSongsHistorySharedPreferences()
+        viewModel.getSongsHistoryFromStorage()
 
         binding.youSearched.clearHistoryButton.setOnClickListener {
             viewModel.clearHistory()

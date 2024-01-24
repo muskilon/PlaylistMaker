@@ -19,13 +19,22 @@ class PlayerViewModel(
     private var musicPlayerState = MusicPlayerState.STATE_DEFAULT
 
     private var livePlayStatus = MutableLiveData<PlayStatus>()
-    private val liveCurrentTrack = MutableLiveData(currentTrack)
+
+    init {
+        livePlayStatus.value = PlayStatus(
+            timeElapsed = "__:__",
+            playButtonClickableState = false,
+            playButtonImage = (R.drawable.play_button),
+            currentTrack = currentTrack
+        )
+    }
 
     private fun getCurrentPlayStatus(): PlayStatus {
         return livePlayStatus.value ?: PlayStatus(
             timeElapsed = TIMER_ZERO,
             playButtonClickableState = false,
-            playButtonImage = (R.drawable.play_button)
+            playButtonImage = (R.drawable.play_button),
+            currentTrack = currentTrack
         )
     }
 
@@ -102,8 +111,6 @@ class PlayerViewModel(
     }
 
     fun getPlayStatus(): LiveData<PlayStatus> = livePlayStatus
-
-    fun getCurrentTrack(): LiveData<TrackModel> = liveCurrentTrack
 
     fun preparePlayer() {
         mplayer.preparePlayer(currentTrack.previewUrl)

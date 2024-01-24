@@ -67,7 +67,7 @@ class SearchViewModel(
     fun getState(): LiveData<SearchScreenState> = liveState
     fun getSongsHistory(): LiveData<List<Track>> = liveHistorySongs
 
-    fun getSongsHistorySharedPreferences() {
+    fun getSongsHistoryFromStorage() {
         if (tracksInteractor.readHistory().songsHistorySaved.isNotEmpty()) {
             tempSongs.addAll(tracksInteractor.readHistory().songsHistorySaved)
             liveHistorySongs.postValue(tempSongs)
