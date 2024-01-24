@@ -7,18 +7,18 @@ import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.R
 import com.example.playlistmaker.player.data.MusicPlayerImpl
 import com.example.playlistmaker.player.data.OnStateChangeListener
+import com.example.playlistmaker.player.domain.CurrentTrackInteractor
 import com.example.playlistmaker.player.domain.MusicPlayerState
 import com.example.playlistmaker.player.domain.PlayStatus
-import com.example.playlistmaker.search.domain.TracksInteractor
 
 class PlayerViewModel(
-    tracksInteractor: TracksInteractor,
+    currentTrackInteractor: CurrentTrackInteractor,
     private val mplayer: MusicPlayerImpl,
     private val handler: Handler
 ) : ViewModel() {
     private var musicPlayerState = MusicPlayerState.STATE_DEFAULT
     private var livePlayStatus = MutableLiveData<PlayStatus>()
-    private val currentTrack = tracksInteractor.getTrackModel()
+    private val currentTrack = currentTrackInteractor.getCurrentTrack()
 
     init {
         livePlayStatus.value = PlayStatus(

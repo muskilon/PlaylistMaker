@@ -1,5 +1,6 @@
-package com.example.playlistmaker.player.domain
+package com.example.playlistmaker.player.data
 
+import com.example.playlistmaker.player.domain.TrackModel
 import com.example.playlistmaker.search.domain.Track
 
 object CurrentTrackStorage {
@@ -10,7 +11,7 @@ object CurrentTrackStorage {
         return currentTrack
     }
 
-    fun setTrackModel(track: Track) {
+    fun setCurrentTrack(track: Track) {
         currentTrack.trackName = track.trackName
         currentTrack.artist = track.artistName
         currentTrack.album = track.collectionName

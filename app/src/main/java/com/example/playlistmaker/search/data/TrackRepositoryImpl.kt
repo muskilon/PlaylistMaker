@@ -1,7 +1,6 @@
 package com.example.playlistmaker.search.data
 
-import com.example.playlistmaker.player.domain.CurrentTrackStorage
-import com.example.playlistmaker.player.domain.TrackModel
+import com.example.playlistmaker.player.data.CurrentTrackStorage
 import com.example.playlistmaker.search.domain.Resource
 import com.example.playlistmaker.search.domain.SearchHistory
 import com.example.playlistmaker.search.domain.Track
@@ -11,12 +10,9 @@ class TrackRepositoryImpl(
     private val networkClient: NetworkClient,
     private val historySharedPreferences: HistorySharedPreferences
 ) : TrackRepository {
-    override fun getTrackModel(): TrackModel {
-        return CurrentTrackStorage.getTrackModel()
-    }
 
-    override fun setTrackModel(currentTrack: Track) {
-        CurrentTrackStorage.setTrackModel(currentTrack)
+    override fun setCurrentTrack(currentTrack: Track) {
+        CurrentTrackStorage.setCurrentTrack(currentTrack)
     }
 
     override fun readHistory(): SearchHistory {

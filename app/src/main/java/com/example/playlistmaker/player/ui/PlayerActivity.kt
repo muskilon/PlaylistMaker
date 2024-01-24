@@ -19,7 +19,7 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(view)
 
         viewModel =
-            ViewModelProvider(this, PlayerViewModelFactory(this))[PlayerViewModel::class.java]
+            ViewModelProvider(this, PlayerViewModelFactory())[PlayerViewModel::class.java]
 
         viewModel.setListener()
         viewModel.preparePlayer()

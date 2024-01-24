@@ -1,6 +1,5 @@
 package com.example.playlistmaker.search.domain
 
-import com.example.playlistmaker.player.domain.TrackModel
 import java.util.concurrent.Executors
 
 class TracksInteractorImpl(private val repository: TrackRepository) : TracksInteractor {
@@ -19,12 +18,8 @@ class TracksInteractorImpl(private val repository: TrackRepository) : TracksInte
         repository.clearHistory()
     }
 
-    override fun getTrackModel(): TrackModel {
-        return repository.getTrackModel()
-    }
-
-    override fun setTrackModel(currentTrack: Track) {
-        repository.setTrackModel(currentTrack)
+    override fun setCurrentTrack(currentTrack: Track) {
+        repository.setCurrentTrack(currentTrack)
     }
 
     override fun searchSongs(

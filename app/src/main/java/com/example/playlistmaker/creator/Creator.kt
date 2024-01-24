@@ -2,6 +2,10 @@ package com.example.playlistmaker.creator
 
 import android.content.Context
 import com.example.playlistmaker.MyApplication
+import com.example.playlistmaker.player.data.CurrentTrackRepositoryImpl
+import com.example.playlistmaker.player.domain.CurrentTrackInteractor
+import com.example.playlistmaker.player.domain.CurrentTrackInteractorImpl
+import com.example.playlistmaker.player.domain.CurrentTrackRepository
 import com.example.playlistmaker.search.data.HistorySharedPreferences
 import com.example.playlistmaker.search.data.RetrofitNetworkClient
 import com.example.playlistmaker.search.data.TrackRepositoryImpl
@@ -20,6 +24,8 @@ import com.google.gson.Gson
 
 object Creator {
     fun getGson() = Gson()
+
+    //    TracksInteractor
     private fun getTracksRepository(context: Context): TrackRepository {
         return TrackRepositoryImpl(
             RetrofitNetworkClient(context),
@@ -31,11 +37,11 @@ object Creator {
             )
         )
     }
-
     fun provideTracksInteractor(context: Context): TracksInteractor {
         return TracksInteractorImpl(getTracksRepository(context))
     }
 
+    //    SettingsInteractor
     private fun getSettingsRepository(context: Context): SettingsRepository {
         return SettingsRepositoryImpl(
             SettingsStorage(
@@ -46,17 +52,26 @@ object Creator {
             )
         )
     }
-
     fun provideSettingsInteractor(context: Context): SettingsInteractor {
         return SettingsInteractorImpl(getSettingsRepository(context))
     }
 
+    //    SharingInteractor
     private fun getExternalNavigator(context: Context): ExternalNavigator {
         return ExternalNavigator(context)
     }
 
     fun provideSharingInteractor(context: Context): SharingInteractor {
         return SharingInteractorImpl(getExternalNavigator(context))
+    }
+
+    //    CurrentTrackInteractor
+    private fun getCurrentTrackRepository(): CurrentTrackRepository {
+        return CurrentTrackRepositoryImpl()
+    }
+
+    fun provideCurrentTrackInteractor(): CurrentTrackInteractor {
+        return CurrentTrackInteractorImpl(getCurrentTrackRepository())
     }
 
 
