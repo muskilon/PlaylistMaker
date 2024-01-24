@@ -1,10 +1,12 @@
 package com.example.playlistmaker.search.ui
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
@@ -12,6 +14,8 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.player.domain.TrackModelInteractor
+import com.example.playlistmaker.player.ui.PlayerActivity
 import com.example.playlistmaker.search.domain.SearchScreenState
 import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
@@ -28,12 +32,16 @@ class SearchActivity : AppCompatActivity(), RenderState {
     private val songs = ArrayList<Track>()
     private val songsHistory = ArrayList<Track>()
 
+    private var isClickAllowed = true
+    private lateinit var handler: Handler
+
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySearchBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+        handler = Handler(Looper.getMainLooper())
 
         viewModel =
             ViewModelProvider(this, SearchViewModelFactory(this))[SearchViewModel::class.java]
@@ -41,13 +49,23 @@ class SearchActivity : AppCompatActivity(), RenderState {
         viewModel.getSongsHistory().observe(this) { liveSongsHistory ->
             songsHistory.clear()
             songsHistory.addAll(liveSongsHistory)
-            Log.d("TAG", songsHistory.size.toString())
         }
 
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
 
-        searchResultsAdapter = SearchResultAdapter(songs, viewModel, this)
-        songsHistoryAdapter = SearchResultAdapter(songsHistory, viewModel, this)
+        searchResultsAdapter = SearchResultAdapter(songs) { track ->
+            if (clickDebounce()) viewModel.onTrackClick(track)
+            TrackModelInteractor.setTrackModel(track)
+            val openPlayer = Intent(this, PlayerActivity::class.java)
+            startActivity(openPlayer)
+        }
+
+        songsHistoryAdapter = SearchResultAdapter(songsHistory) { track ->
+            if (clickDebounce()) viewModel.onTrackClick(track)
+            TrackModelInteractor.setTrackModel(track)
+            val openPlayer = Intent(this, PlayerActivity::class.java)
+            startActivity(openPlayer)
+        }
 
         binding.searchResultsRecyclerView.adapter = searchResultsAdapter
         binding.youSearched.songsHistoryRecyclerView.adapter = songsHistoryAdapter
@@ -63,11 +81,6 @@ class SearchActivity : AppCompatActivity(), RenderState {
                 }
             }
         }
-
-//        if (savedInstanceState != null) {
-//            searchInput = savedInstanceState.getString(INPUT_STRING, "")
-//            binding.searchBarEdit.setText(searchInput)
-//        }
 
         viewModel.getSongsHistoryFromStorage()
 
@@ -146,10 +159,14 @@ class SearchActivity : AppCompatActivity(), RenderState {
         binding.searchBarEdit.addTextChangedListener(simpleTextWatcher)
     }
 
-//    override fun onSaveInstanceState(outState: Bundle) {
-//        super.onSaveInstanceState(outState)
-//        outState.putString(INPUT_STRING, searchInput)
-//    }
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
 
 
     @SuppressLint("NotifyDataSetChanged")
@@ -207,7 +224,7 @@ class SearchActivity : AppCompatActivity(), RenderState {
 
 
     companion object {
-        //        private const val INPUT_STRING = "INPUT_STRING"
         private const val EMPTY = ""
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 }
