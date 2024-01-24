@@ -1,5 +1,7 @@
 package com.example.playlistmaker.search.domain
 
+import com.example.playlistmaker.player.domain.TrackModel
+
 interface TracksInteractor {
     fun searchSongs(entity: String, term: String, lang: String, consumer: TracksConsumer)
 
@@ -10,4 +12,6 @@ interface TracksInteractor {
     fun readHistory(): SearchHistory
     fun writeHistory(songsHistory: SearchHistory)
     fun clearHistory()
+    fun getTrackModel(): TrackModel
+    fun setTrackModel(currentTrack: Track)
 }

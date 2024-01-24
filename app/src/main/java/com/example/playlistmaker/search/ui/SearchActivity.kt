@@ -14,7 +14,6 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.player.domain.TrackModelInteractor
 import com.example.playlistmaker.player.ui.PlayerActivity
 import com.example.playlistmaker.search.domain.SearchScreenState
 import com.example.playlistmaker.search.domain.SearchState
@@ -55,14 +54,12 @@ class SearchActivity : AppCompatActivity(), RenderState {
 
         searchResultsAdapter = SearchResultAdapter(songs) { track ->
             if (clickDebounce()) viewModel.onTrackClick(track)
-            TrackModelInteractor.setTrackModel(track)
             val openPlayer = Intent(this, PlayerActivity::class.java)
             startActivity(openPlayer)
         }
 
         songsHistoryAdapter = SearchResultAdapter(songsHistory) { track ->
             if (clickDebounce()) viewModel.onTrackClick(track)
-            TrackModelInteractor.setTrackModel(track)
             val openPlayer = Intent(this, PlayerActivity::class.java)
             startActivity(openPlayer)
         }

@@ -18,7 +18,8 @@ class PlayerActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        viewModel = ViewModelProvider(this, PlayerViewModelFactory())[PlayerViewModel::class.java]
+        viewModel =
+            ViewModelProvider(this, PlayerViewModelFactory(this))[PlayerViewModel::class.java]
 
         viewModel.setListener()
         viewModel.preparePlayer()

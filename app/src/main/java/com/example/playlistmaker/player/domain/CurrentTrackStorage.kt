@@ -2,7 +2,7 @@ package com.example.playlistmaker.player.domain
 
 import com.example.playlistmaker.search.domain.Track
 
-object TrackModelInteractor {
+object CurrentTrackStorage {
 
     private var currentTrack: TrackModel = TrackModel()
 
