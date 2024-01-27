@@ -76,6 +76,7 @@
             tools:visibility="visible" />
 
         <include
+            android:id="@+id/you_searched"
             layout="@layout/you_searched"
             tools:visibility="gone" />
 
@@ -89,10 +90,12 @@
             tools:visibility="visible" />
 
         <include
+            android:id="@+id/not_found_placeholder"
             layout="@layout/not_found_placeholder"
             tools:visibility="gone" />
 
         <include
+            android:id="@+id/no_connection_placeholder"
             layout="@layout/no_connection_placeholder"
             tools:visibility="gone" />
     </FrameLayout>

@@ -27,7 +27,7 @@
         />
 
     <Button
-        android:id="@+id/medialibrary_button"
+        android:id="@+id/media_library_button"
         style="@style/MainMenuButtons"
         android:text="@string/medialibrary"
         app:icon="@drawable/medialibrary"
