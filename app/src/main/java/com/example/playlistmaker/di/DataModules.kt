@@ -1,6 +1,7 @@
 package com.example.playlistmaker.di
 
 import android.content.Context
+import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
 import com.example.playlistmaker.MyApplication
@@ -49,6 +50,7 @@ val dataModules = module {
     }
 
 //  Player
-    factory<MusicPlayer> { MusicPlayerImpl() }
+    factory<MusicPlayer> { MusicPlayerImpl(mediaPlayer = get()) }
+    factory { MediaPlayer() }
 
 }

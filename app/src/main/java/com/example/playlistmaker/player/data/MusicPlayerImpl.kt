@@ -5,8 +5,9 @@ import android.media.MediaPlayer
 import com.example.playlistmaker.player.domain.MusicPlayerState
 import java.util.Locale
 
-class MusicPlayerImpl : MusicPlayer {
-    private val mediaPlayer: MediaPlayer = MediaPlayer()
+class MusicPlayerImpl(
+    private val mediaPlayer: MediaPlayer,
+) : MusicPlayer {
     private var listener: OnStateChangeListener? = null
     override fun preparePlayer(source: String) {
         mediaPlayer.setDataSource(source)
