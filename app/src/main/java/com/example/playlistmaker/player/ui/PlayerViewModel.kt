@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.R
-import com.example.playlistmaker.player.data.MusicPlayerImpl
+import com.example.playlistmaker.player.data.MusicPlayer
 import com.example.playlistmaker.player.data.OnStateChangeListener
 import com.example.playlistmaker.player.domain.CurrentTrackInteractor
 import com.example.playlistmaker.player.domain.MusicPlayerState
@@ -13,7 +13,7 @@ import com.example.playlistmaker.player.domain.PlayStatus
 
 class PlayerViewModel(
     currentTrackInteractor: CurrentTrackInteractor,
-    private val mplayer: MusicPlayerImpl,
+    private val mplayer: MusicPlayer,
     private val handler: Handler
 ) : ViewModel() {
     private var musicPlayerState = MusicPlayerState.STATE_DEFAULT

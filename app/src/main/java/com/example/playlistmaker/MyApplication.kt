@@ -4,12 +4,21 @@ import android.app.Application
 import android.content.res.Configuration
 import android.content.res.Resources
 import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.di.dataModules
+import com.example.playlistmaker.di.domainModules
+import com.example.playlistmaker.di.viewModelModules
 import com.example.playlistmaker.settings.data.SettingsStorage
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.context.startKoin
 
 
 class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
+        startKoin {
+            androidContext(this@MyApplication)
+            modules(dataModules, domainModules, viewModelModules)
+        }
         resourcess = resources
 
         val sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)

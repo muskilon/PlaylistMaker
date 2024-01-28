@@ -6,7 +6,7 @@ import com.example.playlistmaker.player.domain.MusicPlayerState
 import java.util.Locale
 
 class MusicPlayerImpl : MusicPlayer {
-    private val mediaPlayer = MediaPlayer()
+    private val mediaPlayer: MediaPlayer = MediaPlayer()
     private var listener: OnStateChangeListener? = null
     override fun preparePlayer(source: String) {
         mediaPlayer.setDataSource(source)
