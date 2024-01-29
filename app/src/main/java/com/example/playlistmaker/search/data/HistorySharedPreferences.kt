@@ -1,11 +1,14 @@
 package com.example.playlistmaker.search.data
 
 import android.content.SharedPreferences
-import com.example.playlistmaker.creator.Creator
+//import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.search.domain.SearchHistory
+import com.google.gson.Gson
 
-class HistorySharedPreferences(private val sharedPreferences: SharedPreferences) {
-    private val gson = Creator.getGson()
+class HistorySharedPreferences(
+    private val sharedPreferences: SharedPreferences,
+    private val gson: Gson
+) {
     fun readHistory(): SearchHistory {
         val json = sharedPreferences.getString(SEARCH_HISTORY_KEY, null)
         return if (json == null) SearchHistory(emptyList())

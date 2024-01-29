@@ -11,19 +11,19 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.player.ui.PlayerActivity
 import com.example.playlistmaker.search.domain.SearchScreenState
 import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class SearchActivity : AppCompatActivity(), RenderState {
     private var searchInput: String = EMPTY
     private lateinit var binding: ActivitySearchBinding
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel: SearchViewModel by viewModel()
 
     private lateinit var searchResultsAdapter: SearchResultAdapter
     private lateinit var songsHistoryAdapter: SearchResultAdapter
@@ -41,9 +41,6 @@ class SearchActivity : AppCompatActivity(), RenderState {
         val view = binding.root
         setContentView(view)
         handler = Handler(Looper.getMainLooper())
-
-        viewModel =
-            ViewModelProvider(this, SearchViewModelFactory(this))[SearchViewModel::class.java]
 
         viewModel.getSongsHistory().observe(this) { liveSongsHistory ->
             songsHistory.clear()
@@ -163,6 +160,12 @@ class SearchActivity : AppCompatActivity(), RenderState {
             handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
         }
         return current
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    override fun onResume() {
+        super.onResume()
+        songsHistoryAdapter.notifyDataSetChanged()
     }
 
 

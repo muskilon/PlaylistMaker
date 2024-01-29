@@ -13,19 +13,23 @@ class ExternalNavigator(
             putExtra(Intent.EXTRA_TEXT, link)
             type = "text/plain"
             Intent.createChooser(this, null)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         context.startActivity(sendApp)
 
     }
 
     fun openLink(link: String) {
-        val termsOfUse = Intent(Intent.ACTION_VIEW, Uri.parse(link))
+        val termsOfUse = Intent(Intent.ACTION_VIEW, Uri.parse(link)).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
         context.startActivity(termsOfUse)
 
     }
 
     fun openEmail(emailData: EmailData) {
         val sendFeedback = Intent(Intent.ACTION_SENDTO).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             data = Uri.parse("mailto:")
             putExtra(Intent.EXTRA_SUBJECT, emailData.subject)
             putExtra(Intent.EXTRA_TEXT, emailData.text)
