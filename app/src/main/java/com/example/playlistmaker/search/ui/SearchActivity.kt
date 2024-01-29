@@ -162,6 +162,12 @@ class SearchActivity : AppCompatActivity(), RenderState {
         return current
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    override fun onResume() {
+        super.onResume()
+        songsHistoryAdapter.notifyDataSetChanged()
+    }
+
 
     @SuppressLint("NotifyDataSetChanged")
     override fun showSearch() {
