@@ -20,4 +20,7 @@ class FavoritesFragment : Fragment() {
         return binding.root
     }
 
+    companion object {
+        fun newInstance() = FavoritesFragment()
+    }
 }
