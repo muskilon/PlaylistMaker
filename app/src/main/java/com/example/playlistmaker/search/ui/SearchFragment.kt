@@ -55,6 +55,7 @@ class SearchFragment : Fragment(), RenderState {
             songsHistory.addAll(liveSongsHistory)
         }
 
+
         val imm =
             requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 

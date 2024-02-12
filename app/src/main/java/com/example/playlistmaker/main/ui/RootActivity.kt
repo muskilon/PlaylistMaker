@@ -23,4 +23,5 @@ class RootActivity : AppCompatActivity() {
         binding.bottomNavigationView.setupWithNavController(navController)
     }
 
+
 }
