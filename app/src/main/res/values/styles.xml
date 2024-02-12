@@ -127,4 +127,36 @@
         <item name="android:textSize">14sp</item>
         <item name="android:fontFamily">@font/ys_display_medium</item>
     </style>
+
+    <style name="BottomNavigation" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="itemPaddingTop">8dp</item>
+        <item name="itemPaddingBottom">8dp</item>
+        <item name="android:background">?attr/white_ypDayBlack_ypNight</item>
+        <item name="itemIconTint">@drawable/bottom_nav_bar</item>
+        <item name="itemTextColor">@drawable/bottom_nav_bar</item>
+        <item name="enforceMaterialTheme">false</item>
+        <item name="enforceTextAppearance">false</item>
+        <item name="itemRippleColor">@null</item>
+        <item name="compatShadowEnabled">false</item>
+        <item name="elevation">0dp</item>
+        <item name="itemTextAppearanceActive">@style/BottomNavigation.ActiveItemTextAppearance
+        </item>
+        <item name="itemTextAppearanceInactive">@style/BottomNavigation.InactiveItemTextAppearance
+        </item>
+    </style>
+
+    <style name="BottomNavigation.ActiveItemTextAppearance">
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:lineSpacingMultiplier">0</item>
+    </style>
+
+    <style name="BottomNavigation.InactiveItemTextAppearance">
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">@font/ys_display_regular</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:lineSpacingMultiplier">0</item>
+
+    </style>
 </resources>

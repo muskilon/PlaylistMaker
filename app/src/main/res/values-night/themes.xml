@@ -14,9 +14,4 @@
         <item name="white_ypDayBlack_ypNight">@color/yp_black</item>
 
     </style>
-    <style name="MainActivity.Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker">
-        <item name="android:statusBarColor">@color/yp_black</item>
-        <item name="android:background">@color/yp_black</item>
-        <item name="android:navigationBarColor">@color/yp_black</item>
-    </style>
 </resources>
