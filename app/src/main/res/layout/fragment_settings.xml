@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    >
+    tools:context="com.example.playlistmaker.settings.ui.SettingsFragment">
 
     <LinearLayout
         style="@style/NavigationToolBar"
@@ -13,24 +13,22 @@
 
         <ImageView
             android:id="@+id/backArrow"
-            style="@style/NavigationToolBarIcon"/>
+            style="@style/NavigationToolBarIcon" />
 
         <TextView
-            android:text="@string/settings"
             style="@style/NavigationToolBarText"
+            android:text="@string/settings"
 
             />
     </LinearLayout>
-    <LinearLayout
-        style="@style/PlaceholderAfterNavigationToolBar"/>
 
-    <FrameLayout
-        style="@style/SettingsMenuRow"
-        >
+    <LinearLayout style="@style/PlaceholderAfterNavigationToolBar" />
+
+    <FrameLayout style="@style/SettingsMenuRow">
 
         <TextView
             style="@style/SettingsMenuRowText"
-            android:text="@string/dark_theme"/>
+            android:text="@string/dark_theme" />
 
         <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/themeSwitch"
@@ -38,49 +36,43 @@
             android:layout_height="match_parent"
             android:layout_gravity="end"
             app:thumbTint="?attr/thumbTint"
-            app:trackTint="?attr/trackTint"
-            />
+            app:trackTint="?attr/trackTint" />
     </FrameLayout>
 
-    <FrameLayout
-        style="@style/SettingsMenuRow">
+    <FrameLayout style="@style/SettingsMenuRow">
 
         <TextView
             style="@style/SettingsMenuRowText"
-            android:text="@string/share_app"/>
+            android:text="@string/share_app" />
 
         <ImageView
             android:id="@+id/shareAppIcon"
             style="@style/SettingsMenuRowIcon"
-            android:src="@drawable/share"
-            />
+            android:src="@drawable/share" />
     </FrameLayout>
 
-    <FrameLayout
-        style="@style/SettingsMenuRow">
+    <FrameLayout style="@style/SettingsMenuRow">
 
         <TextView
             style="@style/SettingsMenuRowText"
-            android:text="@string/write_to_support"/>
+            android:text="@string/write_to_support" />
 
         <ImageView
             android:id="@+id/writeToSupportIcon"
             style="@style/SettingsMenuRowIcon"
-            android:src="@drawable/support"
-            />
+            android:src="@drawable/support" />
     </FrameLayout>
-    <FrameLayout
-        style="@style/SettingsMenuRow">
+
+    <FrameLayout style="@style/SettingsMenuRow">
 
         <TextView
             style="@style/SettingsMenuRowText"
-            android:text="@string/user_agreement"/>
+            android:text="@string/user_agreement" />
 
         <ImageView
             android:id="@+id/termsOfUseArrow"
             style="@style/SettingsMenuRowIcon"
-            android:src="@drawable/arrow_forward"
-            />
+            android:src="@drawable/arrow_forward" />
     </FrameLayout>
 
 </LinearLayout>

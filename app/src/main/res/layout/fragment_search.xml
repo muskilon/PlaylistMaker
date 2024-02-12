@@ -76,7 +76,7 @@
             tools:visibility="visible" />
 
         <include
-            android:id="@+id/you_searched"
+            android:id="@+id/you_searched_incl"
             layout="@layout/you_searched"
             tools:visibility="gone" />
 
