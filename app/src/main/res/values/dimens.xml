@@ -5,6 +5,7 @@
     <dimen name="settings_layout_padding_right">12dp</dimen>
     <dimen name="main_menu_button_corner_radius">16dp</dimen>
     <dimen name="font_size_22">22sp</dimen>
+    <dimen name="font_size_19">19sp</dimen>
     <dimen name="font_size_16">16sp</dimen>
     <dimen name="font_size_14">14sp</dimen>
     <dimen name="font_size_13">13sp</dimen>
