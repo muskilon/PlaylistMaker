@@ -21,9 +21,6 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        binding.backArrow.setOnClickListener {
-//            this.finish()
-//        }
 
         binding.termsOfUseArrow.setOnClickListener {
             viewModel.openTerms()

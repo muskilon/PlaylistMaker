@@ -91,10 +91,6 @@ class SearchFragment : Fragment(), RenderState {
             viewModel.clearHistory()
         }
 
-//        binding.backArrow.setOnClickListener {
-//            this.finish()
-//        }
-
         binding.noConnectionPlaceholder.refreshButton.setOnClickListener {
             viewModel.searchSongs("song", searchInput, "ru")
         }

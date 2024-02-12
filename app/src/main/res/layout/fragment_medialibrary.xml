@@ -10,10 +10,6 @@
         style="@style/NavigationToolBar"
         tools:ignore="UseCompoundDrawables">
 
-        <ImageView
-            android:id="@+id/backArrow"
-            style="@style/NavigationToolBarIcon" />
-
         <TextView
             android:text="@string/medialibrary"
             style="@style/NavigationToolBarText" />
@@ -27,7 +23,8 @@
         app:tabTextAppearance="@style/TabText"
         app:tabTextColor="?attr/black_ypDayWhite_ypNight"
         app:tabIndicatorColor="?android:attr/textColorPrimary"
-        app:tabIndicatorFullWidth="true" />
+        app:tabIndicatorFullWidth="true"
+        app:tabRippleColor="@null" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"

@@ -11,10 +11,6 @@
         style="@style/NavigationToolBar"
         tools:ignore="UseCompoundDrawables">
 
-        <ImageView
-            android:id="@+id/backArrow"
-            style="@style/NavigationToolBarIcon" />
-
         <TextView
             style="@style/NavigationToolBarText"
             android:text="@string/settings"

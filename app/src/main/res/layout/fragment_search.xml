@@ -10,10 +10,6 @@
         style="@style/NavigationToolBar"
         tools:ignore="UseCompoundDrawables">
 
-        <ImageView
-            android:id="@+id/backArrow"
-            style="@style/NavigationToolBarIcon" />
-
         <TextView
             style="@style/NavigationToolBarText"
             android:text="@string/search"
@@ -58,7 +54,8 @@
             android:textColor="@color/black"
             android:textColorHint="?android:attr/textColorHintInverse"
             android:textCursorDrawable="@drawable/color_cursor"
-            android:textSize="@dimen/font_size_16" />
+            android:textSize="@dimen/font_size_16"
+            tools:ignore="RtlSymmetry" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
