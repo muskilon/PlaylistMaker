@@ -4,6 +4,7 @@ import android.os.Handler
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.playlistmaker.MyApplication
 import com.example.playlistmaker.R
 import com.example.playlistmaker.player.data.MusicPlayer
 import com.example.playlistmaker.player.data.OnStateChangeListener
@@ -16,24 +17,27 @@ class PlayerViewModel(
     private val mplayer: MusicPlayer,
     private val handler: Handler
 ) : ViewModel() {
+    private val timerZero = MyApplication.getAppResources().getString(R.string.timer_zero)
+    private val timerPlaceholder =
+        MyApplication.getAppResources().getString(R.string.timer_placeholder)
     private var musicPlayerState = MusicPlayerState.STATE_DEFAULT
     private var livePlayStatus = MutableLiveData<PlayStatus>()
     private val currentTrack = currentTrackInteractor.getCurrentTrack()
 
     init {
         livePlayStatus.value = PlayStatus(
-            timeElapsed = "__:__",
+            timeElapsed = timerPlaceholder,
             playButtonClickableState = false,
-            playButtonImage = (R.drawable.play_button),
+            playButtonImage = PLAY,
             currentTrack = currentTrack
         )
     }
 
     private fun getCurrentPlayStatus(): PlayStatus {
         return livePlayStatus.value ?: PlayStatus(
-            timeElapsed = TIMER_ZERO,
+            timeElapsed = timerZero,
             playButtonClickableState = false,
-            playButtonImage = (R.drawable.play_button),
+            playButtonImage = PLAY,
             currentTrack = currentTrack
         )
     }
@@ -44,15 +48,15 @@ class PlayerViewModel(
                 if (state == MusicPlayerState.STATE_PREPARED) {
                     livePlayStatus.value = getCurrentPlayStatus().copy(
                         playButtonClickableState = true,
-                        timeElapsed = TIMER_ZERO
+                        timeElapsed = timerZero
                     )
                     musicPlayerState = MusicPlayerState.STATE_PREPARED
                 }
 
                 if (state == MusicPlayerState.STATE_END_OF_SONG) {
                     livePlayStatus.value = getCurrentPlayStatus().copy(
-                        playButtonImage = (R.drawable.play_button),
-                        timeElapsed = TIMER_ZERO
+                        playButtonImage = PLAY,
+                        timeElapsed = timerZero
                     )
                     musicPlayerState = MusicPlayerState.STATE_PREPARED
                 }
@@ -68,14 +72,14 @@ class PlayerViewModel(
             MusicPlayerState.STATE_PLAYING -> {
                 mplayer.pause()
                 livePlayStatus.value =
-                    getCurrentPlayStatus().copy(playButtonImage = (R.drawable.play_button))
+                    getCurrentPlayStatus().copy(playButtonImage = PLAY)
                 musicPlayerState = MusicPlayerState.STATE_PAUSED
             }
 
             MusicPlayerState.STATE_PAUSED, MusicPlayerState.STATE_PREPARED -> {
                 mplayer.start()
                 livePlayStatus.value =
-                    getCurrentPlayStatus().copy(playButtonImage = (R.drawable.pause_button))
+                    getCurrentPlayStatus().copy(playButtonImage = PAUSE)
                 musicPlayerState = MusicPlayerState.STATE_PLAYING
                 startTimer()
             }
@@ -117,17 +121,23 @@ class PlayerViewModel(
     }
 
     fun pausePlayer() {
-        mplayer.pause()
-        musicPlayerState = MusicPlayerState.STATE_PAUSED
+        if (musicPlayerState == MusicPlayerState.STATE_PLAYING) {
+            mplayer.pause()
+            livePlayStatus.value =
+                getCurrentPlayStatus().copy(playButtonImage = PLAY)
+            musicPlayerState = MusicPlayerState.STATE_PAUSED
+        }
     }
 
     fun stopPlayer() {
+        pausePlayer()
         mplayer.stop()
     }
 
     companion object {
-        const val TIMER_ZERO = "00:00"
-        const val TIMER_PERIOD_UPDATE = 300L
+        private const val TIMER_PERIOD_UPDATE = 300L
+        private const val PLAY = "PLAY"
+        private const val PAUSE = "PAUSE"
     }
 
 }

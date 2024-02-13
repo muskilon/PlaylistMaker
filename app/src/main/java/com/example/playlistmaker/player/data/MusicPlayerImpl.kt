@@ -43,4 +43,8 @@ class MusicPlayerImpl(
         mediaPlayer.release()
     }
 
+    override fun reset() {
+        mediaPlayer.reset()
+    }
+
 }
