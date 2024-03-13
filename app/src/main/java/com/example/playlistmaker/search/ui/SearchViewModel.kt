@@ -21,6 +21,7 @@ class SearchViewModel(
     private val songs = ArrayList<Track>()
     private val liveHistorySongs = MutableLiveData<List<Track>>()
     private val tempSongs = mutableListOf<Track>()
+    private var searchJob: Job? = null
 
     private val consumer = object : TracksInteractor.TracksConsumer {
         override fun consume(foundSongs: Resource<List<Track>>) {
@@ -47,7 +48,6 @@ class SearchViewModel(
             }
         }
     }
-    private var searchJob: Job? = null
 
     fun searchSongs(entity: String, term: String, lang: String) {
         liveState.postValue(SearchScreenState.Loading)
@@ -109,7 +109,6 @@ class SearchViewModel(
     }
 
     companion object {
-        private const val EMPTY = ""
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
         private const val HISTORY_SIZE = 10
     }

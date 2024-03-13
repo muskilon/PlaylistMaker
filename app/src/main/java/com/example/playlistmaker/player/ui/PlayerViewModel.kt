@@ -1,9 +1,9 @@
 package com.example.playlistmaker.player.ui
 
-import android.os.Handler
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.MyApplication
 import com.example.playlistmaker.R
 import com.example.playlistmaker.player.data.MusicPlayer
@@ -11,11 +11,13 @@ import com.example.playlistmaker.player.data.OnStateChangeListener
 import com.example.playlistmaker.player.domain.CurrentTrackInteractor
 import com.example.playlistmaker.player.domain.MusicPlayerState
 import com.example.playlistmaker.player.domain.PlayStatus
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class PlayerViewModel(
     currentTrackInteractor: CurrentTrackInteractor,
     private val mplayer: MusicPlayer,
-    private val handler: Handler
 ) : ViewModel() {
     private val timerZero = MyApplication.getAppResources().getString(R.string.timer_zero)
     private val timerPlaceholder =
@@ -81,7 +83,7 @@ class PlayerViewModel(
                 livePlayStatus.value =
                     getCurrentPlayStatus().copy(playButtonImage = PAUSE)
                 musicPlayerState = MusicPlayerState.STATE_PLAYING
-                startTimer()
+                timer()
             }
 
             else -> {
@@ -90,27 +92,15 @@ class PlayerViewModel(
         }
     }
 
-    private fun startTimer() {
-        handler.post(
-            timerTask()
-        )
-    }
-
-    private fun timerTask(): Runnable {
-        return object : Runnable {
-            override fun run() {
-                when (musicPlayerState) {
-                    MusicPlayerState.STATE_PLAYING -> {
-                        livePlayStatus.value =
-                            getCurrentPlayStatus().copy(timeElapsed = mplayer.getCurrentPosition())
-                        handler.postDelayed(this, TIMER_PERIOD_UPDATE)
-                    }
-
-                    MusicPlayerState.STATE_PREPARED, MusicPlayerState.STATE_PAUSED, MusicPlayerState.STATE_DEFAULT, MusicPlayerState.STATE_END_OF_SONG -> handler.removeCallbacks(
-                        this
-                    )
-                }
+    private fun timer() {
+        var timerJob: Job? = null
+        timerJob = viewModelScope.launch {
+            while (musicPlayerState == MusicPlayerState.STATE_PLAYING) {
+                livePlayStatus.value =
+                    getCurrentPlayStatus().copy(timeElapsed = mplayer.getCurrentPosition())
+                delay(TIMER_PERIOD_UPDATE)
             }
+            timerJob?.cancel()
         }
     }
 
