@@ -1,5 +1,6 @@
 package com.example.playlistmaker.search.data
 
+import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -10,7 +11,7 @@ data class TrackDto(
     val artistName: String, // Имя исполнителя
     val trackTimeMillis: Long, // Продолжительность трека
     val artworkUrl100: String, // Ссылка на изображение обложки
-    val previewUrl: String,
+    val previewUrl: String?,
     val collectionName: String,
     val country: String,
     val primaryGenreName: String,
@@ -22,7 +23,12 @@ data class TrackDto(
         }
     val year: String
         get() {
-            return SimpleDateFormat("yyyy", Locale.getDefault()).format(this.releaseDate)
+            return try {
+                SimpleDateFormat("yyyy", Locale.getDefault()).format(this.releaseDate)
+            } catch (e: NullPointerException) {
+                Log.d("TAG", "${this.artistName} ${this.trackName} ${this.releaseDate}")
+                return "none"
+            }
         }
     val artworkUrl512: String
         get() {

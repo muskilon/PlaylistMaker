@@ -148,7 +148,9 @@ class SearchFragment : Fragment(), RenderState {
                 } else {
                     render(SearchState.SEARCH)
                 }
-                viewModel.searchDebounce(searchInput)
+                if (searchInput.isNotEmpty()) {
+                    viewModel.searchDebounce("song", searchInput, "ru")
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {

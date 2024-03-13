@@ -1,22 +1,23 @@
 package com.example.playlistmaker.search.ui
 
-import android.os.Handler
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.search.domain.Resource
 import com.example.playlistmaker.search.domain.SearchHistory
 import com.example.playlistmaker.search.domain.SearchScreenState
 import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.domain.TracksInteractor
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val tracksInteractor: TracksInteractor,
-    private val handler: Handler
 ) : ViewModel() {
     private var liveState = MutableLiveData<SearchScreenState>()
-    private var searchInput = EMPTY
     private val songs = ArrayList<Track>()
     private val liveHistorySongs = MutableLiveData<List<Track>>()
     private val tempSongs = mutableListOf<Track>()
@@ -46,22 +47,19 @@ class SearchViewModel(
             }
         }
     }
-    private val searchRunnable = Runnable {
-        if (searchInput.isNotEmpty()) {
-            searchSongs("song", searchInput, "ru")
-        }
-    }
+    private var searchJob: Job? = null
 
     fun searchSongs(entity: String, term: String, lang: String) {
         liveState.postValue(SearchScreenState.Loading)
-        handler.removeCallbacks(searchRunnable)
         tracksInteractor.searchSongs(entity, term, lang, consumer)
     }
 
-    fun searchDebounce(term: String) {
-        searchInput = term
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    fun searchDebounce(entity: String, term: String, lang: String) {
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY)
+            searchSongs(entity, term, lang)
+        }
     }
 
     fun getState(): LiveData<SearchScreenState> = liveState
