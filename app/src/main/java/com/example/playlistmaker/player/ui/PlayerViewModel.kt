@@ -23,6 +23,7 @@ class PlayerViewModel(
     private var musicPlayerState = MusicPlayerState.STATE_DEFAULT
     private var livePlayStatus = MutableLiveData<PlayStatus>()
     private val currentTrack = currentTrackInteractor.getCurrentTrack()
+    private var isUserPaused: Boolean = false
 
     init {
         livePlayStatus.value = PlayStatus(
@@ -70,13 +71,12 @@ class PlayerViewModel(
 
         when (musicPlayerState) {
             MusicPlayerState.STATE_PLAYING -> {
-                mplayer.pause()
-                livePlayStatus.value =
-                    getCurrentPlayStatus().copy(playButtonImage = PLAY)
-                musicPlayerState = MusicPlayerState.STATE_PAUSED
+                pausePlayer()
+                isUserPaused = true
             }
 
             MusicPlayerState.STATE_PAUSED, MusicPlayerState.STATE_PREPARED -> {
+                isUserPaused = false
                 mplayer.start()
                 livePlayStatus.value =
                     getCurrentPlayStatus().copy(playButtonImage = PAUSE)
