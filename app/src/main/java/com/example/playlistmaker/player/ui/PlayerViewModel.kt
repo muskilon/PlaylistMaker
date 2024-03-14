@@ -70,7 +70,6 @@ class PlayerViewModel(
     }
 
     fun playbackControl() {
-
         when (musicPlayerState) {
             MusicPlayerState.STATE_PLAYING -> {
                 pausePlayer()
@@ -85,7 +84,6 @@ class PlayerViewModel(
                 musicPlayerState = MusicPlayerState.STATE_PLAYING
                 timer()
             }
-
             else -> {
                 //nothing
             }

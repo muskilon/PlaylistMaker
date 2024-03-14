@@ -23,8 +23,16 @@ class SearchViewModel(
     private val tempSongs = mutableListOf<Track>()
     private var searchJob: Job? = null
 
-    private val consumer = object : TracksInteractor.TracksConsumer {
-        override fun consume(foundSongs: Resource<List<Track>>) {
+
+    fun searchSongs(entity: String, term: String, lang: String) {
+        liveState.postValue(SearchScreenState.Loading)
+        viewModelScope.launch {
+            tracksInteractor.searchSongs(entity, term, lang)
+                .collect { result -> processResult(result) }
+        }
+    }
+
+    private fun processResult(foundSongs: Resource<List<Track>>) {
             when (foundSongs) {
                 is Resource.ConnectionError -> liveState.postValue(
                     SearchScreenState.Error(
@@ -47,12 +55,6 @@ class SearchViewModel(
                 }
             }
         }
-    }
-
-    fun searchSongs(entity: String, term: String, lang: String) {
-        liveState.postValue(SearchScreenState.Loading)
-        tracksInteractor.searchSongs(entity, term, lang, consumer)
-    }
 
     fun searchDebounce(entity: String, term: String, lang: String) {
         searchJob?.cancel()

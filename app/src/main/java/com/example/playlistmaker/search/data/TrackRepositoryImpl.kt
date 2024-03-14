@@ -5,6 +5,8 @@ import com.example.playlistmaker.search.domain.Resource
 import com.example.playlistmaker.search.domain.SearchHistory
 import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.domain.TrackRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class TrackRepositoryImpl(
     private val networkClient: NetworkClient,
@@ -27,12 +29,16 @@ class TrackRepositoryImpl(
         historySharedPreferences.clearHistory()
     }
 
-    override fun searchSongs(entity: String, term: String, lang: String): Resource<List<Track>> {
+    override fun searchSongs(
+        entity: String,
+        term: String,
+        lang: String
+    ): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(SearchRequest(entity, term, lang))
-        return when (response.resultCode) {
-            200 ->
-                Resource.Data((response as SearchResponse).results.filterNot { it.previewUrl.isNullOrEmpty() }
-                    .map {
+        when (response.resultCode) {
+            200 -> {
+                with(response as SearchResponse) {
+                    val data = results.filterNot { it.previewUrl.isNullOrEmpty() }.map {
                         Track(
                             it.trackId,
                             it.trackName,
@@ -46,11 +52,14 @@ class TrackRepositoryImpl(
                             it.primaryGenreName,
                             it.year
                         )
-                    })
+                    }
+                    emit(Resource.Data(data))
+                }
+            }
 
-            400, 404 -> Resource.NotFound("not_found")
+            400, 404 -> emit(Resource.NotFound("not_found"))
             else -> {
-                Resource.ConnectionError("connection_error")
+                emit(Resource.ConnectionError("connection_error"))
             }
         }
     }
