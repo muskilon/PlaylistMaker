@@ -69,6 +69,7 @@ class SearchViewModel(
 
     fun getSongsHistoryFromStorage() {
         if (tracksInteractor.readHistory().songsHistorySaved.isNotEmpty()) {
+            tempSongs.clear()
             tempSongs.addAll(tracksInteractor.readHistory().songsHistorySaved)
             liveHistorySongs.postValue(tempSongs)
         }

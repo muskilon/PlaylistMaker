@@ -1,6 +1,7 @@
 package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -18,13 +19,15 @@ class PlayerActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        viewModel.setListener()
-        viewModel.preparePlayer()
+        if (savedInstanceState == null) {
+            viewModel.setListener()
+            viewModel.preparePlayer()
+        }
 
         viewModel.getPlayStatus().observe(this) { status ->
             binding.timeElapsed.text = status.timeElapsed
             binding.playButton.isClickable = status.playButtonClickableState
-            binding.playButton.setImageResource(status.playButtonImage)
+            binding.playButton.setImageResource(PlayerButtons.valueOf(status.playButtonImage).button)
 
             Glide.with(this)
                 .load(status.currentTrack.pictureUrl)
@@ -46,9 +49,22 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         binding.playButton.setOnClickListener { viewModel.playbackControl() }
+
+        onBackPressedDispatcher.addCallback(this, callback)
         binding.arrowBack.setOnClickListener {
-            this.finish()
+            exit()
         }
+    }
+
+    private val callback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            exit()
+        }
+    }
+
+    fun exit() {
+        viewModel.stopPlayer()
+        this.finish()
     }
 
     override fun onPause() {
@@ -56,8 +72,10 @@ class PlayerActivity : AppCompatActivity() {
         viewModel.pausePlayer()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.stopPlayer()
+    companion object {
+        enum class PlayerButtons(val button: Int) {
+            PLAY(R.drawable.play_button),
+            PAUSE(R.drawable.pause_button)
+        }
     }
 }

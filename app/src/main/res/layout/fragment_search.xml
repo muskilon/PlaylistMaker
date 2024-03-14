@@ -10,10 +10,6 @@
         style="@style/NavigationToolBar"
         tools:ignore="UseCompoundDrawables">
 
-        <ImageView
-            android:id="@+id/backArrow"
-            style="@style/NavigationToolBarIcon" />
-
         <TextView
             style="@style/NavigationToolBarText"
             android:text="@string/search"
@@ -24,7 +20,8 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/searchBarInput"
         android:layout_width="match_parent"
-        android:layout_height="52dp"
+        android:layout_height="wrap_content"
+        android:minHeight="52dp"
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp"
         app:boxBackgroundColor="?attr/boxBackgroundColor"
@@ -58,7 +55,8 @@
             android:textColor="@color/black"
             android:textColorHint="?android:attr/textColorHintInverse"
             android:textCursorDrawable="@drawable/color_cursor"
-            android:textSize="@dimen/font_size_16" />
+            android:textSize="@dimen/font_size_16"
+            tools:ignore="RtlSymmetry" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -76,7 +74,7 @@
             tools:visibility="visible" />
 
         <include
-            android:id="@+id/you_searched"
+            android:id="@+id/you_searched_incl"
             layout="@layout/you_searched"
             tools:visibility="gone" />
 

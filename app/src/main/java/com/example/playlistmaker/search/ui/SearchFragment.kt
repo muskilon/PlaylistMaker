@@ -1,29 +1,32 @@
 package com.example.playlistmaker.search.ui
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.databinding.ActivitySearchBinding
+import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.player.ui.PlayerActivity
 import com.example.playlistmaker.search.domain.SearchScreenState
 import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
-
-class SearchActivity : AppCompatActivity(), RenderState {
+class SearchFragment : Fragment(), RenderState {
+    private lateinit var binding: FragmentSearchBinding
+    private val viewModel by activityViewModel<SearchViewModel>()
     private var searchInput: String = EMPTY
-    private lateinit var binding: ActivitySearchBinding
-    private val viewModel: SearchViewModel by viewModel()
 
     private lateinit var searchResultsAdapter: SearchResultAdapter
     private lateinit var songsHistoryAdapter: SearchResultAdapter
@@ -33,38 +36,45 @@ class SearchActivity : AppCompatActivity(), RenderState {
 
     private var isClickAllowed = true
     private lateinit var handler: Handler
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     @SuppressLint("NotifyDataSetChanged")
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         handler = Handler(Looper.getMainLooper())
 
-        viewModel.getSongsHistory().observe(this) { liveSongsHistory ->
+        viewModel.getSongsHistory().observe(viewLifecycleOwner) { liveSongsHistory ->
             songsHistory.clear()
             songsHistory.addAll(liveSongsHistory)
         }
 
-        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+
+        val imm =
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         searchResultsAdapter = SearchResultAdapter(songs) { track ->
             if (clickDebounce()) viewModel.onTrackClick(track)
-            val openPlayer = Intent(this, PlayerActivity::class.java)
+            val openPlayer = Intent(requireActivity(), PlayerActivity::class.java)
             startActivity(openPlayer)
         }
 
         songsHistoryAdapter = SearchResultAdapter(songsHistory) { track ->
             if (clickDebounce()) viewModel.onTrackClick(track)
-            val openPlayer = Intent(this, PlayerActivity::class.java)
+            val openPlayer = Intent(requireActivity(), PlayerActivity::class.java)
             startActivity(openPlayer)
         }
 
         binding.searchResultsRecyclerView.adapter = searchResultsAdapter
-        binding.youSearched.songsHistoryRecyclerView.adapter = songsHistoryAdapter
+        binding.youSearchedIncl.songsHistoryRecyclerView.adapter = songsHistoryAdapter
 
-        viewModel.getState().observe(this) { state ->
+        viewModel.getState().observe(viewLifecycleOwner) { state ->
             when (state) {
                 is SearchScreenState.Loading -> render(SearchState.PROGRESS_BAR)
                 is SearchScreenState.Error -> render(state.error)
@@ -78,12 +88,8 @@ class SearchActivity : AppCompatActivity(), RenderState {
 
         viewModel.getSongsHistoryFromStorage()
 
-        binding.youSearched.clearHistoryButton.setOnClickListener {
+        binding.youSearchedIncl.clearHistoryButton.setOnClickListener {
             viewModel.clearHistory()
-        }
-
-        binding.backArrow.setOnClickListener {
-            this.finish()
         }
 
         binding.noConnectionPlaceholder.refreshButton.setOnClickListener {
@@ -114,7 +120,7 @@ class SearchActivity : AppCompatActivity(), RenderState {
             }
         }
 
-        binding.youSearched.songsHistoryRecyclerView.addOnScrollListener(object :
+        binding.youSearchedIncl.songsHistoryRecyclerView.addOnScrollListener(object :
             RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -175,7 +181,7 @@ class SearchActivity : AppCompatActivity(), RenderState {
         binding.notFoundPlaceholder.notFoundPlaceholder.isVisible = false
         binding.noConnectionPlaceholder.noConnectionPlaceholder.isVisible = false
         binding.searchResultsRecyclerView.isVisible = true
-        binding.youSearched.searchHistory.isVisible = false
+        binding.youSearchedIncl.searchHistory.isVisible = false
         binding.progressBar.isVisible = false
     }
 
@@ -185,14 +191,14 @@ class SearchActivity : AppCompatActivity(), RenderState {
         binding.notFoundPlaceholder.notFoundPlaceholder.isVisible = false
         binding.noConnectionPlaceholder.noConnectionPlaceholder.isVisible = false
         binding.searchResultsRecyclerView.isVisible = false
-        binding.youSearched.searchHistory.isVisible = true
+        binding.youSearchedIncl.searchHistory.isVisible = true
     }
 
     override fun showNotFound() {
         binding.notFoundPlaceholder.notFoundPlaceholder.isVisible = true
         binding.noConnectionPlaceholder.noConnectionPlaceholder.isVisible = false
         binding.searchResultsRecyclerView.isVisible = false
-        binding.youSearched.searchHistory.isVisible = false
+        binding.youSearchedIncl.searchHistory.isVisible = false
         binding.progressBar.isVisible = false
     }
 
@@ -200,7 +206,7 @@ class SearchActivity : AppCompatActivity(), RenderState {
         binding.notFoundPlaceholder.notFoundPlaceholder.isVisible = false
         binding.noConnectionPlaceholder.noConnectionPlaceholder.isVisible = true
         binding.searchResultsRecyclerView.isVisible = false
-        binding.youSearched.searchHistory.isVisible = false
+        binding.youSearchedIncl.searchHistory.isVisible = false
         binding.progressBar.isVisible = false
     }
 
@@ -208,7 +214,7 @@ class SearchActivity : AppCompatActivity(), RenderState {
         binding.notFoundPlaceholder.notFoundPlaceholder.isVisible = false
         binding.noConnectionPlaceholder.noConnectionPlaceholder.isVisible = false
         binding.searchResultsRecyclerView.isVisible = false
-        binding.youSearched.searchHistory.isVisible = false
+        binding.youSearchedIncl.searchHistory.isVisible = false
         binding.progressBar.isVisible = true
     }
 

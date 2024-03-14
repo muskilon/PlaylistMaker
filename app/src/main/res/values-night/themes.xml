@@ -2,8 +2,11 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.PlaylistMaker" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
+        <item name="android:windowBackground">@color/yp_black</item>
+
         <item name="android:statusBarColor">@color/yp_black</item>
         <item name="android:navigationBarColor">@color/yp_black</item>
+
         <item name="android:textColorPrimary">@color/yp_white</item>
         <item name="android:solidColor">@color/yp_white</item>
         <item name="thumbTint">@color/yp_blue</item>
@@ -13,10 +16,5 @@
         <item name="black_ypDayWhite_ypNight">@color/yp_white</item>
         <item name="white_ypDayBlack_ypNight">@color/yp_black</item>
 
-    </style>
-    <style name="MainActivity.Theme.PlaylistMaker" parent="Base.Theme.PlaylistMaker">
-        <item name="android:statusBarColor">@color/yp_black</item>
-        <item name="android:background">@color/yp_black</item>
-        <item name="android:navigationBarColor">@color/yp_black</item>
     </style>
 </resources>
