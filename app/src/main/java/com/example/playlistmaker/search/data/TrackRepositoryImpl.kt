@@ -30,37 +30,43 @@ class TrackRepositoryImpl(
     }
 
     override fun searchSongs(
-        entity: String,
-        term: String,
-        lang: String
+        term: String
     ): Flow<Resource<List<Track>>> = flow {
-        val response = networkClient.doRequest(SearchRequest(entity, term, lang))
+        val response = networkClient.doRequest(SearchRequest(ENTITY, term, LANG))
         when (response.resultCode) {
-            200 -> {
+            OK -> {
                 with(response as SearchResponse) {
                     val data = results.filterNot { it.previewUrl.isNullOrEmpty() }.map {
                         Track(
-                            it.trackId,
-                            it.trackName,
-                            it.artistName,
-                            it.trackTime,
-                            it.artworkUrl100,
-                            it.artworkUrl512,
-                            it.previewUrl!!,
-                            it.collectionName,
-                            it.country,
-                            it.primaryGenreName,
-                            it.year
+                            trackId = it.trackId,
+                            trackName = it.trackName,
+                            artistName = it.artistName,
+                            trackTime = it.trackTime,
+                            artworkUrl100 = it.artworkUrl100,
+                            artworkUrl512 = it.artworkUrl512,
+                            previewUrl = it.previewUrl!!,
+                            collectionName = it.collectionName,
+                            country = it.country,
+                            primaryGenreName = it.primaryGenreName,
+                            year = it.year
                         )
                     }
                     emit(Resource.Data(data))
                 }
             }
 
-            400, 404 -> emit(Resource.NotFound("not_found"))
+            in NOT_FOUND -> emit(Resource.NotFound("not_found"))
             else -> {
                 emit(Resource.ConnectionError("connection_error"))
             }
         }
+    }
+
+    companion object {
+        private const val OK = 200
+        private val NOT_FOUND = listOf(400, 404)
+        private const val ENTITY = "song"
+        private const val LANG = "ru"
+
     }
 }

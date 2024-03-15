@@ -1,6 +1,5 @@
 package com.example.playlistmaker.search.data
 
-import android.util.Log
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -26,7 +25,6 @@ data class TrackDto(
             return try {
                 SimpleDateFormat("yyyy", Locale.getDefault()).format(this.releaseDate)
             } catch (e: NullPointerException) {
-                Log.d("TAG", "${this.artistName} ${this.trackName} ${this.releaseDate}")
                 return "none"
             }
         }

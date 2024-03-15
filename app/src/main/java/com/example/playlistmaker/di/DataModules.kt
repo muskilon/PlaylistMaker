@@ -34,7 +34,7 @@ val dataModules = module {
     single { SettingsStorage(sharedPreferences = get()) }
 
 //  Search
-    single<NetworkClient> { RetrofitNetworkClient(androidContext(), iTunesService = get()) }
+    single<NetworkClient> { RetrofitNetworkClient(androidContext(), itunesAPI = get()) }
     single<ItunesAPI> {
         Retrofit.Builder()
             .baseUrl("https://itunes.apple.com/search/")

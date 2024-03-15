@@ -22,11 +22,9 @@ class TracksInteractorImpl(private val repository: TrackRepository) : TracksInte
     }
 
     override fun searchSongs(
-        entity: String,
-        term: String,
-        lang: String
+        term: String
     ): Flow<Resource<List<Track>>> {
-        return repository.searchSongs(entity, term, lang).map { result ->
+        return repository.searchSongs(term).map { result ->
             when (result) {
                 is Resource.Data -> result
                 is Resource.NotFound -> Resource.NotFound("")

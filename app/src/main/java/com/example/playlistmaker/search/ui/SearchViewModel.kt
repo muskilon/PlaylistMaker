@@ -24,10 +24,10 @@ class SearchViewModel(
     private var searchJob: Job? = null
 
 
-    fun searchSongs(entity: String, term: String, lang: String) {
+    fun searchSongs(term: String) {
         liveState.postValue(SearchScreenState.Loading)
         viewModelScope.launch {
-            tracksInteractor.searchSongs(entity, term, lang)
+            tracksInteractor.searchSongs(term)
                 .collect { result -> processResult(result) }
         }
     }
@@ -56,11 +56,11 @@ class SearchViewModel(
             }
         }
 
-    fun searchDebounce(entity: String, term: String, lang: String) {
+    fun searchDebounce(term: String) {
         searchJob?.cancel()
         searchJob = viewModelScope.launch {
-            delay(SEARCH_DEBOUNCE_DELAY)
-            searchSongs(entity, term, lang)
+            delay(SEARCH_DEBOUNCE_DELAY_MILLIS)
+            searchSongs(term)
         }
     }
 
@@ -111,7 +111,7 @@ class SearchViewModel(
     }
 
     companion object {
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
         private const val HISTORY_SIZE = 10
     }
 }

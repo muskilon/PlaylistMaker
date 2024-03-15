@@ -3,12 +3,13 @@ package com.example.playlistmaker.search.data
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class RetrofitNetworkClient(
     private val context: Context,
-    private val iTunesService: ItunesAPI
+    private val itunesAPI: ItunesAPI
 ) : NetworkClient {
 
     override suspend fun doRequest(dto: Any): Response {
@@ -18,14 +19,15 @@ class RetrofitNetworkClient(
             }
             if (dto is SearchRequest) {
                 withContext(Dispatchers.IO) {
-                    val response = iTunesService.getSearch(dto.entity, dto.term, dto.lang)
-                    response.apply { resultCode = 200 }
+                    val response = itunesAPI.getSearch(dto.entity, dto.term, dto.lang)
+                    Log.d("RTF", response.results.toString())
+                    response.apply { resultCode = OK }
                 }
             } else {
-                Response().apply { resultCode = 400 }
+                Response().apply { resultCode = NOT_FOUND }
             }
         } catch (ex: Exception) {
-            Response().apply { resultCode = 500 }
+            Response().apply { resultCode = SERVER_ERROR }
         }
     }
 
@@ -43,5 +45,11 @@ class RetrofitNetworkClient(
             }
         }
         return false
+    }
+
+    companion object {
+        private const val OK = 200
+        private const val NOT_FOUND = 400
+        private const val SERVER_ERROR = 500
     }
 }

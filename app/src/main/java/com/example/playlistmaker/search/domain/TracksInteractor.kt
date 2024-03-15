@@ -3,7 +3,7 @@ package com.example.playlistmaker.search.domain
 import kotlinx.coroutines.flow.Flow
 
 interface TracksInteractor {
-    fun searchSongs(entity: String, term: String, lang: String): Flow<Resource<List<Track>>>
+    fun searchSongs(term: String): Flow<Resource<List<Track>>>
     fun readHistory(): SearchHistory
     fun writeHistory(songsHistory: SearchHistory)
     fun clearHistory()

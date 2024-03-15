@@ -91,7 +91,7 @@ class SearchFragment : Fragment(), RenderState {
         }
 
         binding.noConnectionPlaceholder.refreshButton.setOnClickListener {
-            viewModel.searchSongs("song", searchInput, "ru")
+            viewModel.searchSongs(searchInput)
         }
 
         binding.searchBarInput.setEndIconOnClickListener {
@@ -105,7 +105,7 @@ class SearchFragment : Fragment(), RenderState {
         binding.searchBarEdit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 binding.searchBarEdit.clearFocus()
-                viewModel.searchSongs("song", searchInput, "ru")
+                viewModel.searchSongs(searchInput)
             }
             false
         }
@@ -147,7 +147,7 @@ class SearchFragment : Fragment(), RenderState {
                     render(SearchState.SEARCH)
                 }
                 if (searchInput.isNotEmpty()) {
-                    viewModel.searchDebounce("song", searchInput, "ru")
+                    viewModel.searchDebounce(searchInput)
                 }
             }
 
@@ -164,7 +164,7 @@ class SearchFragment : Fragment(), RenderState {
         if (isClickAllowed) {
             isClickAllowed = false
             viewLifecycleOwner.lifecycleScope.launch {
-                delay(CLICK_DEBOUNCE_DELAY)
+                delay(CLICK_DEBOUNCE_DELAY_MILLIS)
                 isClickAllowed = true
             }
         }
@@ -234,6 +234,6 @@ class SearchFragment : Fragment(), RenderState {
 
     companion object {
         private const val EMPTY = ""
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
     }
 }
