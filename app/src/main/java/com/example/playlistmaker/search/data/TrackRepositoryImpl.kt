@@ -5,6 +5,8 @@ import com.example.playlistmaker.search.domain.Resource
 import com.example.playlistmaker.search.domain.SearchHistory
 import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.domain.TrackRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 class TrackRepositoryImpl(
     private val networkClient: NetworkClient,
@@ -27,29 +29,44 @@ class TrackRepositoryImpl(
         historySharedPreferences.clearHistory()
     }
 
-    override fun searchSongs(entity: String, term: String, lang: String): Resource<List<Track>> {
-        val response = networkClient.doRequest(SearchRequest(entity, term, lang))
-        return when (response.resultCode) {
-            200 -> Resource.Data((response as SearchResponse).results.map {
-                Track(
-                    it.trackId,
-                    it.trackName,
-                    it.artistName,
-                    it.trackTime,
-                    it.artworkUrl100,
-                    it.artworkUrl512,
-                    it.previewUrl,
-                    it.collectionName,
-                    it.country,
-                    it.primaryGenreName,
-                    it.year
-                )
-            })
+    override fun searchSongs(
+        term: String
+    ): Flow<Resource<List<Track>>> = flow {
+        val response = networkClient.doRequest(SearchRequest(ENTITY, term, LANG))
+        when (response.resultCode) {
+            OK -> {
+                with(response as SearchResponse) {
+                    val data = results.filterNot { it.previewUrl.isNullOrEmpty() }.map {
+                        Track(
+                            trackId = it.trackId,
+                            trackName = it.trackName,
+                            artistName = it.artistName,
+                            trackTime = it.trackTime,
+                            artworkUrl100 = it.artworkUrl100,
+                            artworkUrl512 = it.artworkUrl512,
+                            previewUrl = it.previewUrl!!,
+                            collectionName = it.collectionName,
+                            country = it.country,
+                            primaryGenreName = it.primaryGenreName,
+                            year = it.year
+                        )
+                    }
+                    emit(Resource.Data(data))
+                }
+            }
 
-            400 -> Resource.NotFound("not_found")
+            in NOT_FOUND -> emit(Resource.NotFound("not_found"))
             else -> {
-                Resource.ConnectionError("connection_error")
+                emit(Resource.ConnectionError("connection_error"))
             }
         }
+    }
+
+    companion object {
+        private const val OK = 200
+        private val NOT_FOUND = listOf(400, 404)
+        private const val ENTITY = "song"
+        private const val LANG = "ru"
+
     }
 }

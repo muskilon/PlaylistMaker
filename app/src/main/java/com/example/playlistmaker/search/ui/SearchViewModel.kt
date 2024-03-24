@@ -1,28 +1,38 @@
 package com.example.playlistmaker.search.ui
 
-import android.os.Handler
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.search.domain.Resource
 import com.example.playlistmaker.search.domain.SearchHistory
 import com.example.playlistmaker.search.domain.SearchScreenState
 import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.domain.TracksInteractor
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val tracksInteractor: TracksInteractor,
-    private val handler: Handler
 ) : ViewModel() {
     private var liveState = MutableLiveData<SearchScreenState>()
-    private var searchInput = EMPTY
     private val songs = ArrayList<Track>()
     private val liveHistorySongs = MutableLiveData<List<Track>>()
     private val tempSongs = mutableListOf<Track>()
+    private var searchJob: Job? = null
 
-    private val consumer = object : TracksInteractor.TracksConsumer {
-        override fun consume(foundSongs: Resource<List<Track>>) {
+
+    fun searchSongs(term: String) {
+        liveState.postValue(SearchScreenState.Loading)
+        viewModelScope.launch {
+            tracksInteractor.searchSongs(term)
+                .collect { result -> processResult(result) }
+        }
+    }
+
+    private fun processResult(foundSongs: Resource<List<Track>>) {
             when (foundSongs) {
                 is Resource.ConnectionError -> liveState.postValue(
                     SearchScreenState.Error(
@@ -45,23 +55,13 @@ class SearchViewModel(
                 }
             }
         }
-    }
-    private val searchRunnable = Runnable {
-        if (searchInput.isNotEmpty()) {
-            searchSongs("song", searchInput, "ru")
-        }
-    }
-
-    fun searchSongs(entity: String, term: String, lang: String) {
-        liveState.postValue(SearchScreenState.Loading)
-        handler.removeCallbacks(searchRunnable)
-        tracksInteractor.searchSongs(entity, term, lang, consumer)
-    }
 
     fun searchDebounce(term: String) {
-        searchInput = term
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY_MILLIS)
+            searchSongs(term)
+        }
     }
 
     fun getState(): LiveData<SearchScreenState> = liveState
@@ -111,8 +111,7 @@ class SearchViewModel(
     }
 
     companion object {
-        private const val EMPTY = ""
-        private const val SEARCH_DEBOUNCE_DELAY = 2000L
+        private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
         private const val HISTORY_SIZE = 10
     }
 }

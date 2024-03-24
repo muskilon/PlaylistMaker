@@ -4,8 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -15,12 +13,15 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.databinding.FragmentSearchBinding
 import com.example.playlistmaker.player.ui.PlayerActivity
 import com.example.playlistmaker.search.domain.SearchScreenState
 import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class SearchFragment : Fragment(), RenderState {
@@ -35,7 +36,6 @@ class SearchFragment : Fragment(), RenderState {
     private val songsHistory = ArrayList<Track>()
 
     private var isClickAllowed = true
-    private lateinit var handler: Handler
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,8 +47,6 @@ class SearchFragment : Fragment(), RenderState {
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        handler = Handler(Looper.getMainLooper())
 
         viewModel.getSongsHistory().observe(viewLifecycleOwner) { liveSongsHistory ->
             songsHistory.clear()
@@ -93,7 +91,7 @@ class SearchFragment : Fragment(), RenderState {
         }
 
         binding.noConnectionPlaceholder.refreshButton.setOnClickListener {
-            viewModel.searchSongs("song", searchInput, "ru")
+            viewModel.searchSongs(searchInput)
         }
 
         binding.searchBarInput.setEndIconOnClickListener {
@@ -107,7 +105,7 @@ class SearchFragment : Fragment(), RenderState {
         binding.searchBarEdit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 binding.searchBarEdit.clearFocus()
-                viewModel.searchSongs("song", searchInput, "ru")
+                viewModel.searchSongs(searchInput)
             }
             false
         }
@@ -148,7 +146,9 @@ class SearchFragment : Fragment(), RenderState {
                 } else {
                     render(SearchState.SEARCH)
                 }
-                viewModel.searchDebounce(searchInput)
+                if (searchInput.isNotEmpty()) {
+                    viewModel.searchDebounce(searchInput)
+                }
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -163,7 +163,10 @@ class SearchFragment : Fragment(), RenderState {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+            viewLifecycleOwner.lifecycleScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY_MILLIS)
+                isClickAllowed = true
+            }
         }
         return current
     }
@@ -231,6 +234,6 @@ class SearchFragment : Fragment(), RenderState {
 
     companion object {
         private const val EMPTY = ""
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
     }
 }
