@@ -10,9 +10,8 @@ import kotlinx.coroutines.flow.flow
 
 class TrackRepositoryImpl(
     private val networkClient: NetworkClient,
-    private val historySharedPreferences: HistorySharedPreferences
+    private val historySharedPreferences: HistorySharedPreferences,
 ) : TrackRepository {
-
     override fun setCurrentTrack(currentTrack: Track) {
         CurrentTrackStorage.setCurrentTrack(currentTrack)
     }

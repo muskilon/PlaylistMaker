@@ -50,6 +50,10 @@ class PlayerActivity : AppCompatActivity() {
 
         binding.playButton.setOnClickListener { viewModel.playbackControl() }
 
+        binding.addToFavorites.setOnClickListener {
+            viewModel.addToFavorites()
+        }
+
         onBackPressedDispatcher.addCallback(this, callback)
         binding.arrowBack.setOnClickListener {
             exit()

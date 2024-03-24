@@ -1,6 +1,8 @@
 package com.example.playlistmaker.di
 
 import com.example.playlistmaker.player.data.CurrentTrackRepositoryImpl
+import com.example.playlistmaker.player.data.FavoritesInteractorImpl
+import com.example.playlistmaker.player.data.FavoritesRepositoryImpl
 import com.example.playlistmaker.player.domain.CurrentTrackInteractor
 import com.example.playlistmaker.player.domain.CurrentTrackInteractorImpl
 import com.example.playlistmaker.player.domain.CurrentTrackRepository
@@ -34,5 +36,8 @@ val domainModules = module {
 //  Player
     single<CurrentTrackInteractor> { CurrentTrackInteractorImpl(repository = get()) }
     single<CurrentTrackRepository> { CurrentTrackRepositoryImpl() }
+
+    single { FavoritesInteractorImpl(repository = get()) }
+    single { FavoritesRepositoryImpl(appDatabase = get(), songsDbConvertor = get()) }
 
 }

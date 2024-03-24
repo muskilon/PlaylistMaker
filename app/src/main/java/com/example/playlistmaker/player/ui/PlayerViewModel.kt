@@ -9,13 +9,16 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.player.data.MusicPlayer
 import com.example.playlistmaker.player.data.OnStateChangeListener
 import com.example.playlistmaker.player.domain.CurrentTrackInteractor
+import com.example.playlistmaker.player.domain.FavoritesInteractor
 import com.example.playlistmaker.player.domain.MusicPlayerState
 import com.example.playlistmaker.player.domain.PlayStatus
+import com.example.playlistmaker.search.domain.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class PlayerViewModel(
+    private val favoritesInteractor: FavoritesInteractor,
     currentTrackInteractor: CurrentTrackInteractor,
     private val mplayer: MusicPlayer,
 ) : ViewModel() {
@@ -100,6 +103,16 @@ class PlayerViewModel(
             }
             timerJob?.cancel()
         }
+    }
+
+    fun addToFavorites() {
+        viewModelScope.launch {
+            favoritesInteractor.getFavoritesSongs().collect { favorites ->
+                if (favorites.contains(currentTrack as Track))
+
+            }
+        }
+
     }
 
     fun getPlayStatus(): LiveData<PlayStatus> = livePlayStatus

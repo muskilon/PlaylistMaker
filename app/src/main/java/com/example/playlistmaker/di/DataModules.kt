@@ -4,9 +4,12 @@ import android.content.Context
 import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
+import androidx.room.Room
 import com.example.playlistmaker.MyApplication
 import com.example.playlistmaker.player.data.MusicPlayer
 import com.example.playlistmaker.player.data.MusicPlayerImpl
+import com.example.playlistmaker.player.data.SongsDbConvertor
+import com.example.playlistmaker.player.data.db.AppDatabase
 import com.example.playlistmaker.search.data.HistorySharedPreferences
 import com.example.playlistmaker.search.data.ItunesAPI
 import com.example.playlistmaker.search.data.NetworkClient
@@ -48,6 +51,11 @@ val dataModules = module {
             gson = get()
         )
     }
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "songs.db")
+            .build()
+    }
+    factory { SongsDbConvertor() }
 
 //  Player
     factory<MusicPlayer> { MusicPlayerImpl(mediaPlayer = get()) }
