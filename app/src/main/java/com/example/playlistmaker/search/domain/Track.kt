@@ -13,4 +13,14 @@ data class Track(
     val primaryGenreName: String = "error",
     val year: String = "error",
     var isFavorites: Boolean = false
-)
+) {
+    override fun hashCode(): Int {
+        return trackId.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null || other !is Track)
+            return false
+        return this.trackId == other.trackId
+    }
+}

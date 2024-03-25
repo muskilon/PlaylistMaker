@@ -14,7 +14,7 @@ class FavoritesRepositoryImpl(
     private val songsDbConvertor: SongsDbConvertor
 ) : FavoritesRepository {
     override fun getFavoritesSongs(): Flow<List<Track>> = flow {
-        val songs = appDatabase.songsDao().getSongs()
+        val songs = appDatabase.songsDao().getSongs().asReversed()
         emit(convertFromSongsEntity(songs))
     }.flowOn(Dispatchers.IO)
 

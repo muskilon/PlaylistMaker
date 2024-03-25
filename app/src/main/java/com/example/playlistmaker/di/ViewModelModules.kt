@@ -13,7 +13,8 @@ val viewModelModules = module {
         PlayerViewModel(
             currentTrackInteractor = get(),
             mplayer = get(),
-            favoritesInteractor = get()
+            favoritesInteractor = get(),
+            tracksInteractor = get()
         )
     }
 
@@ -21,7 +22,7 @@ val viewModelModules = module {
 
     viewModel { SettingsViewModel(sharingInteractor = get(), settingsInteractor = get()) }
 
-    viewModel { FavoritesViewModel() }
+    viewModel { FavoritesViewModel(get(), get()) }
 
     viewModel { PlaylistsViewModel() }
 }
