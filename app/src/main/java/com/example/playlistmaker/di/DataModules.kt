@@ -57,6 +57,7 @@ val dataModules = module {
     factory { MediaPlayer() }
     single {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, "songs.db")
+            .fallbackToDestructiveMigration()
             .build()
     }
     factory { SongsDbConvertor() }

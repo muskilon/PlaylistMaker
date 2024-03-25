@@ -17,7 +17,8 @@ class SongsDbConvertor {
             track.collectionName,
             track.country,
             track.primaryGenreName,
-            track.year
+            track.year,
+            track.isFavorites
         )
     }
 
@@ -33,7 +34,8 @@ class SongsDbConvertor {
             track.collectionName,
             track.country,
             track.primaryGenreName,
-            track.year
+            track.year,
+            track.isFavorites
         )
     }
 }

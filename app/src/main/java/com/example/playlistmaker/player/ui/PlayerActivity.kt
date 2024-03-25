@@ -1,7 +1,6 @@
 package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
@@ -35,10 +34,8 @@ class PlayerActivity : AppCompatActivity() {
             binding.playButton.setImageResource(PlayerButtons.valueOf(status.playButtonImage).button)
             if (status.isFavorites) {
                 binding.addToFavorites.setImageResource(R.drawable.favorite_button_on)
-                Log.d("TAG", "set fav ON")
             } else {
                 binding.addToFavorites.setImageResource(R.drawable.favorite_button_off)
-                Log.d("TAG", "set fav OFF")
             }
 
             Glide.with(this)

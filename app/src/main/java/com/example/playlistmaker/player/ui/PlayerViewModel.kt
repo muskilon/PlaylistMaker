@@ -12,14 +12,12 @@ import com.example.playlistmaker.player.domain.CurrentTrackInteractor
 import com.example.playlistmaker.player.domain.FavoritesInteractor
 import com.example.playlistmaker.player.domain.MusicPlayerState
 import com.example.playlistmaker.player.domain.PlayStatus
-import com.example.playlistmaker.search.domain.TracksInteractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class PlayerViewModel(
-    private val tracksInteractor: TracksInteractor,
     private val favoritesInteractor: FavoritesInteractor,
     currentTrackInteractor: CurrentTrackInteractor,
     private val mplayer: MusicPlayer,

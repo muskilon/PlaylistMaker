@@ -1,6 +1,5 @@
 package com.example.playlistmaker.search.data
 
-import android.util.Log
 import com.example.playlistmaker.player.data.CurrentTrackStorage
 import com.example.playlistmaker.player.data.db.AppDatabase
 import com.example.playlistmaker.search.domain.Resource
@@ -38,7 +37,6 @@ class TrackRepositoryImpl(
     ): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(SearchRequest(ENTITY, term, LANG))
         val favorites = appDatabase.songsDao().getTrackIdList()
-        Log.d("TAG", favorites.toString())
         when (response.resultCode) {
             OK -> {
                 with(response as SearchResponse) {

@@ -60,12 +60,12 @@ class FavoritesFragment : Fragment() {
     @SuppressLint("NotifyDataSetChanged")
     private fun showFavorites() {
         favoritesAdapter.notifyDataSetChanged()
-        binding.emptyMedialibrary.sadNote.sadNote.isVisible = false
+        binding.emptyMedialibrary.emptyMedialibrary.isVisible = false
         binding.favoritesRecyclerView.isVisible = true
     }
 
     private fun emptyFavorites() {
-        binding.emptyMedialibrary.sadNote.sadNote.isVisible = true
+        binding.emptyMedialibrary.emptyMedialibrary.isVisible = true
         binding.favoritesRecyclerView.isVisible = false
     }
 

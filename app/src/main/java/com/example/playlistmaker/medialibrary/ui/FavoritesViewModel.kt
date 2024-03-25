@@ -31,7 +31,6 @@ class FavoritesViewModel(
     }
 
     fun onTrackClick(track: Track) {
-//        track.isFavorites = true
         tracksInteractor.setCurrentTrack(track)
     }
 }
