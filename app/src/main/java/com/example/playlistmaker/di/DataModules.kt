@@ -51,14 +51,14 @@ val dataModules = module {
             gson = get()
         )
     }
+
+//  Player
+    factory<MusicPlayer> { MusicPlayerImpl(mediaPlayer = get()) }
+    factory { MediaPlayer() }
     single {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, "songs.db")
             .build()
     }
     factory { SongsDbConvertor() }
-
-//  Player
-    factory<MusicPlayer> { MusicPlayerImpl(mediaPlayer = get()) }
-    factory { MediaPlayer() }
 
 }

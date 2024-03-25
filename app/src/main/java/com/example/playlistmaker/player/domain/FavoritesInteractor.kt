@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface FavoritesInteractor {
     fun getFavoritesSongs(): Flow<List<Track>>
+    suspend fun addSongToFavorites(song: Track)
+    suspend fun deleteSongFromFavorites(song: Track)
 }

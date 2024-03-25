@@ -12,7 +12,7 @@ import com.example.playlistmaker.player.domain.CurrentTrackInteractor
 import com.example.playlistmaker.player.domain.FavoritesInteractor
 import com.example.playlistmaker.player.domain.MusicPlayerState
 import com.example.playlistmaker.player.domain.PlayStatus
-import com.example.playlistmaker.search.domain.Track
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -35,7 +35,8 @@ class PlayerViewModel(
             timeElapsed = timerPlaceholder,
             playButtonClickableState = false,
             playButtonImage = PLAY,
-            currentTrack = currentTrack
+            currentTrack = currentTrack,
+            isFavorites = currentTrack.isFavorites
         )
     }
 
@@ -44,7 +45,8 @@ class PlayerViewModel(
             timeElapsed = timerZero,
             playButtonClickableState = false,
             playButtonImage = PLAY,
-            currentTrack = currentTrack
+            currentTrack = currentTrack,
+            isFavorites = currentTrack.isFavorites
         )
     }
 
@@ -53,16 +55,14 @@ class PlayerViewModel(
             override fun onChange(state: MusicPlayerState) {
                 if (state == MusicPlayerState.STATE_PREPARED) {
                     livePlayStatus.value = getCurrentPlayStatus().copy(
-                        playButtonClickableState = true,
-                        timeElapsed = timerZero
+                        playButtonClickableState = true, timeElapsed = timerZero
                     )
                     musicPlayerState = MusicPlayerState.STATE_PREPARED
                 }
 
                 if (state == MusicPlayerState.STATE_END_OF_SONG) {
                     livePlayStatus.value = getCurrentPlayStatus().copy(
-                        playButtonImage = PLAY,
-                        timeElapsed = timerZero
+                        playButtonImage = PLAY, timeElapsed = timerZero
                     )
                     musicPlayerState = MusicPlayerState.STATE_PREPARED
                 }
@@ -82,11 +82,11 @@ class PlayerViewModel(
             MusicPlayerState.STATE_PAUSED, MusicPlayerState.STATE_PREPARED -> {
                 isUserPaused = false
                 mplayer.start()
-                livePlayStatus.value =
-                    getCurrentPlayStatus().copy(playButtonImage = PAUSE)
+                livePlayStatus.value = getCurrentPlayStatus().copy(playButtonImage = PAUSE)
                 musicPlayerState = MusicPlayerState.STATE_PLAYING
                 timer()
             }
+
             else -> {
                 //nothing
             }
@@ -106,13 +106,16 @@ class PlayerViewModel(
     }
 
     fun addToFavorites() {
-        viewModelScope.launch {
-            favoritesInteractor.getFavoritesSongs().collect { favorites ->
-                if (favorites.contains(currentTrack as Track))
+        updateFavorites(currentTrack.isFavorites)
+        livePlayStatus.value = getCurrentPlayStatus().copy(isFavorites = !currentTrack.isFavorites)
+        currentTrack.isFavorites = !currentTrack.isFavorites
+    }
 
-            }
+    private fun updateFavorites(isFavorites: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (isFavorites) favoritesInteractor.deleteSongFromFavorites(currentTrack)
+            else favoritesInteractor.addSongToFavorites(currentTrack)
         }
-
     }
 
     fun getPlayStatus(): LiveData<PlayStatus> = livePlayStatus
@@ -124,8 +127,7 @@ class PlayerViewModel(
     fun pausePlayer() {
         if (musicPlayerState == MusicPlayerState.STATE_PLAYING) {
             mplayer.pause()
-            livePlayStatus.value =
-                getCurrentPlayStatus().copy(playButtonImage = PLAY)
+            livePlayStatus.value = getCurrentPlayStatus().copy(playButtonImage = PLAY)
             musicPlayerState = MusicPlayerState.STATE_PAUSED
         }
     }

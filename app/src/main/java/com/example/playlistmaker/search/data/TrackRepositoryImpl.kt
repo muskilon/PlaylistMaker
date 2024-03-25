@@ -1,14 +1,19 @@
 package com.example.playlistmaker.search.data
 
+import android.util.Log
 import com.example.playlistmaker.player.data.CurrentTrackStorage
+import com.example.playlistmaker.player.data.db.AppDatabase
 import com.example.playlistmaker.search.domain.Resource
 import com.example.playlistmaker.search.domain.SearchHistory
 import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.domain.TrackRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 class TrackRepositoryImpl(
+    private val appDatabase: AppDatabase,
     private val networkClient: NetworkClient,
     private val historySharedPreferences: HistorySharedPreferences,
 ) : TrackRepository {
@@ -32,6 +37,8 @@ class TrackRepositoryImpl(
         term: String
     ): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(SearchRequest(ENTITY, term, LANG))
+        val favorites = appDatabase.songsDao().getTrackIdList()
+        Log.d("TAG", favorites.toString())
         when (response.resultCode) {
             OK -> {
                 with(response as SearchResponse) {
@@ -47,7 +54,8 @@ class TrackRepositoryImpl(
                             collectionName = it.collectionName,
                             country = it.country,
                             primaryGenreName = it.primaryGenreName,
-                            year = it.year
+                            year = it.year,
+                            isFavorites = (favorites.contains(it.trackId))
                         )
                     }
                     emit(Resource.Data(data))
@@ -59,7 +67,7 @@ class TrackRepositoryImpl(
                 emit(Resource.ConnectionError("connection_error"))
             }
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     companion object {
         private const val OK = 200

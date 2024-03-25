@@ -1,6 +1,7 @@
 package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -28,9 +29,16 @@ class PlayerActivity : AppCompatActivity() {
             binding.timeElapsed.text = status.timeElapsed
             binding.playButton.isClickable = status.playButtonClickableState
             binding.playButton.setImageResource(PlayerButtons.valueOf(status.playButtonImage).button)
+            if (status.isFavorites) {
+                binding.addToFavorites.setImageResource(R.drawable.favorite_button_on)
+                Log.d("TAG", "set fav ON")
+            } else {
+                binding.addToFavorites.setImageResource(R.drawable.favorite_button_off)
+                Log.d("TAG", "set fav OFF")
+            }
 
             Glide.with(this)
-                .load(status.currentTrack.pictureUrl)
+                .load(status.currentTrack.artworkUrl512)
                 .placeholder(R.drawable.placeholder_big)
                 .transform(
                     RoundedCorners(
@@ -40,11 +48,11 @@ class PlayerActivity : AppCompatActivity() {
                 )
                 .into(binding.albumCover)
             binding.trackName.text = status.currentTrack.trackName
-            binding.artistName.text = status.currentTrack.artist
-            binding.trackDuration.text = status.currentTrack.duration
-            binding.album.text = status.currentTrack.album
+            binding.artistName.text = status.currentTrack.artistName
+            binding.trackDuration.text = status.currentTrack.trackTime
+            binding.album.text = status.currentTrack.collectionName
             binding.year.text = status.currentTrack.year
-            binding.genre.text = status.currentTrack.genre
+            binding.genre.text = status.currentTrack.primaryGenreName
             binding.country.text = status.currentTrack.country
         }
 

@@ -6,6 +6,8 @@ import com.example.playlistmaker.player.data.FavoritesRepositoryImpl
 import com.example.playlistmaker.player.domain.CurrentTrackInteractor
 import com.example.playlistmaker.player.domain.CurrentTrackInteractorImpl
 import com.example.playlistmaker.player.domain.CurrentTrackRepository
+import com.example.playlistmaker.player.domain.FavoritesInteractor
+import com.example.playlistmaker.player.domain.FavoritesRepository
 import com.example.playlistmaker.search.data.TrackRepositoryImpl
 import com.example.playlistmaker.search.domain.TrackRepository
 import com.example.playlistmaker.search.domain.TracksInteractor
@@ -29,7 +31,8 @@ val domainModules = module {
     factory<TrackRepository> {
         TrackRepositoryImpl(
             networkClient = get(),
-            historySharedPreferences = get()
+            historySharedPreferences = get(),
+            appDatabase = get()
         )
     }
 
@@ -37,7 +40,12 @@ val domainModules = module {
     single<CurrentTrackInteractor> { CurrentTrackInteractorImpl(repository = get()) }
     single<CurrentTrackRepository> { CurrentTrackRepositoryImpl() }
 
-    single { FavoritesInteractorImpl(repository = get()) }
-    single { FavoritesRepositoryImpl(appDatabase = get(), songsDbConvertor = get()) }
+    single<FavoritesInteractor> { FavoritesInteractorImpl(repository = get()) }
+    single<FavoritesRepository> {
+        FavoritesRepositoryImpl(
+            appDatabase = get(),
+            songsDbConvertor = get()
+        )
+    }
 
 }

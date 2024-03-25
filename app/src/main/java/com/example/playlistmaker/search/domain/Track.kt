@@ -12,4 +12,5 @@ data class Track(
     val country: String = "error",
     val primaryGenreName: String = "error",
     val year: String = "error",
+    var isFavorites: Boolean = false
 )
