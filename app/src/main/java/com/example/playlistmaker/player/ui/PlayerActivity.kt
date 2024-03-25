@@ -4,16 +4,20 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlayerBinding
     private val viewModel: PlayerViewModel by viewModel()
+    private var isClickAllowed = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
@@ -59,7 +63,7 @@ class PlayerActivity : AppCompatActivity() {
         binding.playButton.setOnClickListener { viewModel.playbackControl() }
 
         binding.addToFavorites.setOnClickListener {
-            viewModel.addToFavorites()
+            if (clickDebounce()) viewModel.addToFavorites()
         }
 
         onBackPressedDispatcher.addCallback(this, callback)
@@ -74,6 +78,18 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            lifecycleScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY_MILLIS)
+                isClickAllowed = true
+            }
+        }
+        return current
+    }
+
     fun exit() {
         viewModel.stopPlayer()
         this.finish()
@@ -85,6 +101,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     companion object {
+        private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
         enum class PlayerButtons(val button: Int) {
             PLAY(R.drawable.play_button),
             PAUSE(R.drawable.pause_button)
