@@ -1,7 +1,5 @@
-package com.example.playlistmaker.player.data
+package com.example.playlistmaker.player.domain
 
-import com.example.playlistmaker.player.domain.FavoritesInteractor
-import com.example.playlistmaker.player.domain.FavoritesRepository
 import com.example.playlistmaker.search.domain.Track
 import kotlinx.coroutines.flow.Flow
 

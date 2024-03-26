@@ -69,11 +69,9 @@ class FavoritesFragment : Fragment() {
         binding.favoritesRecyclerView.isVisible = false
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onResume() {
         super.onResume()
         viewModel.getFavorites()
-        favoritesAdapter.notifyDataSetChanged()
     }
 
     private fun clickDebounce(): Boolean {

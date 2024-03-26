@@ -18,7 +18,6 @@ class SearchViewModel(
     private val tracksInteractor: TracksInteractor,
 ) : ViewModel() {
     private var liveState = MutableLiveData<SearchScreenState>()
-    private val songs = ArrayList<Track>()
     private val liveHistorySongs = MutableLiveData<List<Track>>()
     private val tempSongs = mutableListOf<Track>()
     private var searchJob: Job? = null
@@ -48,9 +47,12 @@ class SearchViewModel(
                         )
                     )
                     else {
-                        songs.clear()
-                        songs.addAll(foundSongs.value)
-                        liveState.postValue(SearchScreenState.Content(songs.toList()))
+                        tracksInteractor.setSongsStorage(foundSongs.value)
+                        liveState.postValue(
+                            SearchScreenState.Content(
+                                tracksInteractor.getSongsStorage().toList()
+                            )
+                        )
                     }
                 }
             }
@@ -79,7 +81,7 @@ class SearchViewModel(
         tracksInteractor.clearHistory()
         tempSongs.clear()
         liveHistorySongs.postValue(tempSongs)
-        liveState.postValue(SearchScreenState.Content(songs.toList()))
+        liveState.postValue(SearchScreenState.Content(tracksInteractor.getSongsStorage().toList()))
     }
 
     fun onTrackClick(track: Track) {
@@ -107,7 +109,7 @@ class SearchViewModel(
             }
         }
         liveHistorySongs.postValue(tempSongs)
-        tracksInteractor.setCurrentTrack(track)
+        tracksInteractor.setCurrentTrack(tracksInteractor.getTrackFromStorage(track))
     }
 
     companion object {

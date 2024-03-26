@@ -16,6 +16,7 @@ class TrackRepositoryImpl(
     private val networkClient: NetworkClient,
     private val historySharedPreferences: HistorySharedPreferences,
 ) : TrackRepository {
+    private val songsStorage = ArrayList<Track>()
     override fun setCurrentTrack(currentTrack: Track) {
         CurrentTrackStorage.setCurrentTrack(currentTrack)
     }
@@ -30,6 +31,19 @@ class TrackRepositoryImpl(
 
     override fun clearHistory() {
         historySharedPreferences.clearHistory()
+    }
+
+    override fun setSongsStorage(songs: List<Track>) {
+        songsStorage.clear()
+        songsStorage.addAll(songs)
+    }
+
+    override fun getSongsStorage(): List<Track> {
+        return songsStorage
+    }
+
+    override fun getTrackFromStorage(track: Track): Track {
+        return songsStorage.find { it == track } ?: track
     }
 
     override fun searchSongs(

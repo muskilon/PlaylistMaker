@@ -9,4 +9,7 @@ interface TrackRepository {
     fun writeHistory(songsHistory: SearchHistory)
     fun clearHistory()
     fun setCurrentTrack(currentTrack: Track)
+    fun setSongsStorage(songs: List<Track>)
+    fun getSongsStorage(): List<Track>
+    fun getTrackFromStorage(track: Track): Track
 }

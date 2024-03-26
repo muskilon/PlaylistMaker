@@ -21,6 +21,18 @@ class TracksInteractorImpl(private val repository: TrackRepository) : TracksInte
         repository.setCurrentTrack(currentTrack)
     }
 
+    override fun getSongsStorage(): List<Track> {
+        return repository.getSongsStorage()
+    }
+
+    override fun setSongsStorage(songs: List<Track>) {
+        repository.setSongsStorage(songs)
+    }
+
+    override fun getTrackFromStorage(track: Track): Track {
+        return repository.getTrackFromStorage(track)
+    }
+
     override fun searchSongs(
         term: String
     ): Flow<Resource<List<Track>>> {
