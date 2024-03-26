@@ -1,20 +1,38 @@
 package com.example.playlistmaker.search.data
 
 import com.example.playlistmaker.player.data.CurrentTrackStorage
+import com.example.playlistmaker.player.data.db.AppDatabase
 import com.example.playlistmaker.search.domain.Resource
 import com.example.playlistmaker.search.domain.SearchHistory
 import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.domain.TrackRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 class TrackRepositoryImpl(
+    private val appDatabase: AppDatabase,
     private val networkClient: NetworkClient,
-    private val historySharedPreferences: HistorySharedPreferences
+    private val historySharedPreferences: HistorySharedPreferences,
 ) : TrackRepository {
-
+    private val songsStorage = ArrayList<Track>()
+    private val songsHistory = mutableListOf<Track>()
     override fun setCurrentTrack(currentTrack: Track) {
         CurrentTrackStorage.setCurrentTrack(currentTrack)
+    }
+
+    override fun updateHistoryTrack(track: Track) {
+        songsHistory.clear()
+        songsHistory.addAll(readHistory().songsHistorySaved.toList())
+        if (songsHistory.contains(track)) {
+            songsHistory[songsHistory.indexOf(track)] = track
+            writeHistory(SearchHistory(songsHistory))
+        }
+    }
+
+    override fun getSongsHistory(): MutableList<Track> {
+        return songsHistory
     }
 
     override fun readHistory(): SearchHistory {
@@ -29,10 +47,24 @@ class TrackRepositoryImpl(
         historySharedPreferences.clearHistory()
     }
 
+    override fun setSongsStorage(songs: List<Track>) {
+        songsStorage.clear()
+        songsStorage.addAll(songs)
+    }
+
+    override fun getSongsStorage(): List<Track> {
+        return songsStorage
+    }
+
+    override fun getTrackFromStorage(track: Track): Track {
+        return songsStorage.find { it == track } ?: track
+    }
+
     override fun searchSongs(
         term: String
     ): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(SearchRequest(ENTITY, term, LANG))
+        val favorites = appDatabase.songsDao().getTrackIdList()
         when (response.resultCode) {
             OK -> {
                 with(response as SearchResponse) {
@@ -48,7 +80,8 @@ class TrackRepositoryImpl(
                             collectionName = it.collectionName,
                             country = it.country,
                             primaryGenreName = it.primaryGenreName,
-                            year = it.year
+                            year = it.year,
+                            isFavorites = (favorites.contains(it.trackId))
                         )
                     }
                     emit(Resource.Data(data))
@@ -60,7 +93,7 @@ class TrackRepositoryImpl(
                 emit(Resource.ConnectionError("connection_error"))
             }
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     companion object {
         private const val OK = 200
