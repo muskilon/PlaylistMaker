@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface TracksInteractor {
     fun searchSongs(term: String): Flow<Resource<List<Track>>>
+    fun getSongsHistory(): MutableList<Track>
     fun readHistory(): SearchHistory
     fun writeHistory(songsHistory: SearchHistory)
     fun clearHistory()
@@ -11,4 +12,5 @@ interface TracksInteractor {
     fun setSongsStorage(songs: List<Track>)
     fun getSongsStorage(): List<Track>
     fun getTrackFromStorage(track: Track): Track
+    fun updateHistoryTrack(track: Track)
 }

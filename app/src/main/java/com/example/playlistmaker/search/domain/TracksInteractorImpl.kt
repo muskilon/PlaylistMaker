@@ -5,6 +5,13 @@ import kotlinx.coroutines.flow.map
 
 class TracksInteractorImpl(private val repository: TrackRepository) : TracksInteractor {
 
+    override fun updateHistoryTrack(track: Track) {
+        repository.updateHistoryTrack(track)
+    }
+
+    override fun getSongsHistory(): MutableList<Track> {
+        return repository.getSongsHistory()
+    }
     override fun readHistory(): SearchHistory {
         return repository.readHistory()
     }

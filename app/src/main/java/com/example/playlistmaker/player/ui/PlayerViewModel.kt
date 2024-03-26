@@ -12,6 +12,7 @@ import com.example.playlistmaker.player.domain.CurrentTrackInteractor
 import com.example.playlistmaker.player.domain.FavoritesInteractor
 import com.example.playlistmaker.player.domain.MusicPlayerState
 import com.example.playlistmaker.player.domain.PlayStatus
+import com.example.playlistmaker.search.domain.TracksInteractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -20,6 +21,7 @@ import kotlinx.coroutines.launch
 class PlayerViewModel(
     private val favoritesInteractor: FavoritesInteractor,
     currentTrackInteractor: CurrentTrackInteractor,
+    private val trackInteractor: TracksInteractor,
     private val mplayer: MusicPlayer,
 ) : ViewModel() {
     private val timerZero = MyApplication.getAppResources().getString(R.string.timer_zero)
@@ -108,6 +110,7 @@ class PlayerViewModel(
     fun addToFavorites() {
         updateFavoritesDb(currentTrack.isFavorites)
         currentTrack.isFavorites = !currentTrack.isFavorites
+        trackInteractor.updateHistoryTrack(currentTrack)
         livePlayStatus.value = getCurrentPlayStatus().copy(isFavorites = currentTrack.isFavorites)
     }
 

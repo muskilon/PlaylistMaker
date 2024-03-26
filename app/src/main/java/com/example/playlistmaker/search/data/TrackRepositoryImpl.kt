@@ -17,8 +17,22 @@ class TrackRepositoryImpl(
     private val historySharedPreferences: HistorySharedPreferences,
 ) : TrackRepository {
     private val songsStorage = ArrayList<Track>()
+    private val songsHistory = mutableListOf<Track>()
     override fun setCurrentTrack(currentTrack: Track) {
         CurrentTrackStorage.setCurrentTrack(currentTrack)
+    }
+
+    override fun updateHistoryTrack(track: Track) {
+        songsHistory.clear()
+        songsHistory.addAll(readHistory().songsHistorySaved.toList())
+        if (songsHistory.contains(track)) {
+            songsHistory[songsHistory.indexOf(track)] = track
+            writeHistory(SearchHistory(songsHistory))
+        }
+    }
+
+    override fun getSongsHistory(): MutableList<Track> {
+        return songsHistory
     }
 
     override fun readHistory(): SearchHistory {
