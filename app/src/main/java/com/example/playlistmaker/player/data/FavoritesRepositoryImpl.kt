@@ -10,7 +10,8 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 class FavoritesRepositoryImpl(
-    private val appDatabase: AppDatabase, private val songsDbConvertor: SongsDbConvertor
+    private val appDatabase: AppDatabase,
+    private val songsDbConvertor: SongsDbConvertor
 ) : FavoritesRepository {
     private val favoritesStorage = ArrayList<Track>()
 
@@ -36,7 +37,7 @@ class FavoritesRepositoryImpl(
     }
 
     private fun convertFromSongsEntity(songs: List<SongsEntity>): List<Track> {
-        return songs.map { songs -> songsDbConvertor.map(songs) }
+        return songs.map { tracks -> songsDbConvertor.map(tracks) }
     }
 
     private fun getFavoritesFromDb(): Flow<List<Track>> = flow {

@@ -15,9 +15,6 @@ interface SongsDao {
     @Query("SELECT * FROM songs_table")
     suspend fun getSongs(): List<SongsEntity>
 
-    @Query("SELECT trackId FROM songs_table")
-    suspend fun getTrackIdList(): List<String>
-
     @Delete(entity = SongsEntity::class)
     fun deleteSong(songsEntity: SongsEntity)
 }
