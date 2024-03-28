@@ -14,20 +14,17 @@ class FavoritesViewModel(
     private val tracksInteractor: TracksInteractor
 ) : ViewModel() {
     private val liveSongs = MutableLiveData<List<Track>>()
+
     fun getFavorites() {
         viewModelScope.launch {
-            favoritesInteractor.getFavoritesSongs()
-                .collect { result -> processResult(result) }
+            favoritesInteractor.updateFavorites()
+            liveSongs.postValue(favoritesInteractor.getFavorites())
         }
     }
 
     fun getSongs(): LiveData<List<Track>> = liveSongs
 
-    private fun processResult(favorites: List<Track>) {
-        liveSongs.postValue(favorites)
-    }
-
     fun onTrackClick(track: Track) {
-        tracksInteractor.setCurrentTrack(tracksInteractor.getTrackFromStorage(track))
+        tracksInteractor.setCurrentTrack(track)
     }
 }

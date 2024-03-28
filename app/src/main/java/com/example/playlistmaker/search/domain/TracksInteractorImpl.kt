@@ -36,10 +36,6 @@ class TracksInteractorImpl(private val repository: TrackRepository) : TracksInte
         repository.setSongsStorage(songs)
     }
 
-    override fun getTrackFromStorage(track: Track): Track {
-        return repository.getTrackFromStorage(track)
-    }
-
     override fun searchSongs(
         term: String
     ): Flow<Resource<List<Track>>> {

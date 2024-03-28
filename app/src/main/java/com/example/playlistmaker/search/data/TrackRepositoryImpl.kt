@@ -1,7 +1,6 @@
 package com.example.playlistmaker.search.data
 
 import com.example.playlistmaker.player.data.CurrentTrackStorage
-import com.example.playlistmaker.player.data.db.AppDatabase
 import com.example.playlistmaker.search.domain.Resource
 import com.example.playlistmaker.search.domain.SearchHistory
 import com.example.playlistmaker.search.domain.Track
@@ -12,7 +11,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
 class TrackRepositoryImpl(
-    private val appDatabase: AppDatabase,
     private val networkClient: NetworkClient,
     private val historySharedPreferences: HistorySharedPreferences,
 ) : TrackRepository {
@@ -56,15 +54,10 @@ class TrackRepositoryImpl(
         return songsStorage
     }
 
-    override fun getTrackFromStorage(track: Track): Track {
-        return songsStorage.find { it == track } ?: track
-    }
-
     override fun searchSongs(
         term: String
     ): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.doRequest(SearchRequest(ENTITY, term, LANG))
-        val favorites = appDatabase.songsDao().getTrackIdList()
         when (response.resultCode) {
             OK -> {
                 with(response as SearchResponse) {
@@ -80,8 +73,7 @@ class TrackRepositoryImpl(
                             collectionName = it.collectionName,
                             country = it.country,
                             primaryGenreName = it.primaryGenreName,
-                            year = it.year,
-                            isFavorites = (favorites.contains(it.trackId))
+                            year = it.year
                         )
                     }
                     emit(Resource.Data(data))

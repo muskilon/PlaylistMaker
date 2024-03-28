@@ -12,7 +12,6 @@ import com.example.playlistmaker.player.domain.CurrentTrackInteractor
 import com.example.playlistmaker.player.domain.FavoritesInteractor
 import com.example.playlistmaker.player.domain.MusicPlayerState
 import com.example.playlistmaker.player.domain.PlayStatus
-import com.example.playlistmaker.search.domain.TracksInteractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -21,8 +20,7 @@ import kotlinx.coroutines.launch
 class PlayerViewModel(
     private val favoritesInteractor: FavoritesInteractor,
     currentTrackInteractor: CurrentTrackInteractor,
-    private val trackInteractor: TracksInteractor,
-    private val mplayer: MusicPlayer,
+    private val mplayer: MusicPlayer
 ) : ViewModel() {
     private val timerZero = MyApplication.getAppResources().getString(R.string.timer_zero)
     private val timerPlaceholder =
@@ -38,7 +36,7 @@ class PlayerViewModel(
             playButtonClickableState = false,
             playButtonImage = PLAY,
             currentTrack = currentTrack,
-            isFavorites = currentTrack.isFavorites
+            isFavorites = isFavorites()
         )
     }
 
@@ -48,7 +46,7 @@ class PlayerViewModel(
             playButtonClickableState = false,
             playButtonImage = PLAY,
             currentTrack = currentTrack,
-            isFavorites = currentTrack.isFavorites
+            isFavorites = isFavorites()
         )
     }
 
@@ -107,16 +105,14 @@ class PlayerViewModel(
         }
     }
 
-    fun addToFavorites() {
-        updateFavoritesDb(currentTrack.isFavorites)
-        currentTrack.isFavorites = !currentTrack.isFavorites
-        trackInteractor.updateHistoryTrack(currentTrack)
-        livePlayStatus.value = getCurrentPlayStatus().copy(isFavorites = currentTrack.isFavorites)
+    private fun isFavorites(): Boolean {
+        return favoritesInteractor.getFavorites().contains(currentTrack)
     }
 
-    private fun updateFavoritesDb(isFavorites: Boolean) {
+    fun addToFavorites() {
+        livePlayStatus.value = getCurrentPlayStatus().copy(isFavorites = !isFavorites())
         viewModelScope.launch(Dispatchers.IO) {
-            if (isFavorites) favoritesInteractor.deleteSongFromFavorites(currentTrack)
+            if (isFavorites()) favoritesInteractor.deleteSongFromFavorites(currentTrack)
             else favoritesInteractor.addSongToFavorites(currentTrack)
         }
     }

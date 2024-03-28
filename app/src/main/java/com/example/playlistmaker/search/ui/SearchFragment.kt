@@ -140,13 +140,14 @@ class SearchFragment : Fragment(), RenderState {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                searchInput = s.toString()
-                if (binding.searchBarEdit.hasFocus() && s?.isEmpty() == true && songsHistory.isNotEmpty()) {
+                val currentInput = s.toString()
+                if (binding.searchBarEdit.hasFocus() && (s?.isEmpty() == true || currentInput == searchInput) && songsHistory.isNotEmpty()) {
                     render(SearchState.SONG_HISTORY)
                 } else {
                     render(SearchState.SEARCH)
                 }
-                if (searchInput.isNotEmpty()) {
+                if (currentInput.isNotEmpty() && currentInput != searchInput) {
+                    searchInput = s.toString()
                     viewModel.searchDebounce(searchInput)
                 }
             }

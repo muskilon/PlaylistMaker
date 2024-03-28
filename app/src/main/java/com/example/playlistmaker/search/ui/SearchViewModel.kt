@@ -109,7 +109,7 @@ class SearchViewModel(
             }
         }
         liveHistorySongs.postValue(songsHistory)
-        tracksInteractor.setCurrentTrack(tracksInteractor.getTrackFromStorage(track))
+        tracksInteractor.setCurrentTrack(track)
     }
 
     companion object {

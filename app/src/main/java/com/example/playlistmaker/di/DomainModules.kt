@@ -31,8 +31,7 @@ val domainModules = module {
     single<TrackRepository> {
         TrackRepositoryImpl(
             networkClient = get(),
-            historySharedPreferences = get(),
-            appDatabase = get()
+            historySharedPreferences = get()
         )
     }
 

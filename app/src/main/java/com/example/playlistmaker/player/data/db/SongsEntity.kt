@@ -16,6 +16,5 @@ data class SongsEntity(
     val collectionName: String,
     val country: String,
     val primaryGenreName: String,
-    val year: String,
-    var isFavorites: Boolean
+    val year: String
 )
