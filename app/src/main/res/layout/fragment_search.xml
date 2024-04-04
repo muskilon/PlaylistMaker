@@ -71,7 +71,7 @@
             android:layout_gravity="center"
             android:indeterminateTint="@color/yp_blue"
             android:visibility="gone"
-            tools:visibility="visible" />
+            tools:visibility="gone" />
 
         <include
             android:id="@+id/you_searched_incl"
@@ -90,6 +90,7 @@
         <include
             android:id="@+id/not_found_placeholder"
             layout="@layout/not_found_placeholder"
+            android:visibility="gone"
             tools:visibility="gone" />
 
         <include

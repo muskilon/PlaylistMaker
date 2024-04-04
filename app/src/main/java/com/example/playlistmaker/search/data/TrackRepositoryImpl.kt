@@ -5,16 +5,32 @@ import com.example.playlistmaker.search.domain.Resource
 import com.example.playlistmaker.search.domain.SearchHistory
 import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.domain.TrackRepository
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 class TrackRepositoryImpl(
     private val networkClient: NetworkClient,
-    private val historySharedPreferences: HistorySharedPreferences
+    private val historySharedPreferences: HistorySharedPreferences,
 ) : TrackRepository {
-
+    private val songsStorage = ArrayList<Track>()
+    private val songsHistory = mutableListOf<Track>()
     override fun setCurrentTrack(currentTrack: Track) {
         CurrentTrackStorage.setCurrentTrack(currentTrack)
+    }
+
+    override fun updateHistoryTrack(track: Track) {
+        songsHistory.clear()
+        songsHistory.addAll(readHistory().songsHistorySaved.toList())
+        if (songsHistory.contains(track)) {
+            songsHistory[songsHistory.indexOf(track)] = track
+            writeHistory(SearchHistory(songsHistory))
+        }
+    }
+
+    override fun getSongsHistory(): MutableList<Track> {
+        return songsHistory
     }
 
     override fun readHistory(): SearchHistory {
@@ -27,6 +43,15 @@ class TrackRepositoryImpl(
 
     override fun clearHistory() {
         historySharedPreferences.clearHistory()
+    }
+
+    override fun setSongsStorage(songs: List<Track>) {
+        songsStorage.clear()
+        songsStorage.addAll(songs)
+    }
+
+    override fun getSongsStorage(): List<Track> {
+        return songsStorage
     }
 
     override fun searchSongs(
@@ -60,7 +85,7 @@ class TrackRepositoryImpl(
                 emit(Resource.ConnectionError("connection_error"))
             }
         }
-    }
+    }.flowOn(Dispatchers.IO)
 
     companion object {
         private const val OK = 200

@@ -1,7 +1,7 @@
 package com.example.playlistmaker.search.domain
 
 sealed class SearchScreenState {
-    object Loading : SearchScreenState()
+    data object Loading : SearchScreenState()
     data class Content(
         val songs: List<Track>
     ) : SearchScreenState()

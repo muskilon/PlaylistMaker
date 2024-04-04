@@ -9,15 +9,18 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.player.data.MusicPlayer
 import com.example.playlistmaker.player.data.OnStateChangeListener
 import com.example.playlistmaker.player.domain.CurrentTrackInteractor
+import com.example.playlistmaker.player.domain.FavoritesInteractor
 import com.example.playlistmaker.player.domain.MusicPlayerState
 import com.example.playlistmaker.player.domain.PlayStatus
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class PlayerViewModel(
+    private val favoritesInteractor: FavoritesInteractor,
     currentTrackInteractor: CurrentTrackInteractor,
-    private val mplayer: MusicPlayer,
+    private val mplayer: MusicPlayer
 ) : ViewModel() {
     private val timerZero = MyApplication.getAppResources().getString(R.string.timer_zero)
     private val timerPlaceholder =
@@ -32,7 +35,8 @@ class PlayerViewModel(
             timeElapsed = timerPlaceholder,
             playButtonClickableState = false,
             playButtonImage = PLAY,
-            currentTrack = currentTrack
+            currentTrack = currentTrack,
+            isFavorites = isFavorites()
         )
     }
 
@@ -41,7 +45,8 @@ class PlayerViewModel(
             timeElapsed = timerZero,
             playButtonClickableState = false,
             playButtonImage = PLAY,
-            currentTrack = currentTrack
+            currentTrack = currentTrack,
+            isFavorites = isFavorites()
         )
     }
 
@@ -50,16 +55,14 @@ class PlayerViewModel(
             override fun onChange(state: MusicPlayerState) {
                 if (state == MusicPlayerState.STATE_PREPARED) {
                     livePlayStatus.value = getCurrentPlayStatus().copy(
-                        playButtonClickableState = true,
-                        timeElapsed = timerZero
+                        playButtonClickableState = true, timeElapsed = timerZero
                     )
                     musicPlayerState = MusicPlayerState.STATE_PREPARED
                 }
 
                 if (state == MusicPlayerState.STATE_END_OF_SONG) {
                     livePlayStatus.value = getCurrentPlayStatus().copy(
-                        playButtonImage = PLAY,
-                        timeElapsed = timerZero
+                        playButtonImage = PLAY, timeElapsed = timerZero
                     )
                     musicPlayerState = MusicPlayerState.STATE_PREPARED
                 }
@@ -79,11 +82,11 @@ class PlayerViewModel(
             MusicPlayerState.STATE_PAUSED, MusicPlayerState.STATE_PREPARED -> {
                 isUserPaused = false
                 mplayer.start()
-                livePlayStatus.value =
-                    getCurrentPlayStatus().copy(playButtonImage = PAUSE)
+                livePlayStatus.value = getCurrentPlayStatus().copy(playButtonImage = PAUSE)
                 musicPlayerState = MusicPlayerState.STATE_PLAYING
                 timer()
             }
+
             else -> {
                 //nothing
             }
@@ -102,6 +105,18 @@ class PlayerViewModel(
         }
     }
 
+    private fun isFavorites(): Boolean {
+        return favoritesInteractor.getFavorites().contains(currentTrack)
+    }
+
+    fun addToFavorites() {
+        livePlayStatus.value = getCurrentPlayStatus().copy(isFavorites = !isFavorites())
+        viewModelScope.launch(Dispatchers.IO) {
+            if (isFavorites()) favoritesInteractor.deleteSongFromFavorites(currentTrack)
+            else favoritesInteractor.addSongToFavorites(currentTrack)
+        }
+    }
+
     fun getPlayStatus(): LiveData<PlayStatus> = livePlayStatus
 
     fun preparePlayer() {
@@ -111,8 +126,7 @@ class PlayerViewModel(
     fun pausePlayer() {
         if (musicPlayerState == MusicPlayerState.STATE_PLAYING) {
             mplayer.pause()
-            livePlayStatus.value =
-                getCurrentPlayStatus().copy(playButtonImage = PLAY)
+            livePlayStatus.value = getCurrentPlayStatus().copy(playButtonImage = PLAY)
             musicPlayerState = MusicPlayerState.STATE_PAUSED
         }
     }
