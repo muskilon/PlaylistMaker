@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,8 +38,7 @@ class SearchFragment : Fragment(), RenderState {
 
     private var isClickAllowed = true
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
@@ -105,6 +105,7 @@ class SearchFragment : Fragment(), RenderState {
         binding.searchBarEdit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 binding.searchBarEdit.clearFocus()
+                viewModel.searchDebounce(EMPTY)
                 viewModel.searchSongs(searchInput)
             }
             false
@@ -141,15 +142,14 @@ class SearchFragment : Fragment(), RenderState {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val currentInput = s.toString()
-                if (binding.searchBarEdit.hasFocus() && (s?.isEmpty() == true || currentInput == searchInput) && songsHistory.isNotEmpty()) {
+                if (binding.searchBarEdit.hasFocus() && (currentInput.isEmpty() || currentInput == searchInput) && songsHistory.isNotEmpty()) {
                     render(SearchState.SONG_HISTORY)
                 } else {
                     render(SearchState.SEARCH)
                 }
-                if (currentInput.isNotEmpty() && currentInput != searchInput) {
-                    searchInput = s.toString()
-                    viewModel.searchDebounce(searchInput)
-                }
+                searchInput = currentInput
+                viewModel.searchDebounce(currentInput)
+                Log.d("TAG", "currentInput = $currentInput\nsearchInput = $searchInput")
             }
 
             override fun afterTextChanged(s: Editable?) {

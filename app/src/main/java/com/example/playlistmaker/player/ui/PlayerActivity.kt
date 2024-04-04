@@ -8,6 +8,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityPlayerBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -58,6 +59,12 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         binding.playButton.setOnClickListener { viewModel.playbackControl() }
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.playerBottomSheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        binding.addToPlayList.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
 
         binding.addToFavorites.setOnClickListener {
             if (clickDebounce()) viewModel.addToFavorites()

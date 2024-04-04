@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PlayerViewModel(
     private val favoritesInteractor: FavoritesInteractor,
@@ -110,10 +111,12 @@ class PlayerViewModel(
     }
 
     fun addToFavorites() {
-        livePlayStatus.value = getCurrentPlayStatus().copy(isFavorites = !isFavorites())
         viewModelScope.launch(Dispatchers.IO) {
             if (isFavorites()) favoritesInteractor.deleteSongFromFavorites(currentTrack)
             else favoritesInteractor.addSongToFavorites(currentTrack)
+            withContext(Dispatchers.Main) {
+                livePlayStatus.value = getCurrentPlayStatus().copy(isFavorites = isFavorites())
+            }
         }
     }
 

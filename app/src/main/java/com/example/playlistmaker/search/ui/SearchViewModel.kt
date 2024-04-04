@@ -59,10 +59,14 @@ class SearchViewModel(
         }
 
     fun searchDebounce(term: String) {
-        searchJob?.cancel()
-        searchJob = viewModelScope.launch {
-            delay(SEARCH_DEBOUNCE_DELAY_MILLIS)
-            searchSongs(term)
+
+        if (term.isEmpty()) searchJob?.cancel()
+        else {
+            searchJob?.cancel()
+            searchJob = viewModelScope.launch {
+                delay(SEARCH_DEBOUNCE_DELAY_MILLIS)
+                searchSongs(term)
+            }
         }
     }
 
