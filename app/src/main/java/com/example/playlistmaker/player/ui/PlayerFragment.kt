@@ -1,36 +1,44 @@
 package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.ActivityPlayerBinding
+import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
-class PlayerActivity : AppCompatActivity() {
+class PlayerFragment : Fragment() {
 
-    private lateinit var binding: ActivityPlayerBinding
-    private val viewModel: PlayerViewModel by viewModel()
+    private lateinit var binding: FragmentPlayerBinding
+    private val viewModel by activityViewModel<PlayerViewModel>()
     private var isClickAllowed = true
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityPlayerBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        binding = FragmentPlayerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         if (savedInstanceState == null) {
             viewModel.setListener()
             viewModel.preparePlayer()
         }
 
-        viewModel.getPlayStatus().observe(this) { status ->
+        viewModel.getPlayStatus().observe(viewLifecycleOwner) { status ->
             binding.timeElapsed.text = status.timeElapsed
             binding.playButton.isClickable = status.playButtonClickableState
             binding.playButton.setImageResource(PlayerButtons.valueOf(status.playButtonImage).button)
@@ -72,16 +80,16 @@ class PlayerActivity : AppCompatActivity() {
             if (clickDebounce()) viewModel.addToFavorites()
         }
 
-        onBackPressedDispatcher.addCallback(this, callback)
         binding.arrowBack.setOnClickListener {
             exit()
         }
-    }
-
-    private val callback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            exit()
-        }
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    exit()
+                }
+            })
     }
 
     private fun clickDebounce(): Boolean {
@@ -98,7 +106,7 @@ class PlayerActivity : AppCompatActivity() {
 
     fun exit() {
         viewModel.stopPlayer()
-        this.finish()
+        requireActivity().supportFragmentManager.popBackStack()
     }
 
     override fun onPause() {
@@ -108,6 +116,7 @@ class PlayerActivity : AppCompatActivity() {
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
+
         enum class PlayerButtons(val button: Int) {
             PLAY(R.drawable.play_button),
             PAUSE(R.drawable.pause_button)
