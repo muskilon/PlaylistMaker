@@ -1,7 +1,6 @@
 package com.example.playlistmaker.medialibrary.ui
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +8,9 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentFavoritesBinding
-import com.example.playlistmaker.player.ui.PlayerActivity
 import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.ui.SearchResultAdapter
 import kotlinx.coroutines.delay
@@ -40,8 +40,9 @@ class FavoritesFragment : Fragment() {
 
         favoritesAdapter = SearchResultAdapter(songs) { track ->
             if (clickDebounce()) viewModel.onTrackClick(track)
-            val openPlayer = Intent(requireActivity(), PlayerActivity::class.java)
-            startActivity(openPlayer)
+            findNavController().navigate(
+                R.id.action_medialibraryFragment_to_playerFragment
+            )
         }
         binding.favoritesRecyclerView.adapter = favoritesAdapter
 

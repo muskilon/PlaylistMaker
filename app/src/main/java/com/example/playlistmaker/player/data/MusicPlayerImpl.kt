@@ -10,6 +10,9 @@ class MusicPlayerImpl(
 ) : MusicPlayer {
     private var listener: OnStateChangeListener? = null
     override fun preparePlayer(source: String) {
+
+        mediaPlayer.reset()
+
         mediaPlayer.setDataSource(source)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener {
@@ -45,6 +48,10 @@ class MusicPlayerImpl(
 
     override fun reset() {
         mediaPlayer.reset()
+    }
+
+    override fun release() {
+        mediaPlayer.release()
     }
 
 }

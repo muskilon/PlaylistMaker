@@ -1,6 +1,7 @@
 package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,10 +9,12 @@ import androidx.activity.OnBackPressedCallback
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -22,6 +25,7 @@ class PlayerFragment : Fragment() {
     private lateinit var binding: FragmentPlayerBinding
     private val viewModel by activityViewModel<PlayerViewModel>()
     private var isClickAllowed = true
+    private lateinit var navBar: BottomNavigationView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,10 +37,14 @@ class PlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Log.d("TAG", savedInstanceState.toString())
+
         if (savedInstanceState == null) {
             viewModel.setListener()
             viewModel.preparePlayer()
         }
+        navBar = requireActivity().findViewById(R.id.bottomNavigationView)
+        navBar.isVisible = false
 
         viewModel.getPlayStatus().observe(viewLifecycleOwner) { status ->
             binding.timeElapsed.text = status.timeElapsed
@@ -90,6 +98,11 @@ class PlayerFragment : Fragment() {
                     exit()
                 }
             })
+        binding.newPlaylist.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_playerFragment_to_newPlayListFragment
+            )
+        }
     }
 
     private fun clickDebounce(): Boolean {
@@ -106,12 +119,25 @@ class PlayerFragment : Fragment() {
 
     fun exit() {
         viewModel.stopPlayer()
-        requireActivity().supportFragmentManager.popBackStack()
+        findNavController().navigateUp()
     }
 
     override fun onPause() {
+        Log.d("TAG", "Paused")
         super.onPause()
         viewModel.pausePlayer()
+    }
+
+    override fun onDestroy() {
+        Log.d("TAG", "Destroyed")
+        super.onDestroy()
+        viewModel.stopPlayer()
+        navBar.isVisible = true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        navBar.isVisible = false
     }
 
     companion object {

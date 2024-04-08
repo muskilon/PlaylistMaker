@@ -68,13 +68,13 @@
         app:boxCornerRadiusTopEnd="4dp"
         app:boxCornerRadiusTopStart="4dp"
         app:boxStrokeWidth="1dp"
-        app:boxStrokeColor="?attr/boxBackgroundColor"
+        app:boxStrokeColor="@color/new_play_list_text_input_state_default"
         app:boxStrokeWidthFocused="1dp"
         app:endIconDrawable="@drawable/clear_icon"
         app:endIconMode="clear_text"
-        app:endIconTint="?android:attr/textColorHintInverse"
-        app:hintEnabled="false"
-        app:hintTextColor="@android:color/transparent">
+        app:endIconTint="?attr/black_ypDayWhite_ypNight"
+        app:hintEnabled="true"
+        app:hintTextColor="@color/new_play_list_text_input_state_default">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/enterTitleEdit"
@@ -87,7 +87,7 @@
             android:paddingHorizontal="16dp"
             android:singleLine="true"
             android:textColor="?attr/black_ypDayWhite_ypNight"
-            android:textColorHint="?attr/black_ypDayWhite_ypNight"
+            android:textColorHint="@color/new_play_list_hint_state_default"
             android:textCursorDrawable="@drawable/color_cursor"
             android:textSize="@dimen/font_size_16" />
 
@@ -108,13 +108,13 @@
         app:boxCornerRadiusTopEnd="4dp"
         app:boxCornerRadiusTopStart="4dp"
         app:boxStrokeWidth="1dp"
-        app:boxStrokeColor="?attr/boxBackgroundColor"
+        app:boxStrokeColor="@color/new_play_list_text_input_state_default"
         app:boxStrokeWidthFocused="1dp"
         app:endIconDrawable="@drawable/clear_icon"
         app:endIconMode="clear_text"
-        app:endIconTint="?android:attr/textColorHintInverse"
-        app:hintEnabled="false"
-        app:hintTextColor="@android:color/transparent">
+        app:endIconTint="?attr/black_ypDayWhite_ypNight"
+        app:hintEnabled="true"
+        app:hintTextColor="@color/new_play_list_text_input_state_default">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/enterDescriptionEdit"
@@ -147,6 +147,7 @@
         android:textColor="@color/yp_white"
         android:fontFamily="@font/ys_display_medium"
         android:textSize="@dimen/font_size_16"
+        android:enabled="false"
 
         />
 

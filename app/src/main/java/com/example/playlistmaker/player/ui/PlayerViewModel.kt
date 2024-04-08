@@ -136,7 +136,6 @@ class PlayerViewModel(
 
     fun stopPlayer() {
         pausePlayer()
-        mplayer.stop()
     }
 
     companion object {

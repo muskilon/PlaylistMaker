@@ -14,4 +14,5 @@ interface MusicPlayer {
 
     fun setListener(onStateChangeListener: OnStateChangeListener)
     fun reset()
+    fun release()
 }

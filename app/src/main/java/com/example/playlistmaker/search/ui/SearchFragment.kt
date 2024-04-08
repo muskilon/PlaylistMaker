@@ -2,11 +2,9 @@ package com.example.playlistmaker.search.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,9 +13,10 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
-import com.example.playlistmaker.player.ui.PlayerActivity
 import com.example.playlistmaker.search.domain.SearchScreenState
 import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
@@ -59,14 +58,16 @@ class SearchFragment : Fragment(), RenderState {
 
         searchResultsAdapter = SearchResultAdapter(songs) { track ->
             if (clickDebounce()) viewModel.onTrackClick(track)
-            val openPlayer = Intent(requireActivity(), PlayerActivity::class.java)
-            startActivity(openPlayer)
+            findNavController().navigate(
+                R.id.action_searchFragment_to_playerFragment
+            )
         }
 
         songsHistoryAdapter = SearchResultAdapter(songsHistory) { track ->
             if (clickDebounce()) viewModel.onTrackClick(track)
-            val openPlayer = Intent(requireActivity(), PlayerActivity::class.java)
-            startActivity(openPlayer)
+            findNavController().navigate(
+                R.id.action_searchFragment_to_playerFragment
+            )
         }
 
         binding.searchResultsRecyclerView.adapter = searchResultsAdapter
@@ -149,7 +150,6 @@ class SearchFragment : Fragment(), RenderState {
                 }
                 searchInput = currentInput
                 viewModel.searchDebounce(currentInput)
-                Log.d("TAG", "currentInput = $currentInput\nsearchInput = $searchInput")
             }
 
             override fun afterTextChanged(s: Editable?) {
