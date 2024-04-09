@@ -1,6 +1,7 @@
 package com.example.playlistmaker.di
 
 import com.example.playlistmaker.medialibrary.ui.FavoritesViewModel
+import com.example.playlistmaker.medialibrary.ui.NewPlayListViewModel
 import com.example.playlistmaker.medialibrary.ui.PlaylistsViewModel
 import com.example.playlistmaker.player.ui.PlayerViewModel
 import com.example.playlistmaker.search.ui.SearchViewModel
@@ -23,5 +24,6 @@ val viewModelModules = module {
 
     viewModel { FavoritesViewModel(get(), get()) }
 
-    viewModel { PlaylistsViewModel() }
+    viewModel { PlaylistsViewModel(get()) }
+    viewModel { NewPlayListViewModel(get(), get()) }
 }

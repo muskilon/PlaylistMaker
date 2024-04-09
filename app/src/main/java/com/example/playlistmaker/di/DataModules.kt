@@ -8,6 +8,7 @@ import androidx.room.Room
 import com.example.playlistmaker.MyApplication
 import com.example.playlistmaker.player.data.MusicPlayer
 import com.example.playlistmaker.player.data.MusicPlayerImpl
+import com.example.playlistmaker.player.data.PlayListTracksDbConvertor
 import com.example.playlistmaker.player.data.SongsDbConvertor
 import com.example.playlistmaker.player.data.db.AppDatabase
 import com.example.playlistmaker.search.data.HistorySharedPreferences
@@ -61,5 +62,8 @@ val dataModules = module {
             .build()
     }
     factory { SongsDbConvertor() }
+// Medialibrary
+    factory { PlayListTracksDbConvertor() }
+
 
 }

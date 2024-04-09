@@ -1,13 +1,20 @@
 package com.example.playlistmaker.medialibrary.ui
 
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewPlayListBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -18,6 +25,10 @@ class NewPlayListFragment : Fragment() {
     private lateinit var navBar: BottomNavigationView
     private val viewModel by activityViewModel<NewPlayListViewModel>()
 
+    private var title: String = EMPTY
+    private var description: String = EMPTY
+    private var newUri: String = EMPTY
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -26,10 +37,31 @@ class NewPlayListFragment : Fragment() {
         return binding.root
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navBar = requireActivity().findViewById(R.id.bottomNavigationView)
         navBar.isVisible = false
+
+        val pickMedia =
+            registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+                //обрабатываем событие выбора пользователем фотографии
+                if (uri != null) {
+                    binding.playListCover.setImageURI(uri)
+                    newUri = viewModel.saveFile(uri).toString()
+                } else {
+                    Log.d("PhotoPicker", "No media selected")
+                }
+            }
+
+        binding.imageContainer.setOnClickListener {
+            viewModel.checkPermissions()
+            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+        }
+        binding.createButton.setOnClickListener {
+            viewModel.createPlayList(title, description, newUri.toUri())
+            findNavController().navigateUp()
+        }
 
         val textWatcherTitle = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -37,8 +69,8 @@ class NewPlayListFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val playListTitle = s.toString()
-                if (playListTitle.isNotEmpty()) {
+                title = s.toString()
+                if (title.isNotEmpty()) {
                     binding.createButton.isEnabled = true
                     binding.enterTitle.setBoxStrokeColorStateList(
                         requireContext().getColorStateList(
@@ -48,7 +80,7 @@ class NewPlayListFragment : Fragment() {
                     binding.enterTitle.defaultHintTextColor =
                         (requireContext().getColorStateList(R.color.new_play_list_text_input_state_not_empty))
                 }
-                if (playListTitle.isEmpty()) {
+                if (title.isEmpty()) {
                     binding.createButton.isEnabled = false
                     binding.enterTitle.setBoxStrokeColorStateList(
                         requireContext().getColorStateList(
@@ -72,8 +104,8 @@ class NewPlayListFragment : Fragment() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                val playListDescription = s.toString()
-                if (playListDescription.isNotEmpty()) {
+                description = s.toString()
+                if (description.isNotEmpty()) {
                     binding.enterDescription.setBoxStrokeColorStateList(
                         requireContext().getColorStateList(
                             R.color.new_play_list_text_input_state_not_empty
@@ -82,7 +114,7 @@ class NewPlayListFragment : Fragment() {
                     binding.enterDescription.defaultHintTextColor =
                         (requireContext().getColorStateList(R.color.new_play_list_text_input_state_not_empty))
                 }
-                if (playListDescription.isEmpty()) {
+                if (description.isEmpty()) {
                     binding.enterDescription.setBoxStrokeColorStateList(
                         requireContext().getColorStateList(
                             R.color.new_play_list_text_input_state_default
@@ -103,5 +135,9 @@ class NewPlayListFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         navBar.isVisible = true
+    }
+
+    companion object {
+        const val EMPTY = ""
     }
 }

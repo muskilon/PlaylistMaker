@@ -8,6 +8,7 @@ import com.example.playlistmaker.di.dataModules
 import com.example.playlistmaker.di.domainModules
 import com.example.playlistmaker.di.viewModelModules
 import com.example.playlistmaker.settings.data.SettingsStorage
+import com.markodevcic.peko.PermissionRequester
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
@@ -20,6 +21,8 @@ class MyApplication : Application() {
             modules(dataModules, domainModules, viewModelModules)
         }
         resourcess = resources
+
+        PermissionRequester.initialize(applicationContext)
 
         val sharedPreferences = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
         val settingsStorage = SettingsStorage(sharedPreferences)

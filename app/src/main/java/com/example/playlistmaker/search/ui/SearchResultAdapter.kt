@@ -12,7 +12,6 @@ class SearchResultAdapter(
 ) : RecyclerView.Adapter<SearchResultViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SearchResultViewHolder {
-
         val layoutInspector = LayoutInflater.from(parent.context)
         return SearchResultViewHolder(TrackSnippetBinding.inflate(layoutInspector, parent, false))
 
