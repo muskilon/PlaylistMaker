@@ -18,11 +18,12 @@ class NewPlayListViewModel(
     private val filesInteractor: FilesInteractor,
     private val playListInteractor: PlayListInteractor
 ) : ViewModel() {
-    fun saveFile(uri: Uri) {
-        filesInteractor.saveFile(uri)
+    fun saveFile(uri: Uri): Uri {
+        return filesInteractor.saveFile(uri)
     }
 
     fun createPlayList(title: String, description: String, uri: Uri) {
+        Log.d("TAG", uri.toString())
         viewModelScope.launch {
             playListInteractor.addPlayList(
                 PlayListEntity(

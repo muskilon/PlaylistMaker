@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
+import android.util.Log
 import androidx.core.net.toUri
 import com.example.playlistmaker.medialibrary.domain.FilesRepository
 import java.io.File
@@ -30,6 +31,7 @@ class FilesRepositoryImpl(
         BitmapFactory // записываем картинку с помощью BitmapFactory
             .decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
+        Log.d("Repository", file.toUri().toString())
         return file.toUri()
     }
 

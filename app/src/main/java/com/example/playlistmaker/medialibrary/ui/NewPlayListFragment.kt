@@ -49,6 +49,7 @@ class NewPlayListFragment : Fragment() {
                 if (uri != null) {
                     binding.playListCover.setImageURI(uri)
                     newUri = viewModel.saveFile(uri).toString()
+                    Log.d("PhotoPicker", newUri)
                 } else {
                     Log.d("PhotoPicker", "No media selected")
                 }
