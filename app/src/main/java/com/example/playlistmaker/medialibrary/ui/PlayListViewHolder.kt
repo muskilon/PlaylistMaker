@@ -17,7 +17,7 @@ class PlayListViewHolder(private val binding: PlayListSnippetBinding) :
         binding.playListTrackCount.text = "toDO"
         Glide.with(binding.playListCover)
             .load(playList.cover)
-            .placeholder(R.drawable.placeholder_big)
+            .placeholder(R.drawable.album_mock)
             .transform(RoundedCorners(cornerRadius.toInt()))
             .into(binding.playListCover)
     }
