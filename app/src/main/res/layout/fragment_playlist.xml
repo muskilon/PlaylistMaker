@@ -8,15 +8,14 @@
 
     <Button
         android:id="@+id/new_playlist"
+        style="@style/RefreshButton"
         android:layout_width="133dp"
         android:layout_height="36dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="24dp"
-        android:layout_marginBottom="16dp"
-        style="@style/RefreshButton"
-        android:text="@string/new_playlist" />
+        android:text="@string/new_playlist"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <include
         android:id="@+id/empty_playlists"
@@ -31,9 +30,13 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/playListRecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginHorizontal="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/new_playlist"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:useDefaultMargins="true" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
