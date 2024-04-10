@@ -14,28 +14,43 @@ import java.io.FileOutputStream
 class FilesRepositoryImpl(
     val context: Context
 ) : FilesRepository {
+    private lateinit var filePath: File
+    private fun getNewFile(): File {
+        var biggest = 0
+        filePath = File(
+            context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playListCovers"
+        )
+        if (!filePath.exists()) filePath.mkdirs()
+        if (!filePath.listFiles().isNullOrEmpty()) {
+            filePath.listFiles()!!.forEach { fileName ->
+                val sub =
+                    fileName.toString()
+                        .substringAfterLast("/cover")
+                        .substringBeforeLast('.')
+                        .toInt()
+                if (sub > biggest) biggest = sub
+            }
+            return File(filePath, "$DEFAULT_FILE_NAME${biggest + 1}$DEFAULT_FILE_TYPE")
+        } else return File(filePath, BEGIN_FILENAME)
+    }
     override fun saveFile(uri: Uri): Uri {
-        val filePath = File(
-            context.getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-            "playListCovers"
-        ) //создаём экземпляр класса File, который указывает на нужный каталог
-        if (!filePath.exists()) filePath.mkdirs() //создаем каталог, если он не создан
-        val file = File(
-            filePath,
-            "first_cover.jpg"
-        ) //создаём экземпляр класса File, который указывает на файл внутри каталога
-        val inputStream =
-            context.contentResolver.openInputStream(uri) // создаём входящий поток байтов из выбранной картинки
-        val outputStream =
-            FileOutputStream(file) // создаём исходящий поток байтов в созданный выше файл
-        BitmapFactory // записываем картинку с помощью BitmapFactory
+        val file = getNewFile()
+        val inputStream = context.contentResolver.openInputStream(uri)
+        val outputStream = FileOutputStream(file)
+        BitmapFactory
             .decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
-        Log.d("Repository", file.toUri().toString())
+        Log.d("DIR", file.toString())
         return file.toUri()
     }
 
     override fun loadFile() {
         TODO("Not yet implemented")
+    }
+
+    companion object {
+        private const val DEFAULT_FILE_NAME = "cover"
+        private const val DEFAULT_FILE_TYPE = ".jpg"
+        private const val BEGIN_FILENAME = "cover1.jpg"
     }
 }

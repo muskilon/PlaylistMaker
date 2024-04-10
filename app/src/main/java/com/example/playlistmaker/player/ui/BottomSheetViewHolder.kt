@@ -1,14 +1,14 @@
-package com.example.playlistmaker.medialibrary.ui
+package com.example.playlistmaker.player.ui
 
 import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.databinding.PlayListSnippetBinding
+import com.example.playlistmaker.databinding.PlayListSmallSnippetBinding
 import com.example.playlistmaker.player.data.db.PlayListEntity
 
-class PlayListViewHolder(private val binding: PlayListSnippetBinding) :
+class BottomSheetViewHolder(private val binding: PlayListSmallSnippetBinding) :
     RecyclerView.ViewHolder(binding.root) {
     fun bind(playList: PlayListEntity) {
         val uri = Uri.parse(Uri.decode(playList.cover))
