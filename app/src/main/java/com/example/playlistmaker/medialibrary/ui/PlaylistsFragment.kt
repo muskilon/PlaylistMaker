@@ -86,6 +86,11 @@ class PlaylistsFragment : Fragment() {
         binding.playListRecyclerView.isVisible = false
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.updatePlayLists()
+    }
+
     companion object {
         fun newInstance() = PlaylistsFragment()
         private const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L

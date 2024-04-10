@@ -23,13 +23,10 @@ class FilesRepositoryImpl(
 //        filePath.deleteRecursively() //Удаление файлов в папке
 
         if (!filePath.exists()) filePath.mkdirs()
+
         if (!filePath.listFiles().isNullOrEmpty()) {
             filePath.listFiles()!!.forEach { fileName ->
-                val sub =
-                    fileName.toString()
-                        .substringAfterLast("/cover")
-                        .substringBeforeLast('.')
-                        .toInt()
+                val sub = fileName.nameWithoutExtension.filter { it.isDigit() }.toInt()
                 if (sub > biggest) biggest = sub
             }
             return File(filePath, "$DEFAULT_FILE_NAME${biggest + 1}$DEFAULT_FILE_TYPE")
