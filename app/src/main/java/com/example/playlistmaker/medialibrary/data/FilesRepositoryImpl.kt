@@ -14,12 +14,14 @@ import java.io.FileOutputStream
 class FilesRepositoryImpl(
     val context: Context
 ) : FilesRepository {
-    private lateinit var filePath: File
     private fun getNewFile(): File {
         var biggest = 0
-        filePath = File(
+        val filePath = File(
             context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playListCovers"
         )
+
+//        filePath.deleteRecursively() //Удаление файлов в папке
+
         if (!filePath.exists()) filePath.mkdirs()
         if (!filePath.listFiles().isNullOrEmpty()) {
             filePath.listFiles()!!.forEach { fileName ->

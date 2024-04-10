@@ -48,7 +48,7 @@ class NewPlayListFragment : Fragment() {
                 //обрабатываем событие выбора пользователем фотографии
                 if (uri != null) {
                     binding.playListCover.setImageURI(uri)
-                    newUri = viewModel.saveFile(uri).toString()
+                    newUri = uri.toString()
                 } else {
                     Log.d("PhotoPicker", "No media selected")
                 }
@@ -59,6 +59,7 @@ class NewPlayListFragment : Fragment() {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
         binding.createButton.setOnClickListener {
+            newUri = viewModel.saveFile(newUri.toUri()).toString()
             viewModel.createPlayList(title, description, newUri.toUri())
             findNavController().navigateUp()
         }
