@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.databinding.PlayListSmallSnippetBinding
-import com.example.playlistmaker.player.data.db.PlayListEntity
+import com.example.playlistmaker.medialibrary.domain.PlayList
 
 class BottomSheetAdapter(
-    private val playLists: List<PlayListEntity>,
-    private val onItemClick: (PlayListEntity) -> Unit
+    private val playLists: List<PlayList>,
+    private val onItemClick: (PlayList) -> Unit
 ) : RecyclerView.Adapter<BottomSheetViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BottomSheetViewHolder {

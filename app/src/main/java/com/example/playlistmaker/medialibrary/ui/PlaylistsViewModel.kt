@@ -5,15 +5,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.medialibrary.domain.PlayList
 import com.example.playlistmaker.medialibrary.domain.PlayListInteractor
-import com.example.playlistmaker.player.data.db.PlayListEntity
 import kotlinx.coroutines.launch
 
 class PlaylistsViewModel(
     private val playListsInteractor: PlayListInteractor
 ) : ViewModel(
 ) {
-    private val livePlayLists = MutableLiveData<List<PlayListEntity>>()
+    private val livePlayLists = MutableLiveData<List<PlayList>>()
 
     fun updatePlayLists() {
         viewModelScope.launch {
@@ -22,8 +22,8 @@ class PlaylistsViewModel(
         }
     }
 
-    fun getPlayLists(): LiveData<List<PlayListEntity>> = livePlayLists
-    fun onPlayListClick(playList: PlayListEntity) {
+    fun getPlayLists(): LiveData<List<PlayList>> = livePlayLists
+    fun onPlayListClick(playList: PlayList) {
         Log.d("TAG", "Отправляем на список треков плейлиста")
     }
 }

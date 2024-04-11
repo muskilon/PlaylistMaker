@@ -8,8 +8,9 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.medialibrary.domain.FilesInteractor
+import com.example.playlistmaker.medialibrary.domain.PlayList
 import com.example.playlistmaker.medialibrary.domain.PlayListInteractor
-import com.example.playlistmaker.player.data.db.PlayListEntity
+import com.example.playlistmaker.medialibrary.domain.TrackList
 import com.markodevcic.peko.PermissionRequester
 import com.markodevcic.peko.PermissionResult
 import kotlinx.coroutines.launch
@@ -26,11 +27,13 @@ class NewPlayListViewModel(
         Log.d("TAG", uri.toString())
         viewModelScope.launch {
             playListInteractor.addPlayList(
-                PlayListEntity(
+                PlayList(
                     title = title,
                     description = description,
                     cover = uri.toString(),
-                    id = 0L
+                    id = 0L,
+                    trackCount = 0,
+                    tracks = TrackList(mutableListOf())
                 )
             )
         }
@@ -38,7 +41,6 @@ class NewPlayListViewModel(
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     fun checkPermissions() {
-        Log.d("TAG", "touch")
         val requester = PermissionRequester.instance()
         val granted: Boolean = requester.areGranted(Manifest.permission.READ_MEDIA_IMAGES)
         if (granted) {

@@ -16,12 +16,12 @@ class FavoritesRepositoryImpl(
     private val favoritesStorage = ArrayList<Track>()
 
     override suspend fun addSongToFavorites(song: Track) {
-        appDatabase.songsDao().insertSong(songsDbConvertor.map(song))
+        appDatabase.favoritesDao().insertSong(songsDbConvertor.map(song))
         updateFavorites()
     }
 
     override suspend fun deleteSongFromFavorites(song: Track) {
-        appDatabase.songsDao().deleteSong(songsDbConvertor.map(song))
+        appDatabase.favoritesDao().deleteSong(songsDbConvertor.map(song))
         updateFavorites()
     }
 
@@ -41,7 +41,7 @@ class FavoritesRepositoryImpl(
     }
 
     private fun getFavoritesFromDb(): Flow<List<Track>> = flow {
-        val songs = appDatabase.songsDao().getSongs().asReversed()
+        val songs = appDatabase.favoritesDao().getSongs().asReversed()
         emit(convertFromSongsEntity(songs))
     }.flowOn(Dispatchers.IO)
 }

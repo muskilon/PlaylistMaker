@@ -12,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistBinding
-import com.example.playlistmaker.player.data.db.PlayListEntity
+import com.example.playlistmaker.medialibrary.domain.PlayList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -21,7 +21,7 @@ class PlaylistsFragment : Fragment() {
     private lateinit var binding: FragmentPlaylistBinding
     private val viewModel by activityViewModel<PlaylistsViewModel>()
     private lateinit var playListAdapter: PlayListAdapter
-    private val playLists = ArrayList<PlayListEntity>()
+    private val playLists = ArrayList<PlayList>()
     private var isClickAllowed = true
 
     override fun onCreateView(

@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
-import com.example.playlistmaker.player.data.db.PlayListEntity
+import com.example.playlistmaker.medialibrary.domain.PlayList
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.delay
@@ -29,7 +29,7 @@ class PlayerFragment : Fragment() {
     private var isClickAllowed = true
     private lateinit var navBar: BottomNavigationView
     private lateinit var bottomSheetAdapter: BottomSheetAdapter
-    private val playLists = ArrayList<PlayListEntity>()
+    private val playLists = ArrayList<PlayList>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -78,8 +78,8 @@ class PlayerFragment : Fragment() {
         navBar = requireActivity().findViewById(R.id.bottomNavigationView)
         navBar.isVisible = false
 
-        bottomSheetAdapter = BottomSheetAdapter(playLists) { playLists ->
-//                viewModel.addTrackToPlayList()
+        bottomSheetAdapter = BottomSheetAdapter(playLists) { playList ->
+            viewModel.addTrackToPlayList(playList)
         }
 
         binding.playListsRecycler.adapter = bottomSheetAdapter
@@ -167,7 +167,7 @@ class PlayerFragment : Fragment() {
     }
 
     fun exit() {
-        viewModel.stopPlayer()
+        viewModel.pausePlayer()
         findNavController().navigateUp()
     }
 
@@ -180,7 +180,7 @@ class PlayerFragment : Fragment() {
     override fun onDestroy() {
         Log.d("TAG", "Destroyed")
         super.onDestroy()
-        viewModel.stopPlayer()
+        viewModel.pausePlayer()
         navBar.isVisible = true
     }
 

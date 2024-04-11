@@ -7,10 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.MyApplication
 import com.example.playlistmaker.R
+import com.example.playlistmaker.medialibrary.domain.PlayList
 import com.example.playlistmaker.medialibrary.domain.PlayListInteractor
 import com.example.playlistmaker.player.data.MusicPlayer
 import com.example.playlistmaker.player.data.OnStateChangeListener
-import com.example.playlistmaker.player.data.db.PlayListEntity
 import com.example.playlistmaker.player.domain.CurrentTrackInteractor
 import com.example.playlistmaker.player.domain.FavoritesInteractor
 import com.example.playlistmaker.player.domain.MusicPlayerState
@@ -32,7 +32,7 @@ class PlayerViewModel(
         MyApplication.getAppResources().getString(R.string.timer_placeholder)
     private var musicPlayerState = MusicPlayerState.STATE_DEFAULT
     private var livePlayStatus = MutableLiveData<PlayStatus>()
-    private var livePlayLists = MutableLiveData<List<PlayListEntity>>()
+    private var livePlayLists = MutableLiveData<List<PlayList>>()
     private var currentTrack = currentTrackInteractor.getCurrentTrack()
     private var isUserPaused: Boolean = false
 
@@ -124,6 +124,20 @@ class PlayerViewModel(
         }
     }
 
+    fun getPlayStatus(): LiveData<PlayStatus> = livePlayStatus
+
+    fun preparePlayer() {
+        mplayer.preparePlayer(currentTrack.previewUrl)
+    }
+
+    fun pausePlayer() {
+        if (musicPlayerState == MusicPlayerState.STATE_PLAYING) {
+            mplayer.pause()
+            livePlayStatus.value = getCurrentPlayStatus().copy(playButtonImage = PLAY)
+            musicPlayerState = MusicPlayerState.STATE_PAUSED
+        }
+    }
+
     private fun isFavorites(): Boolean {
         return favoritesInteractor.getFavorites().contains(currentTrack)
     }
@@ -138,8 +152,6 @@ class PlayerViewModel(
         }
     }
 
-    fun getPlayStatus(): LiveData<PlayStatus> = livePlayStatus
-
     fun updatePlaylists() {
         viewModelScope.launch {
             playListInteractor.updatePlayLists()
@@ -148,22 +160,25 @@ class PlayerViewModel(
         }
     }
 
-    fun getPlayLists(): LiveData<List<PlayListEntity>> = livePlayLists
+    fun getPlayLists(): LiveData<List<PlayList>> = livePlayLists
 
-    fun preparePlayer() {
-        mplayer.preparePlayer(currentTrack.previewUrl)
-    }
-
-    fun pausePlayer() {
-        if (musicPlayerState == MusicPlayerState.STATE_PLAYING) {
-            mplayer.pause()
-            livePlayStatus.value = getCurrentPlayStatus().copy(playButtonImage = PLAY)
-            musicPlayerState = MusicPlayerState.STATE_PAUSED
+    fun addTrackToPlayList(playList: PlayList) {
+        if (playList.tracks.tracks.contains(currentTrack.trackId)) {
+            Log.d("TAG", "Такой трек уже есть в этом плейлисте")
+        } else {
+            playList.tracks.tracks.add(currentTrack.trackId)
+            val newPlayList = playList.copy(
+                id = playList.id,
+                title = playList.title,
+                description = playList.description,
+                cover = playList.cover,
+                trackCount = playList.trackCount + 1,
+                tracks = playList.tracks
+            )
+            viewModelScope.launch {
+                playListInteractor.addTrackToPlayList(newPlayList, currentTrack)
+            }
         }
-    }
-
-    fun stopPlayer() {
-        pausePlayer()
     }
 
     companion object {

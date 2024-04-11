@@ -6,11 +6,11 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.PlayListSnippetBinding
-import com.example.playlistmaker.player.data.db.PlayListEntity
+import com.example.playlistmaker.medialibrary.domain.PlayList
 
 class PlayListViewHolder(private val binding: PlayListSnippetBinding) :
     RecyclerView.ViewHolder(binding.root) {
-    fun bind(playList: PlayListEntity) {
+    fun bind(playList: PlayList) {
         val uri = Uri.parse(Uri.decode(playList.cover))
         val cornerRadius =
             itemView.resources.getDimension(R.dimen.search_snippet_artwork_corner_radius)
