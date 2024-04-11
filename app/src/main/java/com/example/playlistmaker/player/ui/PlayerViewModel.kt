@@ -34,7 +34,6 @@ class PlayerViewModel(
     private var livePlayStatus = MutableLiveData<PlayStatus>()
     private var livePlayLists = MutableLiveData<List<PlayListEntity>>()
     private var currentTrack = currentTrackInteractor.getCurrentTrack()
-    private val playLists = playListInteractor.getPlayLists().toMutableList()
     private var isUserPaused: Boolean = false
 
     init {
@@ -145,6 +144,7 @@ class PlayerViewModel(
         viewModelScope.launch {
             playListInteractor.updatePlayLists()
             livePlayLists.postValue(playListInteractor.getPlayLists())
+            Log.d("PLAYLISTS", playListInteractor.getPlayLists().size.toString())
         }
     }
 

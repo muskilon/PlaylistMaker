@@ -1,5 +1,6 @@
 package com.example.playlistmaker.player.ui
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -37,6 +38,7 @@ class PlayerFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -47,6 +49,31 @@ class PlayerFragment : Fragment() {
 
         val bottomSheetBehavior = BottomSheetBehavior.from(binding.playerBottomSheet)
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        binding.overlay.isVisible = true
+                    }
+
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        binding.overlay.isVisible = true
+                    }
+
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.isVisible = false
+                    }
+
+                    else -> {
+                        // none
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
 
         navBar = requireActivity().findViewById(R.id.bottomNavigationView)
         navBar.isVisible = false
@@ -64,6 +91,7 @@ class PlayerFragment : Fragment() {
             } else {
                 playLists.clear()
                 playLists.addAll(lifePlayLists)
+                bottomSheetAdapter.notifyDataSetChanged()
                 binding.playListsRecycler.isVisible = true
             }
         }
@@ -101,9 +129,8 @@ class PlayerFragment : Fragment() {
 
         binding.addToPlayList.setOnClickListener {
             viewModel.updatePlaylists()
-            Log.d("TAG", playLists.size.toString())
+            Log.d("ON_CLICK", playLists.size.toString())
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-            binding.overlay.isVisible = true
         }
 
         binding.addToFavorites.setOnClickListener {
