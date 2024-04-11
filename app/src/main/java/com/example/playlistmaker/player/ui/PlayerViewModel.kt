@@ -1,13 +1,16 @@
 package com.example.playlistmaker.player.ui
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.MyApplication
 import com.example.playlistmaker.R
+import com.example.playlistmaker.medialibrary.domain.PlayListInteractor
 import com.example.playlistmaker.player.data.MusicPlayer
 import com.example.playlistmaker.player.data.OnStateChangeListener
+import com.example.playlistmaker.player.data.db.PlayListEntity
 import com.example.playlistmaker.player.domain.CurrentTrackInteractor
 import com.example.playlistmaker.player.domain.FavoritesInteractor
 import com.example.playlistmaker.player.domain.MusicPlayerState
@@ -20,7 +23,8 @@ import kotlinx.coroutines.withContext
 
 class PlayerViewModel(
     private val favoritesInteractor: FavoritesInteractor,
-    currentTrackInteractor: CurrentTrackInteractor,
+    private val currentTrackInteractor: CurrentTrackInteractor,
+    private val playListInteractor: PlayListInteractor,
     private val mplayer: MusicPlayer
 ) : ViewModel() {
     private val timerZero = MyApplication.getAppResources().getString(R.string.timer_zero)
@@ -28,7 +32,9 @@ class PlayerViewModel(
         MyApplication.getAppResources().getString(R.string.timer_placeholder)
     private var musicPlayerState = MusicPlayerState.STATE_DEFAULT
     private var livePlayStatus = MutableLiveData<PlayStatus>()
-    private val currentTrack = currentTrackInteractor.getCurrentTrack()
+    private var livePlayLists = MutableLiveData<List<PlayListEntity>>()
+    private var currentTrack = currentTrackInteractor.getCurrentTrack()
+    private val playLists = playListInteractor.getPlayLists().toMutableList()
     private var isUserPaused: Boolean = false
 
     init {
@@ -41,6 +47,18 @@ class PlayerViewModel(
         )
     }
 
+    fun updateCurrentTrack() {
+        currentTrack = currentTrackInteractor.getCurrentTrack()
+        livePlayStatus.value = getCurrentPlayStatus().copy(
+            currentTrack = currentTrack,
+            isFavorites = isFavorites(),
+            timeElapsed = timerZero,
+            playButtonClickableState = false,
+            playButtonImage = PLAY
+        )
+        preparePlayer()
+        Log.d("CURRENT_TRACK", currentTrack.artistName)
+    }
     private fun getCurrentPlayStatus(): PlayStatus {
         return livePlayStatus.value ?: PlayStatus(
             timeElapsed = timerZero,
@@ -50,6 +68,7 @@ class PlayerViewModel(
             isFavorites = isFavorites()
         )
     }
+
 
     fun setListener() {
         mplayer.setListener(object : OnStateChangeListener {
@@ -121,6 +140,15 @@ class PlayerViewModel(
     }
 
     fun getPlayStatus(): LiveData<PlayStatus> = livePlayStatus
+
+    fun updatePlaylists() {
+        viewModelScope.launch {
+            playListInteractor.updatePlayLists()
+            livePlayLists.postValue(playListInteractor.getPlayLists())
+        }
+    }
+
+    fun getPlayLists(): LiveData<List<PlayListEntity>> = livePlayLists
 
     fun preparePlayer() {
         mplayer.preparePlayer(currentTrack.previewUrl)

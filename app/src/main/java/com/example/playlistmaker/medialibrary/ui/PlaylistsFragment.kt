@@ -50,8 +50,9 @@ class PlaylistsFragment : Fragment() {
         binding.playListRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         playListAdapter = PlayListAdapter(playLists) { track ->
             if (clickDebounce()) viewModel.onPlayListClick(track)
+            TODO()
 //            findNavController().navigate(
-//                R.id.action_medialibraryFragment_to_playerFragment)
+//                R.id.action_medialibraryFragment_to_PLAYLIST)
         }
         binding.playListRecyclerView.adapter = playListAdapter
 

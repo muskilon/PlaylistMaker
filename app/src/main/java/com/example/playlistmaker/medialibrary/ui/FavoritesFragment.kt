@@ -39,10 +39,12 @@ class FavoritesFragment : Fragment() {
         viewModel.getFavorites()
 
         favoritesAdapter = SearchResultAdapter(songs) { track ->
-            if (clickDebounce()) viewModel.onTrackClick(track)
-            findNavController().navigate(
-                R.id.action_medialibraryFragment_to_playerFragment
-            )
+            if (clickDebounce()) {
+                viewModel.onTrackClick(track)
+                findNavController().navigate(
+                    R.id.action_medialibraryFragment_to_playerFragment
+                )
+            }
         }
         binding.favoritesRecyclerView.adapter = favoritesAdapter
 
@@ -79,7 +81,7 @@ class FavoritesFragment : Fragment() {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            viewLifecycleOwner.lifecycleScope.launch {
+            lifecycleScope.launch {
                 delay(CLICK_DEBOUNCE_DELAY_MILLIS)
                 isClickAllowed = true
             }

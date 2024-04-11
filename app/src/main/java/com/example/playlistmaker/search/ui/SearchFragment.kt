@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -57,17 +58,23 @@ class SearchFragment : Fragment(), RenderState {
             requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         searchResultsAdapter = SearchResultAdapter(songs) { track ->
-            if (clickDebounce()) viewModel.onTrackClick(track)
-            findNavController().navigate(
-                R.id.action_searchFragment_to_playerFragment
-            )
+            Log.d("SEARCH", track.artistName)
+            if (clickDebounce()) {
+                viewModel.onTrackClick(track)
+                findNavController().navigate(
+                    R.id.action_searchFragment_to_playerFragment
+                )
+            }
         }
 
         songsHistoryAdapter = SearchResultAdapter(songsHistory) { track ->
-            if (clickDebounce()) viewModel.onTrackClick(track)
-            findNavController().navigate(
-                R.id.action_searchFragment_to_playerFragment
-            )
+            Log.d("HISTORY", track.artistName)
+            if (clickDebounce()) {
+                viewModel.onTrackClick(track)
+                findNavController().navigate(
+                    R.id.action_searchFragment_to_playerFragment
+                )
+            }
         }
 
         binding.searchResultsRecyclerView.adapter = searchResultsAdapter
@@ -164,7 +171,7 @@ class SearchFragment : Fragment(), RenderState {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            viewLifecycleOwner.lifecycleScope.launch {
+            lifecycleScope.launch {
                 delay(CLICK_DEBOUNCE_DELAY_MILLIS)
                 isClickAllowed = true
             }

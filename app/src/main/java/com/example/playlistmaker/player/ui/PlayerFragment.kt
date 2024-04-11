@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
+import com.example.playlistmaker.player.data.db.PlayListEntity
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import kotlinx.coroutines.delay
@@ -26,6 +27,8 @@ class PlayerFragment : Fragment() {
     private val viewModel by activityViewModel<PlayerViewModel>()
     private var isClickAllowed = true
     private lateinit var navBar: BottomNavigationView
+    private lateinit var bottomSheetAdapter: BottomSheetAdapter
+    private val playLists = ArrayList<PlayListEntity>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,14 +40,33 @@ class PlayerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d("TAG", savedInstanceState.toString())
-
         if (savedInstanceState == null) {
             viewModel.setListener()
             viewModel.preparePlayer()
         }
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.playerBottomSheet)
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
         navBar = requireActivity().findViewById(R.id.bottomNavigationView)
         navBar.isVisible = false
+
+        bottomSheetAdapter = BottomSheetAdapter(playLists) { playLists ->
+//                viewModel.addTrackToPlayList()
+        }
+
+        binding.playListsRecycler.adapter = bottomSheetAdapter
+
+        viewModel.getPlayLists().observe(viewLifecycleOwner) { lifePlayLists ->
+            if (lifePlayLists.isEmpty()) {
+                playLists.clear()
+                binding.playListsRecycler.isVisible = false
+            } else {
+                playLists.clear()
+                playLists.addAll(lifePlayLists)
+                binding.playListsRecycler.isVisible = true
+            }
+        }
 
         viewModel.getPlayStatus().observe(viewLifecycleOwner) { status ->
             binding.timeElapsed.text = status.timeElapsed
@@ -77,9 +99,9 @@ class PlayerFragment : Fragment() {
 
         binding.playButton.setOnClickListener { viewModel.playbackControl() }
 
-        val bottomSheetBehavior = BottomSheetBehavior.from(binding.playerBottomSheet)
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
         binding.addToPlayList.setOnClickListener {
+            viewModel.updatePlaylists()
+            Log.d("TAG", playLists.size.toString())
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             binding.overlay.isVisible = true
         }
@@ -138,6 +160,7 @@ class PlayerFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         navBar.isVisible = false
+        viewModel.updateCurrentTrack()
     }
 
     companion object {

@@ -1,5 +1,6 @@
 package com.example.playlistmaker.search.ui
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -89,6 +90,7 @@ class SearchViewModel(
     }
 
     fun onTrackClick(track: Track) {
+        Log.d("ON_CLICK", track.trackName)
         when {
             songsHistory.isEmpty() -> {
                 songsHistory.add(track)

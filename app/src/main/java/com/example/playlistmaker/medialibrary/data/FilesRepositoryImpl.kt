@@ -10,36 +10,26 @@ import androidx.core.net.toUri
 import com.example.playlistmaker.medialibrary.domain.FilesRepository
 import java.io.File
 import java.io.FileOutputStream
+import java.util.UUID
 
 class FilesRepositoryImpl(
     val context: Context
 ) : FilesRepository {
-    private fun getNewFile(): File {
-        var biggest = 0
+    override fun saveFile(uri: Uri): Uri {
+        //        filePath.deleteRecursively() //Удаление файлов в папке
         val filePath = File(
             context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playListCovers"
         )
-
-//        filePath.deleteRecursively() //Удаление файлов в папке
-
         if (!filePath.exists()) filePath.mkdirs()
-
-        if (!filePath.listFiles().isNullOrEmpty()) {
-            filePath.listFiles()!!.forEach { fileName ->
-                val sub = fileName.nameWithoutExtension.filter { it.isDigit() }.toInt()
-                if (sub > biggest) biggest = sub
-            }
-            return File(filePath, "$DEFAULT_FILE_NAME${biggest + 1}$DEFAULT_FILE_TYPE")
-        } else return File(filePath, BEGIN_FILENAME)
-    }
-    override fun saveFile(uri: Uri): Uri {
-        val file = getNewFile()
+        val file = File(filePath, "${UUID.randomUUID()}$DEFAULT_FILE_TYPE")
         val inputStream = context.contentResolver.openInputStream(uri)
         val outputStream = FileOutputStream(file)
         BitmapFactory
             .decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
-        Log.d("DIR", file.toString())
+        filePath.listFiles()?.forEach {
+            Log.d("DIR", it.name)
+        }
         return file.toUri()
     }
 
@@ -48,8 +38,6 @@ class FilesRepositoryImpl(
     }
 
     companion object {
-        private const val DEFAULT_FILE_NAME = "cover"
         private const val DEFAULT_FILE_TYPE = ".jpg"
-        private const val BEGIN_FILENAME = "cover1.jpg"
     }
 }

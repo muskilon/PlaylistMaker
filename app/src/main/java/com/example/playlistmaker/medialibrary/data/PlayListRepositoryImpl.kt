@@ -30,13 +30,13 @@ class PlayListRepositoryImpl(
     }
 
     override suspend fun updatePlayListsList() {
-        getFavoritesFromDb().collect { result ->
+        getPlayListsFromDb().collect { result ->
             playListStorage.clear()
             playListStorage.addAll(result)
         }
     }
 
-    private fun getFavoritesFromDb(): Flow<List<PlayListEntity>> = flow {
+    private fun getPlayListsFromDb(): Flow<List<PlayListEntity>> = flow {
         val playLists = appDatabase.playListsDao().getAllPlayLists()
         emit(playLists)
     }.flowOn(Dispatchers.IO)

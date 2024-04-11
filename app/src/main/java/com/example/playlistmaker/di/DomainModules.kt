@@ -50,7 +50,10 @@ val domainModules = module {
 
     factory<FavoritesInteractor> { FavoritesInteractorImpl(repository = get()) }
     single<FavoritesRepository> {
-        FavoritesRepositoryImpl(appDatabase = get(), songsDbConvertor = get())
+        FavoritesRepositoryImpl(
+            appDatabase = get(),
+            songsDbConvertor = get()
+        )
     }
 //Medialibrary
     factory<FilesInteractor> { FilesInteractorImpl(repository = get()) }
