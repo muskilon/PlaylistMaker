@@ -60,8 +60,10 @@ class NewPlayListFragment : Fragment() {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
         binding.createButton.setOnClickListener {
-            newUri = viewModel.saveFile(newUri.toUri()).toString()
-            viewModel.createPlayList(title, description, newUri.toUri())
+            if (newUri.isNotEmpty()) {
+                newUri = viewModel.saveFile(newUri.toUri()).toString()
+            }
+            viewModel.createPlayList(title, description, newUri)
             Snackbar.make(view, "Плейлист $title создан", Snackbar.LENGTH_LONG)
                 .show()
             findNavController().navigateUp()

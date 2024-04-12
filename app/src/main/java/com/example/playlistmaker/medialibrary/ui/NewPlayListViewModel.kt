@@ -23,14 +23,14 @@ class NewPlayListViewModel(
         return filesInteractor.saveFile(uri)
     }
 
-    fun createPlayList(title: String, description: String, uri: Uri) {
+    fun createPlayList(title: String, description: String, uri: String) {
         Log.d("TAG", uri.toString())
         viewModelScope.launch {
             playListInteractor.addPlayList(
                 PlayList(
                     title = title,
                     description = description,
-                    cover = uri.toString(),
+                    cover = uri,
                     id = 0L,
                     trackCount = 0,
                     tracks = TrackList(mutableListOf())
