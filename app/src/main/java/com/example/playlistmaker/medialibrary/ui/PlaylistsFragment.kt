@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistBinding
 import com.example.playlistmaker.medialibrary.domain.PlayList
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -48,11 +49,10 @@ class PlaylistsFragment : Fragment() {
         }
 
         binding.playListRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        playListAdapter = PlayListAdapter(playLists) { track ->
-            if (clickDebounce()) viewModel.onPlayListClick(track)
-            TODO()
-//            findNavController().navigate(
-//                R.id.action_medialibraryFragment_to_PLAYLIST)
+        playListAdapter = PlayListAdapter(playLists) { playList ->
+            if (clickDebounce()) viewModel.onPlayListClick(playList)
+            Snackbar.make(view, "Тут будет переход на плейлист", Snackbar.LENGTH_LONG)
+                .show()
         }
         binding.playListRecyclerView.adapter = playListAdapter
 

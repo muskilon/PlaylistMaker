@@ -18,6 +18,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewPlayListBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class NewPlayListFragment : Fragment() {
@@ -61,6 +62,8 @@ class NewPlayListFragment : Fragment() {
         binding.createButton.setOnClickListener {
             newUri = viewModel.saveFile(newUri.toUri()).toString()
             viewModel.createPlayList(title, description, newUri.toUri())
+            Snackbar.make(view, "Плейлист $title создан", Snackbar.LENGTH_LONG)
+                .show()
             findNavController().navigateUp()
         }
 

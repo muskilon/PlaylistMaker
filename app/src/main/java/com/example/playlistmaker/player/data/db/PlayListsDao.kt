@@ -23,9 +23,6 @@ interface PlayListsDao {
     @Query("SELECT * FROM playlists_table")
     suspend fun getAllPlayLists(): List<PlayListEntity>
 
-//    @Query("SELECT * FROM playlist_songs_table WHERE playListId = :playListId")
-//    suspend fun getTracksFromPlayList(playListId: Long): List<PlayListTrackEntity>
-
     @Delete(entity = PlayListEntity::class)
     fun deletePlayList(playList: PlayListEntity) //TODO еще надо и треки удалять
 
