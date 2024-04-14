@@ -9,11 +9,12 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/coverCard"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintDimensionRatio="1"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@+id/playListTitle"
         android:backgroundTint="?attr/white_ypDayBlack_ypNight"
         app:cardElevation="0dp"
@@ -22,7 +23,7 @@
                 android:id="@+id/playListCover"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/placeholder_big"
+                android:src="@drawable/placeholder"
                 android:scaleType="fitCenter" />
     </androidx.cardview.widget.CardView>
 

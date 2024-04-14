@@ -48,7 +48,6 @@ class NewPlayListFragment : Fragment() {
 
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-                //обрабатываем событие выбора пользователем фотографии
                 if (uri != null) {
                     binding.playListCover.setImageURI(uri)
                     binding.imageContainer.foreground = null
@@ -66,7 +65,7 @@ class NewPlayListFragment : Fragment() {
                 newUri = viewModel.saveFile(newUri.toUri()).toString()
             }
             viewModel.createPlayList(title, description, newUri)
-            Snackbar.make(view, "Плейлист $title создан", Snackbar.LENGTH_LONG)
+            Snackbar.make(view, getString(R.string.play_list_created, title), Snackbar.LENGTH_LONG)
                 .show()
             findNavController().navigateUp()
         }
@@ -153,12 +152,12 @@ class NewPlayListFragment : Fragment() {
     private fun exit() {
         if (title.isNotEmpty() || description.isNotEmpty() || newUri.isNotEmpty()) {
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Завершить создание плейлиста?")
-                .setMessage("Все несохраненные данные будут потеряны")
-                .setNegativeButton("Отмена") { dialog, which ->
+                .setTitle(getString(R.string.play_list_dialog_title))
+                .setMessage(getString(R.string.play_list_dialog_message))
+                .setNegativeButton(getString(R.string.play_list_dialog_negative)) { _, _ ->
 
                 }
-                .setPositiveButton("Завершить") { dialog, which ->
+                .setPositiveButton(getString(R.string.play_list_dialog_positive)) { _, _ ->
                     findNavController().navigateUp()
                 }
                 .show()

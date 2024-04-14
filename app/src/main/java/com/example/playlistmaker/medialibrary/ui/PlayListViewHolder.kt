@@ -20,7 +20,7 @@ class PlayListViewHolder(private val binding: PlayListSnippetBinding) :
             .getQuantityString(R.plurals.track_plurals, playList.trackCount, playList.trackCount)
         Glide.with(binding.playListCover)
             .load(uri)
-            .placeholder(R.drawable.placeholder_big)
+            .placeholder(R.drawable.placeholder)
             .transform(RoundedCorners(cornerRadius.toInt()))
             .into(binding.playListCover)
     }

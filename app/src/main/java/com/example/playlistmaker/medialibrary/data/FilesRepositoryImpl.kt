@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Environment
-import android.util.Log
 import androidx.core.net.toUri
 import com.example.playlistmaker.medialibrary.domain.FilesRepository
 import java.io.File
@@ -16,7 +15,6 @@ class FilesRepositoryImpl(
     val context: Context
 ) : FilesRepository {
     override fun saveFile(uri: Uri): Uri {
-        //        filePath.deleteRecursively() //Удаление файлов в папке
         val filePath = File(
             context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playListCovers"
         )
@@ -27,9 +25,6 @@ class FilesRepositoryImpl(
         BitmapFactory
             .decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
-        filePath.listFiles()?.forEach {
-            Log.d("DIR", it.name)
-        }
         return file.toUri()
     }
 
