@@ -5,7 +5,6 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,12 +52,10 @@ class SearchFragment : Fragment(), RenderState {
             songsHistory.addAll(liveSongsHistory)
         }
 
-
         val imm =
             requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         searchResultsAdapter = SearchResultAdapter(songs) { track ->
-            Log.d("SEARCH", track.artistName)
             if (clickDebounce()) {
                 viewModel.onTrackClick(track)
                 findNavController().navigate(
@@ -68,7 +65,6 @@ class SearchFragment : Fragment(), RenderState {
         }
 
         songsHistoryAdapter = SearchResultAdapter(songsHistory) { track ->
-            Log.d("HISTORY", track.artistName)
             if (clickDebounce()) {
                 viewModel.onTrackClick(track)
                 findNavController().navigate(
@@ -82,8 +78,13 @@ class SearchFragment : Fragment(), RenderState {
 
         viewModel.getState().observe(viewLifecycleOwner) { state ->
             when (state) {
-                is SearchScreenState.Loading -> render(SearchState.PROGRESS_BAR)
-                is SearchScreenState.Error -> render(state.error)
+                is SearchScreenState.Loading -> {
+                    render(SearchState.PROGRESS_BAR)
+                }
+
+                is SearchScreenState.Error -> {
+                    render(state.error)
+                }
                 is SearchScreenState.Content -> {
                     songs.clear()
                     songs.addAll(state.songs)

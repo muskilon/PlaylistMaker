@@ -162,9 +162,9 @@ class PlayerViewModel(
 
     fun getPlayLists(): LiveData<List<PlayList>> = livePlayLists
 
-    fun addTrackToPlayList(playList: PlayList) {
+    fun addTrackToPlayList(playList: PlayList): Boolean {
         if (playList.tracks.tracks.contains(currentTrack.trackId)) {
-            Log.d("TAG", "Такой трек уже есть в этом плейлисте")
+            return false
         } else {
             playList.tracks.tracks.add(currentTrack.trackId)
             val newPlayList = playList.copy(
@@ -178,6 +178,7 @@ class PlayerViewModel(
             viewModelScope.launch {
                 playListInteractor.addTrackToPlayList(newPlayList, currentTrack)
             }
+            return true
         }
     }
 

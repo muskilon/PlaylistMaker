@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -18,6 +19,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewPlayListBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
@@ -49,6 +51,7 @@ class NewPlayListFragment : Fragment() {
                 //обрабатываем событие выбора пользователем фотографии
                 if (uri != null) {
                     binding.playListCover.setImageURI(uri)
+                    binding.imageContainer.foreground = null
                     newUri = uri.toString()
                 } else {
                     Log.d("PhotoPicker", "No media selected")
@@ -56,7 +59,6 @@ class NewPlayListFragment : Fragment() {
             }
 
         binding.imageContainer.setOnClickListener {
-            viewModel.checkPermissions()
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
         binding.createButton.setOnClickListener {
@@ -136,6 +138,31 @@ class NewPlayListFragment : Fragment() {
             }
         }
         binding.enterDescriptionEdit.addTextChangedListener(textWatcherDescription)
+
+        binding.arrowBack.setOnClickListener { exit() }
+
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    exit()
+                }
+            })
+    }
+
+    private fun exit() {
+        if (title.isNotEmpty() || description.isNotEmpty() || newUri.isNotEmpty()) {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Завершить создание плейлиста?")
+                .setMessage("Все несохраненные данные будут потеряны")
+                .setNegativeButton("Отмена") { dialog, which ->
+
+                }
+                .setPositiveButton("Завершить") { dialog, which ->
+                    findNavController().navigateUp()
+                }
+                .show()
+        } else findNavController().navigateUp()
     }
 
     override fun onDestroy() {

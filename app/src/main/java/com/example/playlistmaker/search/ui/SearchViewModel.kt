@@ -1,6 +1,5 @@
 package com.example.playlistmaker.search.ui
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,11 +20,13 @@ class SearchViewModel(
     private var liveState = MutableLiveData<SearchScreenState>()
     private val liveHistorySongs = MutableLiveData<List<Track>>()
     private val songsHistory = tracksInteractor.getSongsHistory()
+    private var lastSearch = EMPTY
     private var searchJob: Job? = null
 
 
     fun searchSongs(term: String) {
         liveState.postValue(SearchScreenState.Loading)
+        lastSearch = term
         viewModelScope.launch {
             tracksInteractor.searchSongs(term)
                 .collect { result -> processResult(result) }
@@ -36,7 +37,7 @@ class SearchViewModel(
             when (foundSongs) {
                 is Resource.ConnectionError -> liveState.postValue(
                     SearchScreenState.Error(
-                        SearchState.NO_CONNECTIONS
+                        SearchState.NO_CONNECTIONS,
                     )
                 )
 
@@ -44,14 +45,14 @@ class SearchViewModel(
                 is Resource.Data -> {
                     if (foundSongs.value.isEmpty()) liveState.postValue(
                         SearchScreenState.Error(
-                            SearchState.NOT_FOUND
+                            SearchState.NOT_FOUND,
                         )
                     )
                     else {
                         tracksInteractor.setSongsStorage(foundSongs.value)
                         liveState.postValue(
                             SearchScreenState.Content(
-                                tracksInteractor.getSongsStorage().toList()
+                                tracksInteractor.getSongsStorage().toList(),
                             )
                         )
                     }
@@ -61,7 +62,7 @@ class SearchViewModel(
 
     fun searchDebounce(term: String) {
 
-        if (term.isEmpty()) searchJob?.cancel()
+        if (term.isEmpty() || term == lastSearch) searchJob?.cancel()
         else {
             searchJob?.cancel()
             searchJob = viewModelScope.launch {
@@ -90,7 +91,6 @@ class SearchViewModel(
     }
 
     fun onTrackClick(track: Track) {
-        Log.d("ON_CLICK", track.trackName)
         when {
             songsHistory.isEmpty() -> {
                 songsHistory.add(track)
@@ -121,5 +121,6 @@ class SearchViewModel(
     companion object {
         private const val SEARCH_DEBOUNCE_DELAY_MILLIS = 2000L
         private const val HISTORY_SIZE = 10
+        private const val EMPTY = ""
     }
 }

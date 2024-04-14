@@ -8,7 +8,7 @@ import com.example.playlistmaker.medialibrary.domain.PlayList
 
 class BottomSheetAdapter(
     private val playLists: List<PlayList>,
-    private val onItemClick: (PlayList) -> Unit
+    private val onItemClick: (PlayList, Int) -> Unit
 ) : RecyclerView.Adapter<BottomSheetViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BottomSheetViewHolder {
@@ -25,7 +25,7 @@ class BottomSheetAdapter(
     override fun onBindViewHolder(holder: BottomSheetViewHolder, position: Int) {
         holder.bind(playLists[position])
         holder.itemView.setOnClickListener {
-            onItemClick.invoke(playLists[holder.adapterPosition])
+            onItemClick.invoke(playLists[holder.adapterPosition], position)
         }
     }
 

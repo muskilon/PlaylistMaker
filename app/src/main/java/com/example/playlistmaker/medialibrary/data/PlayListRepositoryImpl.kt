@@ -5,7 +5,6 @@ import com.example.playlistmaker.medialibrary.domain.PlayListRepository
 import com.example.playlistmaker.player.data.PlayListDbConvertor
 import com.example.playlistmaker.player.data.db.AppDatabase
 import com.example.playlistmaker.search.domain.Track
-import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -16,7 +15,6 @@ class PlayListRepositoryImpl(
     private val playListDbConvertor: PlayListDbConvertor
 ) : PlayListRepository {
     private val playListStorage = ArrayList<PlayList>()
-    val gson = Gson()
 
     override suspend fun addTrackToPlayList(playList: PlayList, track: Track) {
         appDatabase.playListsDao().updatePlayList(playListDbConvertor.map(playList))
@@ -47,7 +45,4 @@ class PlayListRepositoryImpl(
         emit(data)
     }.flowOn(Dispatchers.IO)
 
-    companion object {
-        private const val EMPTY = ""
-    }
 }

@@ -18,6 +18,7 @@ import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.medialibrary.domain.PlayList
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -78,8 +79,19 @@ class PlayerFragment : Fragment() {
         navBar = requireActivity().findViewById(R.id.bottomNavigationView)
         navBar.isVisible = false
 
-        bottomSheetAdapter = BottomSheetAdapter(playLists) { playList ->
-            viewModel.addTrackToPlayList(playList)
+        bottomSheetAdapter = BottomSheetAdapter(playLists) { playList, position ->
+            if (viewModel.addTrackToPlayList(playList)) {
+                Snackbar.make(view, "Добавлено в плейлист ${playList.title}", Snackbar.LENGTH_LONG)
+                    .show()
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            } else {
+                Snackbar.make(
+                    view,
+                    "Трек уже добавлен в плейлист ${playList.title}",
+                    Snackbar.LENGTH_LONG
+                )
+                    .show()
+            }
         }
 
         binding.playListsRecycler.adapter = bottomSheetAdapter
@@ -129,7 +141,6 @@ class PlayerFragment : Fragment() {
 
         binding.addToPlayList.setOnClickListener {
             viewModel.updatePlaylists()
-            Log.d("ON_CLICK", playLists.size.toString())
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
 

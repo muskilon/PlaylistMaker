@@ -87,9 +87,11 @@ class PlaylistsFragment : Fragment() {
         binding.playListRecyclerView.isVisible = false
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onResume() {
         super.onResume()
         viewModel.updatePlayLists()
+        playListAdapter.notifyDataSetChanged()
     }
 
     companion object {
