@@ -15,11 +15,11 @@ import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.ui.SearchResultAdapter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoritesFragment : Fragment() {
     private lateinit var binding: FragmentFavoritesBinding
-    private val viewModel by activityViewModel<FavoritesViewModel>()
+    private val viewModel by viewModel<FavoritesViewModel>()
 
     private lateinit var favoritesAdapter: SearchResultAdapter
     private val songs = ArrayList<Track>()

@@ -3,6 +3,7 @@ package com.example.playlistmaker.medialibrary.domain
 import android.net.Uri
 
 interface FilesInteractor {
-    fun saveFile(uri: Uri): Uri
-    fun loadFile()
+    suspend fun saveFile(uri: Uri): Uri
+    suspend fun loadFile()
+    suspend fun deletePlayList(uri: Uri)
 }

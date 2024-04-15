@@ -6,11 +6,15 @@ class FilesInteractorImpl(
     private val repository: FilesRepository
 ) : FilesInteractor {
 
-    override fun saveFile(uri: Uri): Uri {
+    override suspend fun saveFile(uri: Uri): Uri {
         return repository.saveFile(uri)
     }
 
-    override fun loadFile() {
+    override suspend fun loadFile() {
         repository.loadFile()
+    }
+
+    override suspend fun deletePlayList(uri: Uri) {
+        repository.deleteFile(uri)
     }
 }

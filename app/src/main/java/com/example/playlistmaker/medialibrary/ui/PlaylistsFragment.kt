@@ -16,11 +16,11 @@ import com.example.playlistmaker.medialibrary.domain.PlayList
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : Fragment() {
     private lateinit var binding: FragmentPlaylistBinding
-    private val viewModel by activityViewModel<PlaylistsViewModel>()
+    private val viewModel by viewModel<PlaylistsViewModel>()
     private lateinit var playListAdapter: PlayListAdapter
     private val playLists = ArrayList<PlayList>()
     private var isClickAllowed = true

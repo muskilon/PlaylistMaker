@@ -21,12 +21,12 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerFragment : Fragment() {
 
     private lateinit var binding: FragmentPlayerBinding
-    private val viewModel by activityViewModel<PlayerViewModel>()
+    private val viewModel by viewModel<PlayerViewModel>()
     private var isClickAllowed = true
     private lateinit var navBar: BottomNavigationView
     private lateinit var bottomSheetAdapter: BottomSheetAdapter

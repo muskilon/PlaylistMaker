@@ -1,5 +1,6 @@
 package com.example.playlistmaker.player.data
 
+import androidx.core.net.toUri
 import com.example.playlistmaker.medialibrary.domain.PlayList
 import com.example.playlistmaker.medialibrary.domain.TrackList
 import com.example.playlistmaker.player.data.db.PlayListEntity
@@ -13,7 +14,7 @@ class PlayListDbConvertor {
             id = playlist.id,
             title = playlist.title,
             description = playlist.description,
-            cover = playlist.cover,
+            cover = playlist.cover.toString(),
             trackCount = playlist.trackCount,
             tracks = gson.toJson(playlist.tracks)
         )
@@ -24,7 +25,7 @@ class PlayListDbConvertor {
             id = playlist.id,
             title = playlist.title,
             description = playlist.description,
-            cover = playlist.cover,
+            cover = playlist.cover?.toUri(),
             trackCount = playlist.trackCount,
             tracks = gson.fromJson(playlist.tracks, TrackList::class.java)
         )

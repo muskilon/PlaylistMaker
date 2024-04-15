@@ -1,5 +1,6 @@
 package com.example.playlistmaker.medialibrary.ui
 
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.text.Editable
@@ -12,7 +13,6 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -21,16 +21,16 @@ import com.example.playlistmaker.databinding.FragmentNewPlayListBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NewPlayListFragment : Fragment() {
     private lateinit var binding: FragmentNewPlayListBinding
     private lateinit var navBar: BottomNavigationView
-    private val viewModel by activityViewModel<NewPlayListViewModel>()
+    private val viewModel by viewModel<NewPlayListViewModel>()
 
     private var title: String = EMPTY
     private var description: String = EMPTY
-    private var newUri: String = EMPTY
+    private var newUri: Uri? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +51,7 @@ class NewPlayListFragment : Fragment() {
                 if (uri != null) {
                     binding.playListCover.setImageURI(uri)
                     binding.imageContainer.foreground = null
-                    newUri = uri.toString()
+                    newUri = uri
                 } else {
                     Log.d("PhotoPicker", "No media selected")
                 }
@@ -61,9 +61,6 @@ class NewPlayListFragment : Fragment() {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
         binding.createButton.setOnClickListener {
-            if (newUri.isNotEmpty()) {
-                newUri = viewModel.saveFile(newUri.toUri()).toString()
-            }
             viewModel.createPlayList(title, description, newUri)
             Snackbar.make(view, getString(R.string.play_list_created, title), Snackbar.LENGTH_LONG)
                 .show()
@@ -150,7 +147,7 @@ class NewPlayListFragment : Fragment() {
     }
 
     private fun exit() {
-        if (title.isNotEmpty() || description.isNotEmpty() || newUri.isNotEmpty()) {
+        if (title.isNotEmpty() || description.isNotEmpty() || newUri != null) {
             MaterialAlertDialogBuilder(requireContext())
                 .setTitle(getString(R.string.play_list_dialog_title))
                 .setMessage(getString(R.string.play_list_dialog_message))

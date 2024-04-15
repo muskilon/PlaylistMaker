@@ -22,11 +22,11 @@ import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment(), RenderState {
     private lateinit var binding: FragmentSearchBinding
-    private val viewModel by activityViewModel<SearchViewModel>()
+    private val viewModel by viewModel<SearchViewModel>()
     private var searchInput: String = EMPTY
 
     private lateinit var searchResultsAdapter: SearchResultAdapter
