@@ -2,7 +2,6 @@ package com.example.playlistmaker.player.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -68,7 +67,7 @@ class PlayerFragment : Fragment() {
                     }
 
                     else -> {
-                        // none
+                        Unit
                     }
                 }
             }
@@ -183,13 +182,11 @@ class PlayerFragment : Fragment() {
     }
 
     override fun onPause() {
-        Log.d("TAG", "Paused")
         super.onPause()
         viewModel.pausePlayer()
     }
 
     override fun onDestroy() {
-        Log.d("TAG", "Destroyed")
         super.onDestroy()
         viewModel.pausePlayer()
         navBar.isVisible = true

@@ -51,7 +51,7 @@ class PlayerViewModel(
         livePlayStatus.value = getCurrentPlayStatus().copy(
             currentTrack = currentTrack,
             isFavorites = isFavorites(),
-            timeElapsed = timerZero,
+            timeElapsed = timerPlaceholder,
             playButtonClickableState = false,
             playButtonImage = PLAY
         )
@@ -107,7 +107,7 @@ class PlayerViewModel(
             }
 
             else -> {
-                //nothing
+                Unit
             }
         }
     }
