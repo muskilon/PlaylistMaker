@@ -10,4 +10,5 @@ interface PlayListRepository {
     suspend fun updatePlayListsList()
 
     fun getPlayLists(): List<PlayList>
+    suspend fun deletePlayList(playList: PlayList)
 }

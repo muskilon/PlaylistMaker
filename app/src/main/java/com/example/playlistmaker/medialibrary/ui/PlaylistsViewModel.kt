@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.medialibrary.domain.PlayList
 import com.example.playlistmaker.medialibrary.domain.PlayListInteractor
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PlaylistsViewModel(
@@ -19,6 +20,14 @@ class PlaylistsViewModel(
         viewModelScope.launch {
             playListsInteractor.updatePlayLists()
             livePlayLists.postValue(playListsInteractor.getPlayLists())
+        }
+    }
+
+    fun deletePlayList(playList: PlayList) {
+        viewModelScope.launch(Dispatchers.IO) {
+            playListsInteractor.deletePlayList(playList)
+            updatePlayLists()
+            TODO()//Нужно сделать удаление треков плейлиста
         }
     }
 

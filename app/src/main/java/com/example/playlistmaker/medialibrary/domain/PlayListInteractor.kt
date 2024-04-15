@@ -10,4 +10,6 @@ interface PlayListInteractor {
     fun getPlayLists(): List<PlayList>
 
     suspend fun updatePlayLists()
+
+    suspend fun deletePlayList(playList: PlayList)
 }

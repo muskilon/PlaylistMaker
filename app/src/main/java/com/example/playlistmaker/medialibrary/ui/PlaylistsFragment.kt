@@ -49,9 +49,13 @@ class PlaylistsFragment : Fragment() {
         }
 
         binding.playListRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
-        playListAdapter = PlayListAdapter(playLists) { playList ->
+        playListAdapter = PlayListAdapter(playLists) { playList, position ->
             if (clickDebounce()) viewModel.onPlayListClick(playList)
             Snackbar.make(view, "Тут будет переход на плейлист", Snackbar.LENGTH_LONG)
+                .setAction("Удалить") {
+                    viewModel.deletePlayList(playList)
+                    playListAdapter.notifyItemRemoved(position)
+                }
                 .show()
         }
         binding.playListRecyclerView.adapter = playListAdapter

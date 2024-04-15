@@ -8,7 +8,7 @@ import com.example.playlistmaker.medialibrary.domain.PlayList
 
 class PlayListAdapter(
     private val playLists: List<PlayList>,
-    private val onItemClick: (PlayList) -> Unit
+    private val onItemClick: (PlayList, Int) -> Unit
 ) : RecyclerView.Adapter<PlayListViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PlayListViewHolder {
@@ -19,7 +19,7 @@ class PlayListAdapter(
     override fun onBindViewHolder(holder: PlayListViewHolder, position: Int) {
         holder.bind(playLists[position])
         holder.itemView.setOnClickListener {
-            onItemClick.invoke(playLists[holder.adapterPosition])
+            onItemClick.invoke(playLists[holder.adapterPosition], position)
         }
     }
 

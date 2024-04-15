@@ -37,6 +37,10 @@ class PlayListRepositoryImpl(
         }
     }
 
+    override suspend fun deletePlayList(playList: PlayList) {
+        appDatabase.playListsDao().deletePlayList(playListDbConvertor.map(playList))
+    }
+
     private fun getPlayListsFromDb(): Flow<List<PlayList>> = flow {
         val playLists = appDatabase.playListsDao().getAllPlayLists()
         val data = playLists.map {

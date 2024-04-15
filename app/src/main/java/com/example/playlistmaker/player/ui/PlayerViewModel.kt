@@ -168,10 +168,6 @@ class PlayerViewModel(
         } else {
             playList.tracks.tracks.add(currentTrack.trackId)
             val newPlayList = playList.copy(
-                id = playList.id,
-                title = playList.title,
-                description = playList.description,
-                cover = playList.cover,
                 trackCount = playList.trackCount + 1,
                 tracks = playList.tracks
             )
