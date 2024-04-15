@@ -2,7 +2,6 @@ package com.example.playlistmaker.search.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,19 +13,20 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSearchBinding
-import com.example.playlistmaker.player.ui.PlayerActivity
 import com.example.playlistmaker.search.domain.SearchScreenState
 import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment(), RenderState {
     private lateinit var binding: FragmentSearchBinding
-    private val viewModel by activityViewModel<SearchViewModel>()
+    private val viewModel by viewModel<SearchViewModel>()
     private var searchInput: String = EMPTY
 
     private lateinit var searchResultsAdapter: SearchResultAdapter
@@ -37,8 +37,7 @@ class SearchFragment : Fragment(), RenderState {
 
     private var isClickAllowed = true
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
@@ -53,20 +52,25 @@ class SearchFragment : Fragment(), RenderState {
             songsHistory.addAll(liveSongsHistory)
         }
 
-
         val imm =
             requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
         searchResultsAdapter = SearchResultAdapter(songs) { track ->
-            if (clickDebounce()) viewModel.onTrackClick(track)
-            val openPlayer = Intent(requireActivity(), PlayerActivity::class.java)
-            startActivity(openPlayer)
+            if (clickDebounce()) {
+                viewModel.onTrackClick(track)
+                findNavController().navigate(
+                    R.id.action_searchFragment_to_playerFragment
+                )
+            }
         }
 
         songsHistoryAdapter = SearchResultAdapter(songsHistory) { track ->
-            if (clickDebounce()) viewModel.onTrackClick(track)
-            val openPlayer = Intent(requireActivity(), PlayerActivity::class.java)
-            startActivity(openPlayer)
+            if (clickDebounce()) {
+                viewModel.onTrackClick(track)
+                findNavController().navigate(
+                    R.id.action_searchFragment_to_playerFragment
+                )
+            }
         }
 
         binding.searchResultsRecyclerView.adapter = searchResultsAdapter
@@ -74,8 +78,13 @@ class SearchFragment : Fragment(), RenderState {
 
         viewModel.getState().observe(viewLifecycleOwner) { state ->
             when (state) {
-                is SearchScreenState.Loading -> render(SearchState.PROGRESS_BAR)
-                is SearchScreenState.Error -> render(state.error)
+                is SearchScreenState.Loading -> {
+                    render(SearchState.PROGRESS_BAR)
+                }
+
+                is SearchScreenState.Error -> {
+                    render(state.error)
+                }
                 is SearchScreenState.Content -> {
                     songs.clear()
                     songs.addAll(state.songs)
@@ -105,6 +114,7 @@ class SearchFragment : Fragment(), RenderState {
         binding.searchBarEdit.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 binding.searchBarEdit.clearFocus()
+                viewModel.searchDebounce(EMPTY)
                 viewModel.searchSongs(searchInput)
             }
             false
@@ -141,15 +151,13 @@ class SearchFragment : Fragment(), RenderState {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 val currentInput = s.toString()
-                if (binding.searchBarEdit.hasFocus() && (s?.isEmpty() == true || currentInput == searchInput) && songsHistory.isNotEmpty()) {
+                if (binding.searchBarEdit.hasFocus() && (currentInput.isEmpty() || currentInput == searchInput) && songsHistory.isNotEmpty()) {
                     render(SearchState.SONG_HISTORY)
                 } else {
                     render(SearchState.SEARCH)
                 }
-                if (currentInput.isNotEmpty() && currentInput != searchInput) {
-                    searchInput = s.toString()
-                    viewModel.searchDebounce(searchInput)
-                }
+                searchInput = currentInput
+                viewModel.searchDebounce(currentInput)
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -164,7 +172,7 @@ class SearchFragment : Fragment(), RenderState {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            viewLifecycleOwner.lifecycleScope.launch {
+            lifecycleScope.launch {
                 delay(CLICK_DEBOUNCE_DELAY_MILLIS)
                 isClickAllowed = true
             }

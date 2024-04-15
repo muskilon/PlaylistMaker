@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.playlistmaker.medialibrary.ui.NewPlayListFragment">
+
+    <ImageView
+        android:id="@+id/arrow_back"
+        style="@style/NavigationToolBarIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/nav_text"
+        style="@style/NavigationToolBarText"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        app:layout_constraintStart_toEndOf="@id/arrow_back"
+        app:layout_constraintTop_toTopOf="parent"
+        android:text="@string/new_play_list" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/image_container"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:cardElevation="0dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginHorizontal="24dp"
+        app:layout_constraintDimensionRatio="1:1"
+        app:cardBackgroundColor="?attr/white_ypDayBlack_ypNight"
+        app:cardCornerRadius="8dp"
+        app:layout_constraintTop_toBottomOf="@id/arrow_back"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/enterTitle"
+        android:foreground="@drawable/image_placeholder"
+        app:layout_constrainedHeight="true"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintWidth_default="spread"
+
+        >
+
+        <ImageView
+            android:id="@+id/play_list_cover"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/empty_image"
+            android:scaleType="centerCrop" />
+    </androidx.cardview.widget.CardView>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/enterTitle"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/image_container"
+        android:layout_marginTop="32dp"
+        android:paddingHorizontal="16dp"
+        app:boxBackgroundColor="?attr/white_ypDayBlack_ypNight"
+        app:boxCornerRadiusBottomEnd="4dp"
+        app:boxCornerRadiusBottomStart="4dp"
+        app:boxCornerRadiusTopEnd="4dp"
+        app:boxCornerRadiusTopStart="4dp"
+        app:boxStrokeWidth="1dp"
+        app:boxStrokeColor="@color/new_play_list_text_input_state_default"
+        app:boxStrokeWidthFocused="1dp"
+        app:endIconDrawable="@drawable/clear_icon"
+        app:endIconMode="clear_text"
+        app:endIconTint="?attr/black_ypDayWhite_ypNight"
+        app:hintEnabled="true"
+        app:hintTextColor="@color/new_play_list_text_input_state_default">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/enterTitleEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/playlistTitle"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingHorizontal="16dp"
+            android:singleLine="true"
+            android:textColor="?attr/black_ypDayWhite_ypNight"
+            android:textColorHint="@color/new_play_list_hint_state_default"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="@dimen/font_size_16" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/enterDescription"
+        android:layout_width="0dp"
+        android:layout_height="56dp"
+        app:layout_constraintTop_toBottomOf="@id/enterTitle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginVertical="16dp"
+        android:paddingHorizontal="16dp"
+        app:boxBackgroundColor="?attr/white_ypDayBlack_ypNight"
+        app:boxCornerRadiusBottomEnd="4dp"
+        app:boxCornerRadiusBottomStart="4dp"
+        app:boxCornerRadiusTopEnd="4dp"
+        app:boxCornerRadiusTopStart="4dp"
+        app:boxStrokeWidth="1dp"
+        app:boxStrokeColor="@color/new_play_list_text_input_state_default"
+        app:boxStrokeWidthFocused="1dp"
+        app:endIconDrawable="@drawable/clear_icon"
+        app:endIconMode="clear_text"
+        app:endIconTint="?attr/black_ypDayWhite_ypNight"
+        app:hintEnabled="true"
+        app:hintTextColor="@color/new_play_list_text_input_state_default">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/enterDescriptionEdit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/new_play_list_description"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLines="1"
+            android:paddingHorizontal="16dp"
+            android:singleLine="true"
+            android:textColor="?attr/black_ypDayWhite_ypNight"
+            android:textColorHint="?attr/black_ypDayWhite_ypNight"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:textSize="@dimen/font_size_16" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/createButton"
+        style="@style/createButton"
+        android:layout_width="0dp"
+        android:layout_height="44dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="32dp"
+        android:layout_marginHorizontal="16dp"
+        android:text="@string/create"
+        android:textColor="@color/yp_white"
+        android:fontFamily="@font/ys_display_medium"
+        android:textSize="@dimen/font_size_16"
+        android:enabled="false" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

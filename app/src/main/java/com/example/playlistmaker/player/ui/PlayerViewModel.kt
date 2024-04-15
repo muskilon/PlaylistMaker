@@ -1,11 +1,14 @@
 package com.example.playlistmaker.player.ui
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.MyApplication
 import com.example.playlistmaker.R
+import com.example.playlistmaker.medialibrary.domain.PlayList
+import com.example.playlistmaker.medialibrary.domain.PlayListInteractor
 import com.example.playlistmaker.player.data.MusicPlayer
 import com.example.playlistmaker.player.data.OnStateChangeListener
 import com.example.playlistmaker.player.domain.CurrentTrackInteractor
@@ -16,10 +19,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class PlayerViewModel(
     private val favoritesInteractor: FavoritesInteractor,
-    currentTrackInteractor: CurrentTrackInteractor,
+    private val currentTrackInteractor: CurrentTrackInteractor,
+    private val playListInteractor: PlayListInteractor,
     private val mplayer: MusicPlayer
 ) : ViewModel() {
     private val timerZero = MyApplication.getAppResources().getString(R.string.timer_zero)
@@ -27,7 +32,8 @@ class PlayerViewModel(
         MyApplication.getAppResources().getString(R.string.timer_placeholder)
     private var musicPlayerState = MusicPlayerState.STATE_DEFAULT
     private var livePlayStatus = MutableLiveData<PlayStatus>()
-    private val currentTrack = currentTrackInteractor.getCurrentTrack()
+    private var livePlayLists = MutableLiveData<List<PlayList>>()
+    private var currentTrack = currentTrackInteractor.getCurrentTrack()
     private var isUserPaused: Boolean = false
 
     init {
@@ -40,6 +46,18 @@ class PlayerViewModel(
         )
     }
 
+    fun updateCurrentTrack() {
+        currentTrack = currentTrackInteractor.getCurrentTrack()
+        livePlayStatus.value = getCurrentPlayStatus().copy(
+            currentTrack = currentTrack,
+            isFavorites = isFavorites(),
+            timeElapsed = timerZero,
+            playButtonClickableState = false,
+            playButtonImage = PLAY
+        )
+        preparePlayer()
+        Log.d("CURRENT_TRACK", currentTrack.artistName)
+    }
     private fun getCurrentPlayStatus(): PlayStatus {
         return livePlayStatus.value ?: PlayStatus(
             timeElapsed = timerZero,
@@ -49,6 +67,7 @@ class PlayerViewModel(
             isFavorites = isFavorites()
         )
     }
+
 
     fun setListener() {
         mplayer.setListener(object : OnStateChangeListener {
@@ -105,18 +124,6 @@ class PlayerViewModel(
         }
     }
 
-    private fun isFavorites(): Boolean {
-        return favoritesInteractor.getFavorites().contains(currentTrack)
-    }
-
-    fun addToFavorites() {
-        livePlayStatus.value = getCurrentPlayStatus().copy(isFavorites = !isFavorites())
-        viewModelScope.launch(Dispatchers.IO) {
-            if (isFavorites()) favoritesInteractor.deleteSongFromFavorites(currentTrack)
-            else favoritesInteractor.addSongToFavorites(currentTrack)
-        }
-    }
-
     fun getPlayStatus(): LiveData<PlayStatus> = livePlayStatus
 
     fun preparePlayer() {
@@ -131,9 +138,44 @@ class PlayerViewModel(
         }
     }
 
-    fun stopPlayer() {
-        pausePlayer()
-        mplayer.stop()
+    private fun isFavorites(): Boolean {
+        return favoritesInteractor.getFavorites().contains(currentTrack)
+    }
+
+    fun addToFavorites() {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (isFavorites()) favoritesInteractor.deleteSongFromFavorites(currentTrack)
+            else favoritesInteractor.addSongToFavorites(currentTrack)
+            withContext(Dispatchers.Main) {
+                livePlayStatus.value = getCurrentPlayStatus().copy(isFavorites = isFavorites())
+            }
+        }
+    }
+
+    fun updatePlaylists() {
+        viewModelScope.launch {
+            playListInteractor.updatePlayLists()
+            livePlayLists.postValue(playListInteractor.getPlayLists())
+            Log.d("PLAYLISTS", playListInteractor.getPlayLists().size.toString())
+        }
+    }
+
+    fun getPlayLists(): LiveData<List<PlayList>> = livePlayLists
+
+    fun addTrackToPlayList(playList: PlayList): Boolean {
+        if (playList.tracks.tracks.contains(currentTrack.trackId)) {
+            return false
+        } else {
+            playList.tracks.tracks.add(currentTrack.trackId)
+            val newPlayList = playList.copy(
+                trackCount = playList.trackCount + 1,
+                tracks = playList.tracks
+            )
+            viewModelScope.launch {
+                playListInteractor.addTrackToPlayList(newPlayList, currentTrack)
+            }
+            return true
+        }
     }
 
     companion object {
