@@ -12,4 +12,9 @@ interface PlayListInteractor {
     suspend fun updatePlayLists()
 
     suspend fun deletePlayList(playList: PlayList)
+    fun getSinglePlayList(playlistId: Long): PlayList
+    suspend fun updateAllPlayListsTracks()
+    fun getTracksForSinglePlayList(trackList: TrackList): List<Track>
+
+
 }

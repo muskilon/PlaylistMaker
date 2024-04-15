@@ -1,4 +1,4 @@
-package com.example.playlistmaker.player.data.db
+package com.example.playlistmaker.db
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -22,6 +22,9 @@ interface PlayListsDao {
 
     @Query("SELECT * FROM playlists_table")
     suspend fun getAllPlayLists(): List<PlayListEntity>
+
+    @Query("SELECT * FROM playlist_songs_table")
+    suspend fun getAllPlayListsTracks(): List<Track>
 
     @Delete(entity = PlayListEntity::class)
     fun deletePlayList(playList: PlayListEntity) //TODO еще надо и треки удалять

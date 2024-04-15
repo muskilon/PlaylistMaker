@@ -1,4 +1,4 @@
-package com.example.playlistmaker.player.data.db
+package com.example.playlistmaker.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

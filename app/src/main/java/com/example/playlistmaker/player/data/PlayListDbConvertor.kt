@@ -1,9 +1,9 @@
 package com.example.playlistmaker.player.data
 
 import androidx.core.net.toUri
+import com.example.playlistmaker.db.PlayListEntity
 import com.example.playlistmaker.medialibrary.domain.PlayList
 import com.example.playlistmaker.medialibrary.domain.TrackList
-import com.example.playlistmaker.player.data.db.PlayListEntity
 import com.google.gson.Gson
 
 class PlayListDbConvertor {

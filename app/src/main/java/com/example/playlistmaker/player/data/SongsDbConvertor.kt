@@ -1,6 +1,6 @@
 package com.example.playlistmaker.player.data
 
-import com.example.playlistmaker.player.data.db.SongsEntity
+import com.example.playlistmaker.db.SongsEntity
 import com.example.playlistmaker.search.domain.Track
 
 class SongsDbConvertor {

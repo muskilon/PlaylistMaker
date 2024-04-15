@@ -1,7 +1,7 @@
 package com.example.playlistmaker.player.data
 
-import com.example.playlistmaker.player.data.db.AppDatabase
-import com.example.playlistmaker.player.data.db.SongsEntity
+import com.example.playlistmaker.db.AppDatabase
+import com.example.playlistmaker.db.SongsEntity
 import com.example.playlistmaker.player.domain.FavoritesRepository
 import com.example.playlistmaker.search.domain.Track
 import kotlinx.coroutines.Dispatchers

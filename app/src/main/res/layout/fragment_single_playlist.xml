@@ -12,6 +12,18 @@
         android:background="@color/yp_light_gray">
 
         <ImageView
+            android:id="@+id/cover"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="fitCenter"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/title"
+            android:src="@drawable/album_mock" />
+
+        <ImageView
             android:id="@+id/arrow_back"
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -19,16 +31,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             android:src="@drawable/arrow_back" />
-
-        <ImageView
-            android:id="@+id/cover"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/title"
-            android:src="@drawable/album_mock" />
 
         <TextView
             android:id="@+id/title"
@@ -119,7 +121,6 @@
         android:layout_height="match_parent"
         android:background="@drawable/bottom_sheet_back"
         android:orientation="vertical"
-        android:paddingHorizontal="16dp"
         app:behavior_hideable="false"
         app:behavior_peekHeight="207dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
@@ -136,7 +137,6 @@
             android:id="@+id/playListTracksRecycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="13dp"
             android:orientation="vertical"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
