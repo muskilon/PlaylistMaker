@@ -56,6 +56,12 @@ class SinglePlayListFragment : Fragment() {
         binding.deletePlaylist.setOnClickListener {
             deletePlayListDialog()
         }
+        binding.share.setOnClickListener {
+            viewModel.sharePlayList()
+        }
+        binding.sharePlaylistFromMenu.setOnClickListener {
+            viewModel.sharePlayList()
+        }
 
         tracksResultsAdapter = SinglePlayListAdapter(playListTracks) { track, longClick ->
             when (longClick) {
