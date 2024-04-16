@@ -66,5 +66,8 @@
         <action
             android:id="@+id/action_singlePlayListFragment_to_playerFragment"
             app:destination="@id/playerFragment" />
+        <action
+            android:id="@+id/action_singlePlayListFragment_to_newPlayListFragment"
+            app:destination="@id/newPlayListFragment" />
     </fragment>
 </navigation>

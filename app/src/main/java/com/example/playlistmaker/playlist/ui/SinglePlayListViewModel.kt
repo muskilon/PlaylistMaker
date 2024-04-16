@@ -1,6 +1,5 @@
 package com.example.playlistmaker.playlist.ui
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -26,7 +25,6 @@ class SinglePlayListViewModel(
     private var liveState = MutableLiveData<SinglePlayListState>()
     private lateinit var currentPlayList: PlayList
     private lateinit var currentPlayListTracks: List<Track>
-    private var totalDuration = 0
 
     fun getPlayList(playlistId: Long) {
         viewModelScope.launch {
@@ -40,12 +38,11 @@ class SinglePlayListViewModel(
                 val newDuration = (units[0].toInt() * 60) + units[1].toInt()
                 totalTime += newDuration
             }
-            totalDuration = totalTime / 60
             liveState.postValue(
                 SinglePlayListState(
                     currentPlayList = currentPlayList,
                     currentPlayListTracks = currentPlayListTracks,
-                    totalTime = totalDuration
+                    totalTime = totalTime / 60
                 )
             )
         }
@@ -72,20 +69,24 @@ class SinglePlayListViewModel(
     }
 
     private fun messageGenerator(): String {
-        val trackCount = MyApplication.getAppResources()
-            .getQuantityString(
-                R.plurals.track_plurals,
-                currentPlayList.trackCount,
-                currentPlayList.trackCount
+        val message = buildString {
+            this.append(currentPlayList.title)
+            if (!currentPlayList.description.isNullOrEmpty()) {
+                this.append("\n${currentPlayList.description}\n")
+            } else this.append("\n")
+            this.append(
+                MyApplication.getAppResources().getQuantityString(
+                    R.plurals.track_plurals,
+                    currentPlayList.trackCount,
+                    currentPlayList.trackCount
+                )
             )
-        val description = if (!currentPlayList.description.isNullOrEmpty())
-            "\n${currentPlayList.description}\n"
-        else "\n"
-        var message = currentPlayList.title + description + trackCount
-        Log.d("TAG", totalDuration.toString())
-        currentPlayListTracks.forEachIndexed { index, track ->
-            message =
-                message + "\n${(index + 1)}" + ". ${track.artistName}" + " - " + track.trackName + " (${track.trackTime})"
+            currentPlayListTracks.forEachIndexed { index, track ->
+                this.append("\n${(index + 1)}")
+                this.append(". ${track.artistName} - ")
+                this.append(track.trackName)
+                this.append(" (${track.trackTime})")
+            }
         }
         return message
     }
