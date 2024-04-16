@@ -40,6 +40,9 @@
     <string name="play_list_dialog_negative">Отмена</string>
     <string name="play_list_dialog_positive">Завершить</string>
     <string name="play_list_created">Плейлист %1$s создан</string>
+    <string name="share">Поделиться</string>
+    <string name="edit_information">Редактировать информацию</string>
+    <string name="delete_playlist">Удалить плейлист</string>
     <plurals name="track_plurals">
         <item quantity="zero">нет треков</item>
         <item quantity="one">%1$d трек</item>

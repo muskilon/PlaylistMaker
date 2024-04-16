@@ -13,6 +13,7 @@ interface PlayListRepository {
     fun getPlayLists(): List<PlayList>
     fun getTracksForSinglePlayList(trackList: TrackList): List<Track>
     suspend fun deletePlayList(playList: PlayList)
+    suspend fun deleteTrackFromPlayList(trackId: String, playList: PlayList)
     fun getSinglePlayList(playlistId: Long): PlayList
 
 }

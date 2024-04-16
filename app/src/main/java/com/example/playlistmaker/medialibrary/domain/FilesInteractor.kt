@@ -5,5 +5,5 @@ import android.net.Uri
 interface FilesInteractor {
     suspend fun saveFile(uri: Uri): Uri
     suspend fun loadFile()
-    suspend fun deletePlayList(uri: Uri)
+    suspend fun deletePlayListCover(uri: Uri)
 }

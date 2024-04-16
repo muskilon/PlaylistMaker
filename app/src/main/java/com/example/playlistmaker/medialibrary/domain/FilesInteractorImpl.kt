@@ -14,7 +14,7 @@ class FilesInteractorImpl(
         repository.loadFile()
     }
 
-    override suspend fun deletePlayList(uri: Uri) {
+    override suspend fun deletePlayListCover(uri: Uri) {
         repository.deleteFile(uri)
     }
 }

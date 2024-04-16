@@ -29,10 +29,9 @@ class PlaylistsViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             playListsInteractor.deletePlayList(playList)
             if (playList.cover != null) {
-                filesInteractor.deletePlayList(playList.cover)
+                filesInteractor.deletePlayListCover(playList.cover)
             }
             updatePlayLists()
-//            TODO() Нужно сделать удаление треков плейлиста
         }
     }
 

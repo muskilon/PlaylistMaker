@@ -166,13 +166,8 @@ class PlayerViewModel(
         if (playList.tracks.tracks.contains(currentTrack.trackId)) {
             return false
         } else {
-            playList.tracks.tracks.add(currentTrack.trackId)
-            val newPlayList = playList.copy(
-                trackCount = playList.trackCount + 1,
-                tracks = playList.tracks
-            )
             viewModelScope.launch {
-                playListInteractor.addTrackToPlayList(newPlayList, currentTrack)
+                playListInteractor.addTrackToPlayList(playList, currentTrack)
             }
             return true
         }

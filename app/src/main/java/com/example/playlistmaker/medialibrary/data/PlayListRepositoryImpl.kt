@@ -19,8 +19,35 @@ class PlayListRepositoryImpl(
     private val playListTracksStorage = ArrayList<Track>()
 
     override suspend fun addTrackToPlayList(playList: PlayList, track: Track) {
-        appDatabase.playListsDao().updatePlayList(playListDbConvertor.map(playList))
+        playList.tracks.tracks.add(track.trackId)
+        val newPlayList = playList.copy(
+            trackCount = playList.trackCount + 1, tracks = playList.tracks
+        )
+        appDatabase.playListsDao().updatePlayList(playListDbConvertor.map(newPlayList))
         appDatabase.playListsDao().addTrackToPlayListStorage(track)
+        updatePlayListsList()
+        updateAllPlayListsTracks()
+    }
+
+    override suspend fun deleteTrackFromPlayList(trackId: String, playList: PlayList) {
+        playList.tracks.tracks.remove(trackId)
+        val newPlayList = playList.copy(
+            trackCount = playList.trackCount - 1, tracks = playList.tracks
+        )
+        appDatabase.playListsDao().updatePlayList(playListDbConvertor.map(newPlayList))
+
+        var tempTrackId = trackId
+        playListStorage.forEach { otherPlayList ->
+            if (otherPlayList.tracks.tracks.contains(trackId)) {
+                tempTrackId = EMPTY
+                return@forEach
+            }
+        }
+        if (tempTrackId.isNotEmpty()) {
+            appDatabase.playListsDao().deleteTrackFromPlayListStorage(listOf(tempTrackId))
+        }
+        updatePlayListsList()
+        updateAllPlayListsTracks()
     }
 
     override suspend fun addPlayList(playList: PlayList) {
@@ -51,7 +78,26 @@ class PlayListRepositoryImpl(
     }
 
     override suspend fun deletePlayList(playList: PlayList) {
+        val tempPlayList = playList.tracks.tracks.toMutableList()
         appDatabase.playListsDao().deletePlayList(playListDbConvertor.map(playList))
+        updatePlayListsList()
+        run trackId@{
+            playList.tracks.tracks.forEach { trackId ->
+                run playLists@{
+                    playListStorage.forEach { otherPlayList ->
+                        if (otherPlayList.tracks.tracks.contains(trackId)) {
+                            tempPlayList.remove(trackId)
+//                            if(tempPlayList.isEmpty()) return@trackId
+                            return@playLists
+                        }
+                    }
+                }
+            }
+        }
+        if (tempPlayList.isNotEmpty()) {
+            appDatabase.playListsDao().deleteTrackFromPlayListStorage(tempPlayList)
+        }
+        updateAllPlayListsTracks()
     }
 
     override fun getTracksForSinglePlayList(trackList: TrackList): List<Track> {
@@ -62,7 +108,6 @@ class PlayListRepositoryImpl(
                 null -> {
                     Unit
                 }
-
                 else -> singlePlayListTracks.add(tempTrack)
             }
         }
@@ -81,5 +126,9 @@ class PlayListRepositoryImpl(
         val playLists = appDatabase.playListsDao().getAllPlayListsTracks()
         emit(playLists)
     }.flowOn(Dispatchers.IO)
+
+    companion object {
+        private const val EMPTY = ""
+    }
 
 }

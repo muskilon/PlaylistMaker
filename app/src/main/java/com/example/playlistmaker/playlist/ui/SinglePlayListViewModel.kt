@@ -9,6 +9,7 @@ import com.example.playlistmaker.medialibrary.domain.PlayListInteractor
 import com.example.playlistmaker.playlist.domain.SinglePlayListState
 import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.domain.TracksInteractor
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SinglePlayListViewModel(
@@ -36,6 +37,22 @@ class SinglePlayListViewModel(
                     totalTime = totalTime / 60
                 )
             )
+        }
+    }
+
+    fun deletePlayList() {
+        viewModelScope.launch(Dispatchers.IO) {
+            playListInteractor.deletePlayList(liveState.value!!.currentPlayList)
+            if (liveState.value!!.currentPlayList.cover.toString().isEmpty()) {
+                filesInteractor.deletePlayListCover(liveState.value!!.currentPlayList.cover!!)
+            }
+        }
+    }
+
+    fun deleteTrackFromPlayList(trackId: String) {
+        viewModelScope.launch(Dispatchers.IO) {
+            playListInteractor.deleteTrackFromPlayList(trackId, liveState.value!!.currentPlayList)
+            getPlayList(liveState.value!!.currentPlayList.id)
         }
     }
 

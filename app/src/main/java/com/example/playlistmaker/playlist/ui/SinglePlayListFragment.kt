@@ -1,13 +1,11 @@
 package com.example.playlistmaker.playlist.ui
 
 import android.annotation.SuppressLint
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
-import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -16,17 +14,17 @@ import com.bumptech.glide.Glide
 import com.example.playlistmaker.MyApplication
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSinglePlaylistBinding
+import com.example.playlistmaker.playlist.domain.SinglePlayListState
 import com.example.playlistmaker.search.domain.Track
-import com.example.playlistmaker.search.ui.SearchResultAdapter
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SinglePlayListFragment : Fragment() {
     private lateinit var binding: FragmentSinglePlaylistBinding
-    private lateinit var navBar: BottomNavigationView
-    private lateinit var tracksResultsAdapter: SearchResultAdapter
+    private lateinit var tracksResultsAdapter: SinglePlayListAdapter
     private val viewModel by viewModel<SinglePlayListViewModel>()
     private val playListTracks = ArrayList<Track>()
     private var isClickAllowed = true
@@ -41,21 +39,28 @@ class SinglePlayListFragment : Fragment() {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navBar = requireActivity().findViewById(R.id.bottomNavigationView)
-        navBar.isVisible = false
+
         binding.arrowBack.setOnClickListener { exit() }
 
         viewModel.getPlayList(requireArguments().getLong(PLAYLIST))
 
-        tracksResultsAdapter = SearchResultAdapter(playListTracks) { track ->
-            if (clickDebounce()) {
-                viewModel.onTrackClick(track)
-                findNavController().navigate(
-                    R.id.action_singlePlayListFragment_to_playerFragment
-                )
+        val bottomSheetPlayListMenuBehavior =
+            BottomSheetBehavior.from(binding.bottomSheetPlaylistMenu)
+        bottomSheetPlayListMenuBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        binding.menu.setOnClickListener {
+            bottomSheetPlayListMenuBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+        binding.deletePlaylist.setOnClickListener {
+            deletePlayListDialog()
+        }
+
+        tracksResultsAdapter = SinglePlayListAdapter(playListTracks) { track, longClick ->
+            when (longClick) {
+                false -> onClick(track)
+                true -> onLongClick(track.trackId)
             }
         }
         binding.playListTracksRecycler.adapter = tracksResultsAdapter
@@ -65,22 +70,13 @@ class SinglePlayListFragment : Fragment() {
                 playListTracks.clear()
                 playListTracks.addAll(state.currentPlayListTracks)
                 tracksResultsAdapter.notifyDataSetChanged()
-            } else playListTracks.clear()
-
-            binding.length.text = MyApplication.getAppResources()
-                .getQuantityString(R.plurals.minutes_plurals, state.totalTime, state.totalTime)
-            binding.trackCount.text = MyApplication.getAppResources()
-                .getQuantityString(
-                    R.plurals.track_plurals,
-                    state.currentPlayList.trackCount,
-                    state.currentPlayList.trackCount
-                )
-            binding.description.text = state.currentPlayList.description
-            binding.title.text = state.currentPlayList.title
-            Glide.with(binding.cover)
-                .load(state.currentPlayList.cover)
-                .placeholder(R.drawable.placeholder)
-                .into(binding.cover)
+            } else {
+                playListTracks.clear()
+                tracksResultsAdapter.notifyDataSetChanged()
+                //TODO показывать заглушку
+            }
+            setValues(state)
+            setValuesForSummary(state)
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(
@@ -104,22 +100,73 @@ class SinglePlayListFragment : Fragment() {
         return current
     }
 
+    private fun onClick(track: Track) {
+        if (clickDebounce()) {
+            viewModel.onTrackClick(track)
+            findNavController().navigate(
+                R.id.action_singlePlayListFragment_to_playerFragment
+            )
+        }
+    }
+
+    private fun onLongClick(trackId: String) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Хотите удалить трек?")
+            .setNegativeButton("НЕТ") { _, _ -> }
+            .setPositiveButton("ДА") { _, _ ->
+                viewModel.deleteTrackFromPlayList(trackId)
+            }
+            .show()
+    }
+
+    private fun deletePlayListDialog() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Хотите удалить плейлист «${binding.title.text}»?")
+            .setNegativeButton("НЕТ") { _, _ -> }
+            .setPositiveButton("ДА") { _, _ ->
+                viewModel.deletePlayList()
+                exit()
+            }
+            .show()
+    }
+
+    private fun setValues(state: SinglePlayListState) {
+        binding.length.text = MyApplication.getAppResources()
+            .getQuantityString(R.plurals.minutes_plurals, state.totalTime, state.totalTime)
+        binding.trackCount.text = MyApplication.getAppResources()
+            .getQuantityString(
+                R.plurals.track_plurals,
+                state.currentPlayList.trackCount,
+                state.currentPlayList.trackCount
+            )
+        if (state.currentPlayList.description.isNullOrEmpty()) binding.description.isVisible = false
+        binding.description.text = state.currentPlayList.description
+        binding.title.text = state.currentPlayList.title
+        Glide.with(binding.cover)
+            .load(state.currentPlayList.cover)
+            .placeholder(R.drawable.placeholder)
+            .into(binding.cover)
+    }
+
+    private fun setValuesForSummary(state: SinglePlayListState) {
+        binding.menuSummary.playListTitle.text = state.currentPlayList.title
+        binding.menuSummary.playListTrackCount.text = MyApplication.getAppResources()
+            .getQuantityString(
+                R.plurals.track_plurals,
+                state.currentPlayList.trackCount,
+                state.currentPlayList.trackCount
+            )
+        Glide.with(binding.menuSummary.playListCover)
+            .load(state.currentPlayList.cover)
+            .placeholder(R.drawable.placeholder)
+            .into(binding.menuSummary.playListCover)
+    }
+
     private fun exit() {
         findNavController().navigateUp()
     }
 
-    override fun onResume() {
-        super.onResume()
-        navBar.isVisible = false
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        navBar.isVisible = true
-    }
-
     companion object {
-        const val EMPTY = ""
         const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
         const val PLAYLIST = "playlist"
     }
