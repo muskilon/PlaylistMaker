@@ -11,7 +11,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
 import com.example.playlistmaker.MyApplication
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentSinglePlaylistBinding
@@ -30,11 +29,11 @@ class SinglePlayListFragment : Fragment() {
     private val playListTracks = ArrayList<Track>()
     private var isClickAllowed = true
     private var bundleForEdit = bundleOf()
+    private val locationOfShareIcon = intArrayOf(0, 0)
 
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         binding = FragmentSinglePlaylistBinding.inflate(inflater, container, false)
         return binding.root
@@ -47,6 +46,9 @@ class SinglePlayListFragment : Fragment() {
         binding.arrowBack.setOnClickListener { exit() }
 
         viewModel.getPlayList(requireArguments().getLong(PLAYLIST))
+
+        val playListBottomSheetBehavior =
+            BottomSheetBehavior.from(binding.playlistBottomSheet)
 
         val bottomSheetPlayListMenuBehavior =
             BottomSheetBehavior.from(binding.bottomSheetPlaylistMenu)
@@ -123,6 +125,17 @@ class SinglePlayListFragment : Fragment() {
                     exit()
                 }
             })
+
+        val screenHeight = resources.displayMetrics.heightPixels
+
+        lifecycleScope.launch {
+            delay(100)
+            binding.share.getLocationOnScreen(locationOfShareIcon)
+            playListBottomSheetBehavior.setPeekHeight(
+                screenHeight - locationOfShareIcon[1] - 50,
+                true
+            )
+        }
     }
 
     private fun createArgs(playlistId: Long) {
@@ -153,56 +166,51 @@ class SinglePlayListFragment : Fragment() {
     }
 
     private fun onLongClick(trackId: String) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.do_you_want_delete_track))
+        MaterialAlertDialogBuilder(requireContext()).setTitle(getString(R.string.do_you_want_delete_track))
             .setNegativeButton(getString(R.string.no)) { _, _ -> }
             .setPositiveButton(getString(R.string.yes)) { _, _ ->
                 viewModel.deleteTrackFromPlayList(trackId)
-            }
-            .show()
+            }.show()
     }
 
     private fun deletePlayListDialog() {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.do_you_want_delete_playlist, binding.title.text))
-            .setNegativeButton(getString(R.string.no)) { _, _ -> }
+        MaterialAlertDialogBuilder(requireContext()).setTitle(
+            getString(
+                R.string.do_you_want_delete_playlist,
+                binding.title.text
+            )
+        ).setNegativeButton(getString(R.string.no)) { _, _ -> }
             .setPositiveButton(getString(R.string.yes)) { _, _ ->
                 viewModel.deletePlayList()
                 exit()
-            }
-            .show()
+            }.show()
     }
 
     private fun setValues(state: SinglePlayListState) {
         binding.length.text = MyApplication.getAppResources()
             .getQuantityString(R.plurals.minutes_plurals, state.totalTime, state.totalTime)
-        binding.trackCount.text = MyApplication.getAppResources()
-            .getQuantityString(
+        binding.trackCount.text = MyApplication.getAppResources().getQuantityString(
                 R.plurals.track_plurals,
                 state.currentPlayList.trackCount,
                 state.currentPlayList.trackCount
             )
-        if (state.currentPlayList.description.isNullOrEmpty()) binding.description.isVisible = false
+        binding.description.isVisible = state.currentPlayList.description?.let { true } ?: false
         binding.description.text = state.currentPlayList.description
         binding.title.text = state.currentPlayList.title
-        Glide.with(binding.cover)
-            .load(state.currentPlayList.cover)
-            .placeholder(R.drawable.placeholder)
-            .into(binding.cover)
+        state.currentPlayList.cover?.let { binding.cover.setImageURI(it) }
+            ?: binding.cover.setImageResource(R.drawable.placeholder)
     }
 
     private fun setValuesForSummary(state: SinglePlayListState) {
         binding.menuSummary.playListTitle.text = state.currentPlayList.title
-        binding.menuSummary.playListTrackCount.text = MyApplication.getAppResources()
-            .getQuantityString(
+        binding.menuSummary.playListTrackCount.text =
+            MyApplication.getAppResources().getQuantityString(
                 R.plurals.track_plurals,
                 state.currentPlayList.trackCount,
                 state.currentPlayList.trackCount
             )
-        Glide.with(binding.menuSummary.playListCover)
-            .load(state.currentPlayList.cover)
-            .placeholder(R.drawable.placeholder)
-            .into(binding.menuSummary.playListCover)
+        state.currentPlayList.cover?.let { binding.menuSummary.playListCover.setImageURI(it) }
+            ?: binding.menuSummary.playListCover.setImageResource(R.drawable.placeholder)
     }
 
     private fun exit() {

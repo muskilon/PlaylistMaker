@@ -40,8 +40,8 @@ class EditPlayListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.loadPlayList(requireArguments().getLong(PLAYLIST))
-        binding.navText.text = "Редактировать"
-        binding.createButton.text = "Сохранить"
+        binding.navText.text = getString(R.string.edit)
+        binding.createButton.text = getString(R.string.save)
 
         viewModel.getPlayLists().observe(viewLifecycleOwner) { playList ->
             playListId = playList.id
@@ -58,12 +58,10 @@ class EditPlayListFragment : Fragment() {
 
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-                if (uri != null) {
+                uri?.let {
                     binding.playListCover.setImageURI(uri)
                     binding.imageContainer.foreground = null
                     newUri = uri
-                } else {
-                    Unit
                 }
             }
 

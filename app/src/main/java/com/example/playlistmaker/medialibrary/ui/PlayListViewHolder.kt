@@ -16,10 +16,13 @@ class PlayListViewHolder(private val binding: PlayListSnippetBinding) :
         binding.playListTitle.text = playList.title
         binding.playListTrackCount.text = MyApplication.getAppResources()
             .getQuantityString(R.plurals.track_plurals, playList.trackCount, playList.trackCount)
-        Glide.with(binding.playListCover)
-            .load(playList.cover)
-            .placeholder(R.drawable.placeholder)
-            .transform(RoundedCorners(cornerRadius.toInt()))
-            .into(binding.playListCover)
+        playList.cover?.let {
+            Glide.with(binding.playListCover)
+                .load(it)
+                .placeholder(R.drawable.placeholder)
+                .transform(RoundedCorners(cornerRadius.toInt()))
+                .into(binding.playListCover)
+
+        } ?: binding.playListCover.setImageResource(R.drawable.placeholder)
     }
 }
