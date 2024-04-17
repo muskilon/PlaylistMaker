@@ -77,6 +77,8 @@
         tools:layout="@layout/fragment_new_play_list">
         <action
             android:id="@+id/action_editPlayListFragment_to_singlePlayListFragment"
+            app:popUpTo="@+id/singlePlayListFragment"
+            app:popUpToInclusive="true"
             app:destination="@id/singlePlayListFragment" />
     </fragment>
 </navigation>

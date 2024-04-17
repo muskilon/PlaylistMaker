@@ -72,9 +72,10 @@ class EditPlayListFragment : Fragment() {
         }
         binding.createButton.setOnClickListener {
             viewModel.updatePlayList(title, description, newUri)
-            Snackbar.make(view, getString(R.string.play_list_created, title), Snackbar.LENGTH_LONG)
+            Snackbar.make(view, getString(R.string.playlist_updated, title), Snackbar.LENGTH_LONG)
                 .show()
             findNavController().navigateUp()
+//            TODO надо разобраться с навигацией
         }
 
         val textWatcherTitle = object : TextWatcher {

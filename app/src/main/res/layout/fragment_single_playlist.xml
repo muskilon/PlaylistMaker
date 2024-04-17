@@ -21,7 +21,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@id/title"
-            android:src="@drawable/album_mock" />
+            tools:src="@drawable/album_mock" />
 
         <ImageView
             android:id="@+id/arrow_back"

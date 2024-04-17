@@ -52,6 +52,29 @@ class SinglePlayListFragment : Fragment() {
             BottomSheetBehavior.from(binding.bottomSheetPlaylistMenu)
         bottomSheetPlayListMenuBehavior.state = BottomSheetBehavior.STATE_HIDDEN
 
+        bottomSheetPlayListMenuBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_EXPANDED -> {}
+
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        binding.playlistBottomSheet.isVisible = false
+                    }
+
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.playlistBottomSheet.isVisible = true
+                    }
+
+                    else -> {
+                        Unit
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
+
         binding.menu.setOnClickListener {
             bottomSheetPlayListMenuBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
@@ -131,9 +154,9 @@ class SinglePlayListFragment : Fragment() {
 
     private fun onLongClick(trackId: String) {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Хотите удалить трек?")
-            .setNegativeButton("НЕТ") { _, _ -> }
-            .setPositiveButton("ДА") { _, _ ->
+            .setTitle(getString(R.string.do_you_want_delete_track))
+            .setNegativeButton(getString(R.string.no)) { _, _ -> }
+            .setPositiveButton(getString(R.string.yes)) { _, _ ->
                 viewModel.deleteTrackFromPlayList(trackId)
             }
             .show()
@@ -141,9 +164,9 @@ class SinglePlayListFragment : Fragment() {
 
     private fun deletePlayListDialog() {
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Хотите удалить плейлист «${binding.title.text}»?")
-            .setNegativeButton("НЕТ") { _, _ -> }
-            .setPositiveButton("ДА") { _, _ ->
+            .setTitle(getString(R.string.do_you_want_delete_playlist, binding.title.text))
+            .setNegativeButton(getString(R.string.no)) { _, _ -> }
+            .setPositiveButton(getString(R.string.yes)) { _, _ ->
                 viewModel.deletePlayList()
                 exit()
             }
@@ -192,7 +215,6 @@ class SinglePlayListFragment : Fragment() {
     }
 
     companion object {
-        const val EMPTY = ""
         const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
         const val PLAYLIST = "playlist"
     }

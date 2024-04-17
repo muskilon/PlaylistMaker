@@ -75,13 +75,16 @@ class PlayerFragment : Fragment() {
 
         bottomSheetAdapter = BottomSheetAdapter(playLists) { playList, position ->
             if (viewModel.addTrackToPlayList(playList)) {
-                Snackbar.make(view, "Добавлено в плейлист ${playList.title}", Snackbar.LENGTH_LONG)
+                Snackbar.make(
+                    view,
+                    getString(R.string.added_to_playlist, playList.title), Snackbar.LENGTH_LONG
+                )
                     .show()
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             } else {
                 Snackbar.make(
                     view,
-                    "Трек уже добавлен в плейлист ${playList.title}",
+                    getString(R.string.track_already_in_playlist, playList.title),
                     Snackbar.LENGTH_LONG
                 )
                     .show()

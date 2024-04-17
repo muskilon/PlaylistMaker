@@ -44,6 +44,13 @@
     <string name="edit_information">Редактировать информацию</string>
     <string name="delete_playlist">Удалить плейлист</string>
     <string name="edit_play_list_dialog_title">Завершить редактирование плейлиста?</string>
+    <string name="playlist_updated">Плейлист %1$s обновлен</string>
+    <string name="do_you_want_delete_playlist">Хотите удалить плейлист «%1$s»?</string>
+    <string name="do_you_want_delete_track">Хотите удалить трек?</string>
+    <string name="no">НЕТ</string>
+    <string name="yes">ДА</string>
+    <string name="added_to_playlist">Добавлено в плейлист %1$s</string>
+    <string name="track_already_in_playlist">Трек уже добавлен в плейлист %1$s</string>
     <plurals name="track_plurals">
         <item quantity="zero">нет треков</item>
         <item quantity="one">%1$d трек</item>

@@ -32,8 +32,4 @@ open class NewPlayListViewModel(
             )
         }
     }
-
-    open fun getPlayList(playlistId: Long): PlayList {
-        return playListInteractor.getSinglePlayList(playlistId)
-    }
 }
