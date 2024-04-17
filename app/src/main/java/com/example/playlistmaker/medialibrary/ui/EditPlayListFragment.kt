@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
@@ -18,13 +19,14 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-open class NewPlayListFragment : Fragment() {
+class EditPlayListFragment : Fragment() {
     private lateinit var binding: FragmentNewPlayListBinding
-    private val viewModel by viewModel<NewPlayListViewModel>()
+    private val viewModel by viewModel<EditPlayListViewModel>()
 
     private var title: String = EMPTY
     private var description: String = EMPTY
     private var newUri: Uri? = null
+    private var playListId = 0L
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +38,23 @@ open class NewPlayListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        viewModel.loadPlayList(requireArguments().getLong(PLAYLIST))
+        binding.navText.text = "Редактировать"
+        binding.createButton.text = "Сохранить"
+
+        viewModel.getPlayLists().observe(viewLifecycleOwner) { playList ->
+            playListId = playList.id
+            title = playList.title
+            description = playList.description ?: EMPTY
+            newUri = playList.cover
+            binding.enterTitleEdit.setText(title)
+            binding.enterDescriptionEdit.setText(description)
+            playList.cover?.let {
+                binding.playListCover.setImageURI(playList.cover)
+                binding.imageContainer.foreground = null
+            }
+        }
 
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
@@ -52,7 +71,7 @@ open class NewPlayListFragment : Fragment() {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
         binding.createButton.setOnClickListener {
-            viewModel.createPlayList(title, description, newUri)
+            viewModel.updatePlayList(title, description, newUri)
             Snackbar.make(view, getString(R.string.play_list_created, title), Snackbar.LENGTH_LONG)
                 .show()
             findNavController().navigateUp()
@@ -140,19 +159,26 @@ open class NewPlayListFragment : Fragment() {
     private fun exit() {
         if (title.isNotEmpty() || description.isNotEmpty() || newUri != null) {
             MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.play_list_dialog_title))
+                .setTitle(getString(R.string.edit_play_list_dialog_title))
                 .setMessage(getString(R.string.play_list_dialog_message))
                 .setNegativeButton(getString(R.string.play_list_dialog_negative)) { _, _ ->
 
                 }
                 .setPositiveButton(getString(R.string.play_list_dialog_positive)) { _, _ ->
-                    findNavController().navigateUp()
+                    findNavController().navigate(
+                        R.id.action_editPlayListFragment_to_singlePlayListFragment,
+                        bundleOf(PLAYLIST to playListId)
+                    )
                 }
                 .show()
-        } else findNavController().navigateUp()
+        } else findNavController().navigate(
+            R.id.action_editPlayListFragment_to_singlePlayListFragment,
+            bundleOf(PLAYLIST to playListId)
+        )
     }
 
     companion object {
         const val EMPTY = ""
+        const val PLAYLIST = "playlist"
     }
 }

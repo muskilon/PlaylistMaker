@@ -29,6 +29,7 @@ class SinglePlayListViewModel(
     fun getPlayList(playlistId: Long) {
         viewModelScope.launch {
             var totalTime = 0
+            playListInteractor.updatePlayLists()
             playListInteractor.updateAllPlayListsTracks()
             currentPlayList = playListInteractor.getSinglePlayList(playlistId)
             currentPlayListTracks =

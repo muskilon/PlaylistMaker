@@ -43,6 +43,7 @@
     <string name="share">Поделиться</string>
     <string name="edit_information">Редактировать информацию</string>
     <string name="delete_playlist">Удалить плейлист</string>
+    <string name="edit_play_list_dialog_title">Завершить редактирование плейлиста?</string>
     <plurals name="track_plurals">
         <item quantity="zero">нет треков</item>
         <item quantity="one">%1$d трек</item>

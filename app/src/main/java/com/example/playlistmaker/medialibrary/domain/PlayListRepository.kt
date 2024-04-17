@@ -8,6 +8,7 @@ interface PlayListRepository {
     suspend fun addPlayList(playList: PlayList)
 
     suspend fun updatePlayListsList()
+    suspend fun updateSinglePlayList(playList: PlayList)
     suspend fun updateAllPlayListsTracks()
 
     fun getPlayLists(): List<PlayList>

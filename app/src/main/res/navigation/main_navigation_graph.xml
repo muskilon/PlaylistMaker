@@ -67,7 +67,16 @@
             android:id="@+id/action_singlePlayListFragment_to_playerFragment"
             app:destination="@id/playerFragment" />
         <action
-            android:id="@+id/action_singlePlayListFragment_to_newPlayListFragment"
-            app:destination="@id/newPlayListFragment" />
+            android:id="@+id/action_singlePlayListFragment_to_editPlayListFragment"
+            app:destination="@id/editPlayListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editPlayListFragment"
+        android:name="com.example.playlistmaker.medialibrary.ui.EditPlayListFragment"
+        android:label="EditPlayListFragment"
+        tools:layout="@layout/fragment_new_play_list">
+        <action
+            android:id="@+id/action_editPlayListFragment_to_singlePlayListFragment"
+            app:destination="@id/singlePlayListFragment" />
     </fragment>
 </navigation>

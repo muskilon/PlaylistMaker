@@ -1,7 +1,6 @@
 package com.example.playlistmaker.medialibrary.ui
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.medialibrary.domain.FilesInteractor
@@ -10,12 +9,12 @@ import com.example.playlistmaker.medialibrary.domain.PlayListInteractor
 import com.example.playlistmaker.medialibrary.domain.TrackList
 import kotlinx.coroutines.launch
 
-class NewPlayListViewModel(
+open class NewPlayListViewModel(
     private val filesInteractor: FilesInteractor,
-    private val playListInteractor: PlayListInteractor
+    private val playListInteractor: PlayListInteractor,
 ) : ViewModel() {
 
-    fun createPlayList(title: String, description: String, uri: Uri?) {
+    open fun createPlayList(title: String, description: String, uri: Uri?) {
         viewModelScope.launch {
             var newUri = uri
             if (uri != null) {
@@ -31,7 +30,10 @@ class NewPlayListViewModel(
                     tracks = TrackList(mutableListOf())
                 )
             )
-            Log.d("TAG", newUri.toString())
         }
+    }
+
+    open fun getPlayList(playlistId: Long): PlayList {
+        return playListInteractor.getSinglePlayList(playlistId)
     }
 }

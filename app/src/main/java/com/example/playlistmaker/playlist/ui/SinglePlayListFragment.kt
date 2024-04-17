@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -28,6 +29,7 @@ class SinglePlayListFragment : Fragment() {
     private val viewModel by viewModel<SinglePlayListViewModel>()
     private val playListTracks = ArrayList<Track>()
     private var isClickAllowed = true
+    private var bundleForEdit = bundleOf()
 
 
     override fun onCreateView(
@@ -62,6 +64,11 @@ class SinglePlayListFragment : Fragment() {
         binding.sharePlaylistFromMenu.setOnClickListener {
             viewModel.sharePlayList()
         }
+        binding.editInformation.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_singlePlayListFragment_to_editPlayListFragment, bundleForEdit
+            )
+        }
 
         tracksResultsAdapter = SinglePlayListAdapter(playListTracks) { track, longClick ->
             when (longClick) {
@@ -83,6 +90,7 @@ class SinglePlayListFragment : Fragment() {
             }
             setValues(state)
             setValuesForSummary(state)
+            createArgs(state.currentPlayList.id)
         }
 
         requireActivity().onBackPressedDispatcher.addCallback(
@@ -92,6 +100,12 @@ class SinglePlayListFragment : Fragment() {
                     exit()
                 }
             })
+    }
+
+    private fun createArgs(playlistId: Long) {
+        bundleForEdit = bundleOf(
+            PLAYLIST to playlistId
+        )
     }
 
     private fun clickDebounce(): Boolean {
@@ -172,7 +186,13 @@ class SinglePlayListFragment : Fragment() {
         findNavController().navigateUp()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.getPlayList(requireArguments().getLong(PLAYLIST))
+    }
+
     companion object {
+        const val EMPTY = ""
         const val CLICK_DEBOUNCE_DELAY_MILLIS = 1000L
         const val PLAYLIST = "playlist"
     }

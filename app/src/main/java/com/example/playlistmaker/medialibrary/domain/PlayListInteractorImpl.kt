@@ -21,6 +21,10 @@ class PlayListInteractorImpl(
         repository.updatePlayListsList()
     }
 
+    override suspend fun updateSinglePlayList(playList: PlayList) {
+        repository.updateSinglePlayList(playList)
+    }
+
     override suspend fun deletePlayList(playList: PlayList) {
         repository.deletePlayList(playList)
     }

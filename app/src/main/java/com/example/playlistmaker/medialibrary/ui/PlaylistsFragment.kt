@@ -50,18 +50,12 @@ class PlaylistsFragment : Fragment() {
 
         binding.playListRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
         playListAdapter = PlayListAdapter(playLists) { playList ->
-            if (clickDebounce()) viewModel.onPlayListClick(playList)
-            findNavController().navigate(
-                R.id.action_medialibraryFragment_to_singlePlayListFragment,
-                bundleOf(PLAYLIST to playList.id)
-            )
-
-//            Snackbar.make(view, "Тут будет переход на плейлист", Snackbar.LENGTH_LONG)
-//                .setAction("Удалить") {
-//                    viewModel.deletePlayList(playList)
-//                    playListAdapter.notifyItemRemoved(position)
-//                }
-//                .show()
+            if (clickDebounce()) {
+                findNavController().navigate(
+                    R.id.action_medialibraryFragment_to_singlePlayListFragment,
+                    bundleOf(PLAYLIST to playList.id)
+                )
+            }
         }
         binding.playListRecyclerView.adapter = playListAdapter
 
@@ -76,7 +70,7 @@ class PlaylistsFragment : Fragment() {
         val current = isClickAllowed
         if (isClickAllowed) {
             isClickAllowed = false
-            viewLifecycleOwner.lifecycleScope.launch {
+            lifecycleScope.launch {
                 delay(CLICK_DEBOUNCE_DELAY_MILLIS)
                 isClickAllowed = true
             }

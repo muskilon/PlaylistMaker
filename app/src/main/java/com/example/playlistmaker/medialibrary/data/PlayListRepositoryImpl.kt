@@ -23,7 +23,7 @@ class PlayListRepositoryImpl(
         val newPlayList = playList.copy(
             trackCount = playList.trackCount + 1, tracks = playList.tracks
         )
-        appDatabase.playListsDao().updatePlayList(playListDbConvertor.map(newPlayList))
+        updateSinglePlayList(newPlayList)
         appDatabase.playListsDao().addTrackToPlayListStorage(track)
         updatePlayListsList()
         updateAllPlayListsTracks()
@@ -34,7 +34,7 @@ class PlayListRepositoryImpl(
         val newPlayList = playList.copy(
             trackCount = playList.trackCount - 1, tracks = playList.tracks
         )
-        appDatabase.playListsDao().updatePlayList(playListDbConvertor.map(newPlayList))
+        updateSinglePlayList(newPlayList)
 
         var tempTrackId = trackId
         playListStorage.forEach { otherPlayList ->
@@ -68,6 +68,10 @@ class PlayListRepositoryImpl(
             playListStorage.clear()
             playListStorage.addAll(result)
         }
+    }
+
+    override suspend fun updateSinglePlayList(playList: PlayList) {
+        appDatabase.playListsDao().updatePlayList(playListDbConvertor.map(playList))
     }
 
     override suspend fun updateAllPlayListsTracks() {
