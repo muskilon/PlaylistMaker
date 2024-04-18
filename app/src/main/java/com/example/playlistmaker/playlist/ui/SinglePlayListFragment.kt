@@ -109,10 +109,13 @@ class SinglePlayListFragment : Fragment() {
                 playListTracks.clear()
                 playListTracks.addAll(state.currentPlayListTracks)
                 tracksResultsAdapter.notifyDataSetChanged()
+                binding.playListTracksRecycler.isVisible = true
+                binding.emptyPlaylist.isVisible = false
             } else {
                 playListTracks.clear()
                 tracksResultsAdapter.notifyDataSetChanged()
-                //TODO показывать заглушку
+                binding.playListTracksRecycler.isVisible = false
+                binding.emptyPlaylist.isVisible = true
             }
             setValues(state)
             setValuesForSummary(state)

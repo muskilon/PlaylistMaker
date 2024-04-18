@@ -133,6 +133,33 @@
             android:layout_marginBottom="12dp"
             android:background="@drawable/rounder" />
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/empty_playlist">
+
+            <TextView
+                android:id="@+id/no_tracks_playlist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center_horizontal"
+                android:fontFamily="@font/ys_display_regular"
+                android:textSize="@dimen/font_size_16"
+                android:textColor="?attr/black_ypDayWhite_ypNight"
+                android:text="@string/there_is_no_tracks" />
+
+            <include
+                android:id="@+id/empty_playlist_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                layout="@layout/sad_note"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center_horizontal" />
+        </LinearLayout>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/playListTracksRecycler"
             android:layout_width="match_parent"
