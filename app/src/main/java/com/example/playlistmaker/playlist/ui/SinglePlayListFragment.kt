@@ -30,6 +30,7 @@ class SinglePlayListFragment : Fragment() {
     private var isClickAllowed = true
     private var bundleForEdit = bundleOf()
     private val locationOfShareIcon = intArrayOf(0, 0)
+    private val locationOfTitle = intArrayOf(0, 0)
 
 
     override fun onCreateView(
@@ -61,11 +62,11 @@ class SinglePlayListFragment : Fragment() {
                     BottomSheetBehavior.STATE_EXPANDED -> {}
 
                     BottomSheetBehavior.STATE_COLLAPSED -> {
-                        binding.playlistBottomSheet.isVisible = false
+                        binding.overlay.isVisible = true
                     }
 
                     BottomSheetBehavior.STATE_HIDDEN -> {
-                        binding.playlistBottomSheet.isVisible = true
+                        binding.overlay.isVisible = false
                     }
 
                     else -> {
@@ -131,8 +132,13 @@ class SinglePlayListFragment : Fragment() {
         lifecycleScope.launch {
             delay(100)
             binding.share.getLocationOnScreen(locationOfShareIcon)
+            binding.title.getLocationOnScreen(locationOfTitle)
             playListBottomSheetBehavior.setPeekHeight(
                 screenHeight - locationOfShareIcon[1] - 50,
+                true
+            )
+            bottomSheetPlayListMenuBehavior.setPeekHeight(
+                screenHeight - locationOfTitle[1] - 30,
                 true
             )
         }

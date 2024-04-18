@@ -142,6 +142,13 @@
 
     </LinearLayout>
 
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#99000000"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@+id/bottom_sheet_playlist_menu"
         android:layout_width="match_parent"
@@ -170,8 +177,9 @@
         <TextView
             android:id="@+id/share_playlist_from_menu"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="30dp"
+            android:layout_height="61dp"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp"
             android:fontFamily="@font/ys_display_regular"
             android:textSize="@dimen/font_size_16"
             android:textColor="?attr/black_ypDayWhite_ypNight"
@@ -180,8 +188,8 @@
         <TextView
             android:id="@+id/edit_information"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="30dp"
+            android:layout_height="61dp"
+            android:gravity="center_vertical"
             android:fontFamily="@font/ys_display_regular"
             android:textSize="@dimen/font_size_16"
             android:textColor="?attr/black_ypDayWhite_ypNight"
@@ -190,7 +198,8 @@
         <TextView
             android:id="@+id/delete_playlist"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="61dp"
+            android:gravity="center_vertical"
             android:fontFamily="@font/ys_display_regular"
             android:textSize="@dimen/font_size_16"
             android:textColor="?attr/black_ypDayWhite_ypNight"
