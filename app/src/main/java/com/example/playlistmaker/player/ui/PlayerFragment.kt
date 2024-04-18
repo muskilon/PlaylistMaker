@@ -12,9 +12,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.MyApplication
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.medialibrary.domain.PlayList
+import com.example.playlistmaker.player.domain.PlayStatus
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
@@ -106,32 +108,7 @@ class PlayerFragment : Fragment() {
         }
 
         viewModel.getPlayStatus().observe(viewLifecycleOwner) { status ->
-            binding.timeElapsed.text = status.timeElapsed
-            binding.playButton.isClickable = status.playButtonClickableState
-            binding.playButton.setImageResource(PlayerButtons.valueOf(status.playButtonImage).button)
-            if (status.isFavorites) {
-                binding.addToFavorites.setImageResource(R.drawable.favorite_button_on)
-            } else {
-                binding.addToFavorites.setImageResource(R.drawable.favorite_button_off)
-            }
-
-            Glide.with(this)
-                .load(status.currentTrack.artworkUrl512)
-                .placeholder(R.drawable.placeholder_big)
-                .transform(
-                    RoundedCorners(
-                        view.resources.getDimension(R.dimen.player_album_cover_corner_radius)
-                            .toInt()
-                    )
-                )
-                .into(binding.albumCover)
-            binding.trackName.text = status.currentTrack.trackName
-            binding.artistName.text = status.currentTrack.artistName
-            binding.trackDuration.text = status.currentTrack.trackTime
-            binding.album.text = status.currentTrack.collectionName
-            binding.year.text = status.currentTrack.year
-            binding.genre.text = status.currentTrack.primaryGenreName
-            binding.country.text = status.currentTrack.country
+            setValues(status)
         }
 
         binding.playButton.setOnClickListener { viewModel.playbackControl() }
@@ -172,6 +149,35 @@ class PlayerFragment : Fragment() {
             }
         }
         return current
+    }
+
+    private fun setValues(status: PlayStatus) {
+        if (status.isFavorites) {
+            binding.addToFavorites.setImageResource(R.drawable.favorite_button_on)
+        } else {
+            binding.addToFavorites.setImageResource(R.drawable.favorite_button_off)
+        }
+        binding.timeElapsed.text = status.timeElapsed
+        binding.playButton.isClickable = status.playButtonClickableState
+        binding.playButton.setImageResource(PlayerButtons.valueOf(status.playButtonImage).button)
+        binding.trackName.text = status.currentTrack.trackName
+        binding.artistName.text = status.currentTrack.artistName
+        binding.trackDuration.text = status.currentTrack.trackTime
+        binding.album.text = status.currentTrack.collectionName
+        binding.year.text = status.currentTrack.year
+        binding.genre.text = status.currentTrack.primaryGenreName
+        binding.country.text = status.currentTrack.country
+        Glide.with(this)
+            .load(status.currentTrack.artworkUrl512)
+            .placeholder(R.drawable.placeholder_big)
+            .transform(
+                RoundedCorners(
+                    MyApplication.getAppResources()
+                        .getDimension(R.dimen.player_album_cover_corner_radius)
+                        .toInt()
+                )
+            )
+            .into(binding.albumCover)
     }
 
     fun exit() {
