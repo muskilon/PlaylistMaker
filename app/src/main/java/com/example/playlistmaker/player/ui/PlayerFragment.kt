@@ -73,7 +73,7 @@ class PlayerFragment : Fragment() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
 
-        bottomSheetAdapter = BottomSheetAdapter(playLists) { playList, position ->
+        bottomSheetAdapter = BottomSheetAdapter(playLists) { playList, _ ->
             if (viewModel.addTrackToPlayList(playList)) {
                 Snackbar.make(
                     view,

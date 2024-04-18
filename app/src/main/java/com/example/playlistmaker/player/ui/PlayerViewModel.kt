@@ -163,13 +163,13 @@ class PlayerViewModel(
     fun getPlayLists(): LiveData<List<PlayList>> = livePlayLists
 
     fun addTrackToPlayList(playList: PlayList): Boolean {
-        if (playList.tracks.tracks.contains(currentTrack.trackId)) {
-            return false
+        return if (playList.tracks.tracks.contains(currentTrack.trackId)) {
+            false
         } else {
             viewModelScope.launch {
                 playListInteractor.addTrackToPlayList(playList, currentTrack)
             }
-            return true
+            true
         }
     }
 
