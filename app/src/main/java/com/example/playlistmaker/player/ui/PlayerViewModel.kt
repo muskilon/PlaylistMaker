@@ -58,6 +58,7 @@ class PlayerViewModel(
         preparePlayer()
         Log.d("CURRENT_TRACK", currentTrack.artistName)
     }
+
     private fun getCurrentPlayStatus(): PlayStatus {
         return livePlayStatus.value ?: PlayStatus(
             timeElapsed = timerZero,

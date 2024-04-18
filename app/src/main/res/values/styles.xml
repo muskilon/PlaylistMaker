@@ -16,6 +16,7 @@
 
     <style name="MyAlertDialog.Title" parent="@style/MaterialAlertDialog.Material3.Title.Text">
         <item name="android:textColor">@color/yp_black</item>
+        <item name="android:textSize">18sp</item>
     </style>
 
     <style name="MyAlertDialog.Body" parent="@style/MaterialAlertDialog.Material3.Body.Text">

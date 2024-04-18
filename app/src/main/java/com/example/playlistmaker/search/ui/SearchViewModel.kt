@@ -34,31 +34,31 @@ class SearchViewModel(
     }
 
     private fun processResult(foundSongs: Resource<List<Track>>) {
-            when (foundSongs) {
-                is Resource.ConnectionError -> liveState.postValue(
+        when (foundSongs) {
+            is Resource.ConnectionError -> liveState.postValue(
+                SearchScreenState.Error(
+                    SearchState.NO_CONNECTIONS,
+                )
+            )
+
+            is Resource.NotFound -> liveState.postValue(SearchScreenState.Error(SearchState.NOT_FOUND))
+            is Resource.Data -> {
+                if (foundSongs.value.isEmpty()) liveState.postValue(
                     SearchScreenState.Error(
-                        SearchState.NO_CONNECTIONS,
+                        SearchState.NOT_FOUND,
                     )
                 )
-
-                is Resource.NotFound -> liveState.postValue(SearchScreenState.Error(SearchState.NOT_FOUND))
-                is Resource.Data -> {
-                    if (foundSongs.value.isEmpty()) liveState.postValue(
-                        SearchScreenState.Error(
-                            SearchState.NOT_FOUND,
+                else {
+                    tracksInteractor.setSongsStorage(foundSongs.value)
+                    liveState.postValue(
+                        SearchScreenState.Content(
+                            tracksInteractor.getSongsStorage().toList(),
                         )
                     )
-                    else {
-                        tracksInteractor.setSongsStorage(foundSongs.value)
-                        liveState.postValue(
-                            SearchScreenState.Content(
-                                tracksInteractor.getSongsStorage().toList(),
-                            )
-                        )
-                    }
                 }
             }
         }
+    }
 
     fun searchDebounce(term: String) {
 

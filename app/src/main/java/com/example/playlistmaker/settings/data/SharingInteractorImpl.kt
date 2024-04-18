@@ -10,6 +10,7 @@ class SharingInteractorImpl(
     override fun sharePlaylist(message: String) {
         externalNavigator.shareLink(message)
     }
+
     override fun shareApp() {
         externalNavigator.shareLink(getShareAppLink())
     }

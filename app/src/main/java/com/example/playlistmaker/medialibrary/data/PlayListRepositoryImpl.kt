@@ -112,6 +112,7 @@ class PlayListRepositoryImpl(
                 null -> {
                     Unit
                 }
+
                 else -> singlePlayListTracks.add(tempTrack)
             }
         }

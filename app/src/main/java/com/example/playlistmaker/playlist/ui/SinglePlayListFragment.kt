@@ -18,6 +18,7 @@ import com.example.playlistmaker.playlist.domain.SinglePlayListState
 import com.example.playlistmaker.search.domain.Track
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -48,8 +49,7 @@ class SinglePlayListFragment : Fragment() {
 
         viewModel.getPlayList(requireArguments().getLong(PLAYLIST))
 
-        val playListBottomSheetBehavior =
-            BottomSheetBehavior.from(binding.playlistBottomSheet)
+        val playListBottomSheetBehavior = BottomSheetBehavior.from(binding.playlistBottomSheet)
 
         val bottomSheetPlayListMenuBehavior =
             BottomSheetBehavior.from(binding.bottomSheetPlaylistMenu)
@@ -82,13 +82,25 @@ class SinglePlayListFragment : Fragment() {
             bottomSheetPlayListMenuBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
         binding.deletePlaylist.setOnClickListener {
+            bottomSheetPlayListMenuBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             deletePlayListDialog()
         }
         binding.share.setOnClickListener {
-            viewModel.sharePlayList()
+            if (playListTracks.isNotEmpty()) viewModel.sharePlayList()
+            else Snackbar.make(
+                view, getString(R.string.there_is_tracks_to_share), Snackbar.LENGTH_LONG
+            ).show()
         }
         binding.sharePlaylistFromMenu.setOnClickListener {
-            viewModel.sharePlayList()
+            if (playListTracks.isNotEmpty()) {
+                viewModel.sharePlayList()
+                bottomSheetPlayListMenuBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            } else {
+                Snackbar.make(
+                    view, getString(R.string.there_is_tracks_to_share), Snackbar.LENGTH_LONG
+                ).show()
+                bottomSheetPlayListMenuBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            }
         }
         binding.editInformation.setOnClickListener {
             findNavController().navigate(
@@ -137,12 +149,10 @@ class SinglePlayListFragment : Fragment() {
             binding.share.getLocationOnScreen(locationOfShareIcon)
             binding.title.getLocationOnScreen(locationOfTitle)
             playListBottomSheetBehavior.setPeekHeight(
-                screenHeight - locationOfShareIcon[1] - 50,
-                true
+                screenHeight - locationOfShareIcon[1] - 50, true
             )
             bottomSheetPlayListMenuBehavior.setPeekHeight(
-                screenHeight - locationOfTitle[1] - 30,
-                true
+                screenHeight - locationOfTitle[1] - 30, true
             )
         }
     }
@@ -176,20 +186,18 @@ class SinglePlayListFragment : Fragment() {
 
     private fun onLongClick(trackId: String) {
         MaterialAlertDialogBuilder(requireContext()).setTitle(getString(R.string.do_you_want_delete_track))
-            .setNegativeButton(getString(R.string.no)) { _, _ -> }
-            .setPositiveButton(getString(R.string.yes)) { _, _ ->
+            .setMessage("Вы уверены, что хотите удалить трек из плейлиста?")
+            .setNegativeButton(getString(R.string.play_list_dialog_negative)) { _, _ -> }
+            .setPositiveButton(getString(R.string.delete)) { _, _ ->
                 viewModel.deleteTrackFromPlayList(trackId)
             }.show()
     }
 
     private fun deletePlayListDialog() {
-        MaterialAlertDialogBuilder(requireContext()).setTitle(
-            getString(
-                R.string.do_you_want_delete_playlist,
-                binding.title.text
-            )
-        ).setNegativeButton(getString(R.string.no)) { _, _ -> }
-            .setPositiveButton(getString(R.string.yes)) { _, _ ->
+        MaterialAlertDialogBuilder(requireContext()).setMessage("Вы уверены, что хотите удалить этот плейлист?")
+            .setTitle(getString(R.string.delete_playlist))
+            .setNegativeButton(getString(R.string.play_list_dialog_negative)) { _, _ -> }
+            .setPositiveButton(getString(R.string.delete)) { _, _ ->
                 viewModel.deletePlayList()
                 exit()
             }.show()
@@ -199,10 +207,10 @@ class SinglePlayListFragment : Fragment() {
         binding.length.text = MyApplication.getAppResources()
             .getQuantityString(R.plurals.minutes_plurals, state.totalTime, state.totalTime)
         binding.trackCount.text = MyApplication.getAppResources().getQuantityString(
-                R.plurals.track_plurals,
-                state.currentPlayList.trackCount,
-                state.currentPlayList.trackCount
-            )
+            R.plurals.track_plurals,
+            state.currentPlayList.trackCount,
+            state.currentPlayList.trackCount
+        )
         binding.description.isVisible = state.currentPlayList.description?.let { true } ?: false
         binding.description.text = state.currentPlayList.description
         binding.title.text = state.currentPlayList.title

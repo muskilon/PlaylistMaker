@@ -15,7 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewPlayListBinding
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -156,21 +155,7 @@ class EditPlayListFragment : Fragment() {
     }
 
     private fun exit() {
-        if (title.isNotEmpty() || description.isNotEmpty() || newUri != null) {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.edit_play_list_dialog_title))
-                .setMessage(getString(R.string.play_list_dialog_message))
-                .setNegativeButton(getString(R.string.play_list_dialog_negative)) { _, _ ->
-
-                }
-                .setPositiveButton(getString(R.string.play_list_dialog_positive)) { _, _ ->
-                    findNavController().navigate(
-                        R.id.action_editPlayListFragment_to_singlePlayListFragment,
-                        bundleOf(PLAYLIST to playListId)
-                    )
-                }
-                .show()
-        } else findNavController().navigate(
+        findNavController().navigate(
             R.id.action_editPlayListFragment_to_singlePlayListFragment,
             bundleOf(PLAYLIST to playListId)
         )

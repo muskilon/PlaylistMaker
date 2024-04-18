@@ -85,6 +85,7 @@ class SearchFragment : Fragment(), RenderState {
                 is SearchScreenState.Error -> {
                     render(state.error)
                 }
+
                 is SearchScreenState.Content -> {
                     songs.clear()
                     songs.addAll(state.songs)

@@ -12,6 +12,7 @@ class TracksInteractorImpl(private val repository: TrackRepository) : TracksInte
     override fun getSongsHistory(): MutableList<Track> {
         return repository.getSongsHistory()
     }
+
     override fun readHistory(): SearchHistory {
         return repository.readHistory()
     }
