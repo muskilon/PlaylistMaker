@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
-import androidx.core.view.doOnNextLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -208,15 +207,6 @@ class SinglePlayListFragment : Fragment() {
         binding.title.text = state.currentPlayList.title
         state.currentPlayList.cover?.let { binding.cover.setImageURI(it) }
             ?: binding.cover.setImageResource(R.drawable.placeholder)
-
-        binding.shareLine.doOnNextLayout {
-            playListBottomSheetBehavior.setPeekHeight(
-                screenHeight - binding.shareLine.bottom, true
-            )
-            bottomSheetPlayListMenuBehavior.setPeekHeight(
-                screenHeight - binding.titleLine.bottom, true
-            )
-        }
     }
 
     private fun setValuesForSummary(state: SinglePlayListState) {
