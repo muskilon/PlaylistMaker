@@ -27,8 +27,10 @@ class FavoritesRepositoryImpl(
 
     override suspend fun updateFavorites() {
         getFavoritesFromDb().collect { result ->
-            favoritesStorage.clear()
-            favoritesStorage.addAll(result)
+            with(favoritesStorage) {
+                clear()
+                addAll(result)
+            }
         }
     }
 

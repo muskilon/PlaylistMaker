@@ -55,6 +55,8 @@
     <string name="there_is_no_tracks">Тут нет ни одного трека</string>
     <string name="there_is_tracks_to_share">В этом плейлисте нет списка треков, которым можно поделиться</string>
     <string name="delete">Удалить</string>
+    <string name="are_you_sure_to_delete_track">Вы уверены, что хотите удалить трек из плейлиста?</string>
+    <string name="are_you_sure_to_delete_playlist">Вы уверены, что хотите удалить этот плейлист?</string>
     <plurals name="track_plurals">
         <item quantity="zero">нет треков</item>
         <item quantity="one">%1$d трек</item>

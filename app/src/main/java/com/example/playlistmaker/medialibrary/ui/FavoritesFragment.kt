@@ -50,8 +50,10 @@ class FavoritesFragment : Fragment() {
 
         viewModel.getSongs().observe(viewLifecycleOwner) { favorites ->
             if (favorites.isNotEmpty()) {
-                songs.clear()
-                songs.addAll(favorites)
+                with(songs) {
+                    clear()
+                    addAll(favorites)
+                }
                 showFavorites()
             } else {
                 songs.clear()

@@ -39,12 +39,10 @@ open class NewPlayListFragment : Fragment() {
 
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-                if (uri != null) {
+                uri?.let {
                     binding.playListCover.setImageURI(uri)
                     binding.imageContainer.foreground = null
                     newUri = uri
-                } else {
-                    Unit
                 }
             }
 

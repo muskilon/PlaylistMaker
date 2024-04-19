@@ -17,9 +17,7 @@ open class NewPlayListViewModel(
     open fun createPlayList(title: String, description: String, uri: Uri?) {
         viewModelScope.launch {
             var newUri = uri
-            if (uri != null) {
-                newUri = filesInteractor.saveFile(uri)
-            }
+            uri?.let { newUri = filesInteractor.saveFile(it) }
             playListInteractor.addPlayList(
                 PlayList(
                     title = title,

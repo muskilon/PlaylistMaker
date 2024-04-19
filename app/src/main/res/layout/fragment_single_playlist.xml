@@ -45,6 +45,14 @@
             android:textColor="@color/yp_black"
             tools:text="Best songs 2022" />
 
+        <View
+            android:id="@+id/titleLine"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            android:layout_marginTop="4dp" />
+
         <TextView
             android:id="@+id/description"
             android:layout_width="wrap_content"
@@ -113,6 +121,14 @@
             android:src="@drawable/menu_dots"
             app:tint="@color/yp_black" />
 
+        <View
+            android:id="@+id/shareLine"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/share"
+            android:layout_marginTop="23dp" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout
@@ -123,7 +139,8 @@
         android:orientation="vertical"
         app:behavior_hideable="false"
         app:behavior_peekHeight="207dp"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        tools:visibility="gone">
 
         <View
             android:layout_width="40dp"
@@ -185,7 +202,8 @@
         android:orientation="vertical"
         app:behavior_hideable="true"
         app:behavior_peekHeight="250dp"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+        tools:visibility="gone">
 
         <View
             android:layout_width="40dp"

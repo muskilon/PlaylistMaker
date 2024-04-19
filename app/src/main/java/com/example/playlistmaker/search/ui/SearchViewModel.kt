@@ -98,14 +98,18 @@ class SearchViewModel(
             }
 
             songsHistory.contains(track) -> {
-                songsHistory.remove(track)
-                songsHistory.add(0, track)
+                with(songsHistory) {
+                    remove(track)
+                    add(0, track)
+                }
                 tracksInteractor.writeHistory(SearchHistory(songsHistory.toList()))
             }
 
             songsHistory.size == HISTORY_SIZE -> {
-                songsHistory.removeLast()
-                songsHistory.add(0, track)
+                with(songsHistory) {
+                    removeLast()
+                    add(0, track)
+                }
                 tracksInteractor.writeHistory(SearchHistory(songsHistory.toList()))
             }
 

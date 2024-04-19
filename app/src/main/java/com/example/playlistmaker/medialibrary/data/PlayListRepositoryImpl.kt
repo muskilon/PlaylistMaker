@@ -65,8 +65,10 @@ class PlayListRepositoryImpl(
 
     override suspend fun updatePlayListsList() {
         getPlayListsFromDb().collect { result ->
-            playListStorage.clear()
-            playListStorage.addAll(result)
+            with(playListStorage) {
+                clear()
+                addAll(result)
+            }
         }
     }
 
@@ -76,8 +78,10 @@ class PlayListRepositoryImpl(
 
     override suspend fun updateAllPlayListsTracks() {
         getTracksFromDb().collect { result ->
-            playListTracksStorage.clear()
-            playListTracksStorage.addAll(result)
+            with(playListTracksStorage) {
+                clear()
+                addAll(result)
+            }
         }
     }
 
@@ -91,7 +95,6 @@ class PlayListRepositoryImpl(
                     playListStorage.forEach { otherPlayList ->
                         if (otherPlayList.tracks.tracks.contains(trackId)) {
                             tempPlayList.remove(trackId)
-//                            if(tempPlayList.isEmpty()) return@trackId
                             return@playLists
                         }
                     }

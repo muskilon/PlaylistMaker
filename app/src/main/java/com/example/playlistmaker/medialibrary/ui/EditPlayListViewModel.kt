@@ -20,8 +20,8 @@ class EditPlayListViewModel(
             var newUri = uri
             if (uri != null && uri != currentPlayList.value?.cover) {
                 newUri = filesInteractor.saveFile(uri)
-                currentPlayList.value!!.cover?.let {
-                    filesInteractor.deletePlayListCover(it)
+                currentPlayList.value?.let { playList ->
+                    playList.cover?.let { filesInteractor.deletePlayListCover(it) }
                 }
             }
             playListInteractor.updateSinglePlayList(

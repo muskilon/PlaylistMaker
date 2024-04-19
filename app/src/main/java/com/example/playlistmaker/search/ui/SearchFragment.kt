@@ -48,8 +48,10 @@ class SearchFragment : Fragment(), RenderState {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.getSongsHistory().observe(viewLifecycleOwner) { liveSongsHistory ->
-            songsHistory.clear()
-            songsHistory.addAll(liveSongsHistory)
+            with(songsHistory) {
+                clear()
+                addAll(liveSongsHistory)
+            }
         }
 
         val imm =
@@ -87,8 +89,10 @@ class SearchFragment : Fragment(), RenderState {
                 }
 
                 is SearchScreenState.Content -> {
-                    songs.clear()
-                    songs.addAll(state.songs)
+                    with(songs) {
+                        clear()
+                        addAll(state.songs)
+                    }
                     render(SearchState.SEARCH)
                 }
             }
@@ -193,9 +197,9 @@ class SearchFragment : Fragment(), RenderState {
         searchResultsAdapter.notifyDataSetChanged()
         binding.notFoundPlaceholder.notFoundPlaceholder.isVisible = false
         binding.noConnectionPlaceholder.noConnectionPlaceholder.isVisible = false
-        binding.searchResultsRecyclerView.isVisible = true
         binding.youSearchedIncl.searchHistory.isVisible = false
         binding.progressBar.isVisible = false
+        binding.searchResultsRecyclerView.isVisible = true
     }
 
     @SuppressLint("NotifyDataSetChanged")

@@ -1,6 +1,5 @@
 package com.example.playlistmaker.player.ui
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -56,7 +55,6 @@ class PlayerViewModel(
             playButtonImage = PLAY
         )
         preparePlayer()
-        Log.d("CURRENT_TRACK", currentTrack.artistName)
     }
 
     private fun getCurrentPlayStatus(): PlayStatus {
@@ -157,7 +155,6 @@ class PlayerViewModel(
         viewModelScope.launch {
             playListInteractor.updatePlayLists()
             livePlayLists.postValue(playListInteractor.getPlayLists())
-            Log.d("PLAYLISTS", playListInteractor.getPlayLists().size.toString())
         }
     }
 

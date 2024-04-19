@@ -39,8 +39,10 @@ class PlaylistsFragment : Fragment() {
         viewModel.updatePlayLists()
         viewModel.getPlayLists().observe(viewLifecycleOwner) { newPlayLists ->
             if (newPlayLists.isNotEmpty()) {
-                playLists.clear()
-                playLists.addAll(newPlayLists)
+                with(playLists) {
+                    clear()
+                    addAll(newPlayLists)
+                }
                 showPlayLists()
             } else {
                 playLists.clear()

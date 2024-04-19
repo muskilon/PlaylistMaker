@@ -10,16 +10,16 @@ class MusicPlayerImpl(
 ) : MusicPlayer {
     private var listener: OnStateChangeListener? = null
     override fun preparePlayer(source: String) {
-
-        mediaPlayer.reset()
-
-        mediaPlayer.setDataSource(source)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
-            listener?.onChange(MusicPlayerState.STATE_PREPARED)
-        }
-        mediaPlayer.setOnCompletionListener {
-            listener?.onChange(MusicPlayerState.STATE_END_OF_SONG)
+        with(mediaPlayer) {
+            reset()
+            setDataSource(source)
+            prepareAsync()
+            setOnPreparedListener {
+                listener?.onChange(MusicPlayerState.STATE_PREPARED)
+            }
+            setOnCompletionListener {
+                listener?.onChange(MusicPlayerState.STATE_END_OF_SONG)
+            }
         }
     }
 
