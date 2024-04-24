@@ -9,13 +9,14 @@ import com.example.playlistmaker.databinding.FragmentSettingsBinding
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 class SettingsFragment : Fragment() {
-    private lateinit var binding: FragmentSettingsBinding
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
     private val viewModel by activityViewModel<SettingsViewModel>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -44,5 +45,10 @@ class SettingsFragment : Fragment() {
         viewModel.getThemeState().observe(viewLifecycleOwner) {
             binding.themeSwitch.isChecked = it
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

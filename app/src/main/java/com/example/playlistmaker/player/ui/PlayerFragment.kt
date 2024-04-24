@@ -25,7 +25,8 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerFragment : Fragment() {
 
-    private lateinit var binding: FragmentPlayerBinding
+    private var _binding: FragmentPlayerBinding? = null
+    private val binding get() = _binding!!
     private val viewModel by viewModel<PlayerViewModel>()
     private var isClickAllowed = true
     private lateinit var bottomSheetAdapter: BottomSheetAdapter
@@ -34,7 +35,7 @@ class PlayerFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentPlayerBinding.inflate(inflater, container, false)
+        _binding = FragmentPlayerBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -43,8 +44,10 @@ class PlayerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (savedInstanceState == null) {
-            viewModel.setListener()
-            viewModel.preparePlayer()
+            with(viewModel) {
+                setListener()
+                preparePlayer()
+            }
         }
 
         val bottomSheetBehavior = BottomSheetBehavior.from(binding.playerBottomSheet)
@@ -100,16 +103,16 @@ class PlayerFragment : Fragment() {
                 playLists.clear()
                 binding.playListsRecycler.isVisible = false
             } else {
-                playLists.clear()
-                playLists.addAll(lifePlayLists)
+                with(playLists) {
+                    clear()
+                    addAll(lifePlayLists)
+                }
                 bottomSheetAdapter.notifyDataSetChanged()
                 binding.playListsRecycler.isVisible = true
             }
         }
 
-        viewModel.getPlayStatus().observe(viewLifecycleOwner) { status ->
-            setValues(status)
-        }
+        viewModel.getPlayStatus().observe(viewLifecycleOwner) { status -> setValues(status) }
 
         binding.playButton.setOnClickListener { viewModel.playbackControl() }
 
@@ -122,9 +125,8 @@ class PlayerFragment : Fragment() {
             if (clickDebounce()) viewModel.addToFavorites()
         }
 
-        binding.arrowBack.setOnClickListener {
-            exit()
-        }
+        binding.arrowBack.setOnClickListener { exit() }
+
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
@@ -193,6 +195,7 @@ class PlayerFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.pausePlayer()
+        _binding = null
     }
 
     override fun onResume() {

@@ -19,7 +19,9 @@ import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 open class NewPlayListFragment : Fragment() {
-    private lateinit var binding: FragmentNewPlayListBinding
+    private var _binding: FragmentNewPlayListBinding? = null
+    private val binding get() = _binding!!
+
     private val viewModel by viewModel<NewPlayListViewModel>()
 
     private var title: String = EMPTY
@@ -30,7 +32,7 @@ open class NewPlayListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentNewPlayListBinding.inflate(inflater, container, false)
+        _binding = FragmentNewPlayListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -148,6 +150,11 @@ open class NewPlayListFragment : Fragment() {
                 }
                 .show()
         } else findNavController().navigateUp()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     companion object {

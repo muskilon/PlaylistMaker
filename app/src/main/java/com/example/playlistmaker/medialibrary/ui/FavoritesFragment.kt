@@ -18,7 +18,8 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavoritesFragment : Fragment() {
-    private lateinit var binding: FragmentFavoritesBinding
+    private var _binding: FragmentFavoritesBinding? = null
+    private val binding get() = _binding!!
     private val viewModel by viewModel<FavoritesViewModel>()
 
     private lateinit var favoritesAdapter: SearchResultAdapter
@@ -29,7 +30,7 @@ class FavoritesFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentFavoritesBinding.inflate(inflater, container, false)
+        _binding = FragmentFavoritesBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -89,6 +90,11 @@ class FavoritesFragment : Fragment() {
             }
         }
         return current
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     companion object {

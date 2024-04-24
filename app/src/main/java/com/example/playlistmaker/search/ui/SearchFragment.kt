@@ -25,7 +25,9 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment(), RenderState {
-    private lateinit var binding: FragmentSearchBinding
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
+
     private val viewModel by viewModel<SearchViewModel>()
     private var searchInput: String = EMPTY
 
@@ -39,7 +41,7 @@ class SearchFragment : Fragment(), RenderState {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -87,7 +89,6 @@ class SearchFragment : Fragment(), RenderState {
                 is SearchScreenState.Error -> {
                     render(state.error)
                 }
-
                 is SearchScreenState.Content -> {
                     with(songs) {
                         clear()
@@ -100,9 +101,7 @@ class SearchFragment : Fragment(), RenderState {
 
         viewModel.getSongsHistoryFromStorage()
 
-        binding.youSearchedIncl.clearHistoryButton.setOnClickListener {
-            viewModel.clearHistory()
-        }
+        binding.youSearchedIncl.clearHistoryButton.setOnClickListener { viewModel.clearHistory() }
 
         binding.noConnectionPlaceholder.refreshButton.setOnClickListener {
             viewModel.searchSongs(searchInput)
@@ -243,6 +242,11 @@ class SearchFragment : Fragment(), RenderState {
             SearchState.NO_CONNECTIONS -> showNetworkError()
             SearchState.PROGRESS_BAR -> showProgressBar()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 

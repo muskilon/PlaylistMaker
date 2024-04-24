@@ -26,7 +26,8 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SinglePlayListFragment : Fragment() {
-    private lateinit var binding: FragmentSinglePlaylistBinding
+    private var _binding: FragmentSinglePlaylistBinding? = null
+    private val binding get() = _binding!!
     private lateinit var tracksResultsAdapter: SinglePlayListAdapter
     private val viewModel by viewModel<SinglePlayListViewModel>()
     private val playListTracks = ArrayList<Track>()
@@ -39,7 +40,7 @@ class SinglePlayListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSinglePlaylistBinding.inflate(inflater, container, false)
+        _binding = FragmentSinglePlaylistBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -243,6 +244,11 @@ class SinglePlayListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         viewModel.getPlayList(requireArguments().getLong(PLAYLIST))
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     companion object {

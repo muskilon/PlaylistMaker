@@ -19,7 +19,8 @@ import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class EditPlayListFragment : Fragment() {
-    private lateinit var binding: FragmentNewPlayListBinding
+    private var _binding: FragmentNewPlayListBinding? = null
+    private val binding get() = _binding!!
     private val viewModel by viewModel<EditPlayListViewModel>()
 
     private var title: String = EMPTY
@@ -31,7 +32,7 @@ class EditPlayListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentNewPlayListBinding.inflate(inflater, container, false)
+        _binding = FragmentNewPlayListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -159,6 +160,11 @@ class EditPlayListFragment : Fragment() {
             R.id.action_editPlayListFragment_to_singlePlayListFragment,
             bundleOf(PLAYLIST to playListId)
         )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
     companion object {
