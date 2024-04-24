@@ -1,6 +1,5 @@
 package com.example.playlistmaker.medialibrary.ui
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentFavoritesBinding
-import com.example.playlistmaker.search.domain.Track
 import com.example.playlistmaker.search.ui.SearchResultAdapter
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -23,7 +21,6 @@ class FavoritesFragment : Fragment() {
     private val viewModel by viewModel<FavoritesViewModel>()
 
     private lateinit var favoritesAdapter: SearchResultAdapter
-    private val songs = ArrayList<Track>()
     private var isClickAllowed = true
 
     override fun onCreateView(
@@ -39,7 +36,20 @@ class FavoritesFragment : Fragment() {
 
         viewModel.getFavorites()
 
-        favoritesAdapter = SearchResultAdapter(songs) { track ->
+        setAdapter()
+
+        viewModel.getSongs().observe(viewLifecycleOwner) { favorites ->
+            if (favorites.isNotEmpty()) {
+                favoritesAdapter.setData(favorites)
+                showFavorites()
+            } else {
+                emptyFavorites()
+            }
+        }
+    }
+
+    private fun setAdapter() {
+        favoritesAdapter = SearchResultAdapter { track ->
             if (clickDebounce()) {
                 viewModel.onTrackClick(track)
                 findNavController().navigate(
@@ -48,24 +58,9 @@ class FavoritesFragment : Fragment() {
             }
         }
         binding.favoritesRecyclerView.adapter = favoritesAdapter
-
-        viewModel.getSongs().observe(viewLifecycleOwner) { favorites ->
-            if (favorites.isNotEmpty()) {
-                with(songs) {
-                    clear()
-                    addAll(favorites)
-                }
-                showFavorites()
-            } else {
-                songs.clear()
-                emptyFavorites()
-            }
-        }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun showFavorites() {
-        favoritesAdapter.notifyDataSetChanged()
         binding.emptyMedialibrary.emptyMedialibrary.isVisible = false
         binding.favoritesRecyclerView.isVisible = true
     }

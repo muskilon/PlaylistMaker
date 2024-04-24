@@ -10,21 +10,23 @@ import com.example.playlistmaker.search.domain.TracksInteractor
 import kotlinx.coroutines.launch
 
 class FavoritesViewModel(
-    private val favoritesInteractor: FavoritesInteractor,
-    private val tracksInteractor: TracksInteractor
+    private val favoritesInterActor: FavoritesInteractor,
+    private val tracksInterActor: TracksInteractor
 ) : ViewModel() {
     private val liveSongs = MutableLiveData<List<Track>>()
 
     fun getFavorites() {
         viewModelScope.launch {
-            favoritesInteractor.updateFavorites()
-            liveSongs.postValue(favoritesInteractor.getFavorites())
+            favoritesInterActor.updateFavorites()
+            if (favoritesInterActor.getFavorites() != liveSongs.value) {
+                liveSongs.postValue(favoritesInterActor.getFavorites())
+            }
         }
     }
 
     fun getSongs(): LiveData<List<Track>> = liveSongs
 
     fun onTrackClick(track: Track) {
-        tracksInteractor.setCurrentTrack(track)
+        tracksInterActor.setCurrentTrack(track)
     }
 }
