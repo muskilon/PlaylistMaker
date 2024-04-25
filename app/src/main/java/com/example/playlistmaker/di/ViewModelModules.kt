@@ -14,16 +14,16 @@ import org.koin.dsl.module
 val viewModelModules = module {
     viewModel {
         PlayerViewModel(
-            currentTrackInteractor = get(),
+            currentTrackInterActor = get(),
             mplayer = get(),
-            favoritesInteractor = get(),
-            playListInteractor = get()
+            favoritesInterActor = get(),
+            playListInterActor = get()
         )
     }
 
-    viewModel { SearchViewModel(tracksInteractor = get()) }
+    viewModel { SearchViewModel(tracksInterActor = get()) }
 
-    viewModel { SettingsViewModel(sharingInteractor = get(), settingsInteractor = get()) }
+    viewModel { SettingsViewModel(sharingInterActor = get(), settingsInterActor = get()) }
 
     viewModel { FavoritesViewModel(get(), get()) }
 

@@ -2,11 +2,11 @@ package com.example.playlistmaker.settings.data
 
 import com.example.playlistmaker.MyApplication
 import com.example.playlistmaker.R
-import com.example.playlistmaker.settings.domain.SharingInteractor
+import com.example.playlistmaker.settings.domain.SharingInterActor
 
-class SharingInteractorImpl(
+class SharingInterActorImpl(
     private val externalNavigator: ExternalNavigator,
-) : SharingInteractor {
+) : SharingInterActor {
     override fun sharePlaylist(message: String) {
         externalNavigator.shareLink(message)
     }

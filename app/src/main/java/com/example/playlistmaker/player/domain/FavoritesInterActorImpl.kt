@@ -2,9 +2,9 @@ package com.example.playlistmaker.player.domain
 
 import com.example.playlistmaker.search.domain.Track
 
-class FavoritesInteractorImpl(
+class FavoritesInterActorImpl(
     private val repository: FavoritesRepository
-) : FavoritesInteractor {
+) : FavoritesInterActor {
 
     override suspend fun addSongToFavorites(song: Track) {
         repository.addSongToFavorites(song)

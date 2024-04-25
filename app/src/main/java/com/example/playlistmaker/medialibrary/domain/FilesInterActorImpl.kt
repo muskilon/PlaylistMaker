@@ -2,9 +2,9 @@ package com.example.playlistmaker.medialibrary.domain
 
 import android.net.Uri
 
-class FilesInteractorImpl(
+class FilesInterActorImpl(
     private val repository: FilesRepository
-) : FilesInteractor {
+) : FilesInterActor {
 
     override suspend fun saveFile(uri: Uri): Uri {
         return repository.saveFile(uri)

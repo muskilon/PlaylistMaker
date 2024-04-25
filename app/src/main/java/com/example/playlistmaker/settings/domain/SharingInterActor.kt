@@ -1,6 +1,6 @@
 package com.example.playlistmaker.settings.domain
 
-interface SharingInteractor {
+interface SharingInterActor {
     fun sharePlaylist(message: String)
     fun shareApp()
     fun openTerms()

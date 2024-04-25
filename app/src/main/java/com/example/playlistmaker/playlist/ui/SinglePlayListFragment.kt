@@ -1,6 +1,5 @@
 package com.example.playlistmaker.playlist.ui
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -108,7 +107,7 @@ class SinglePlayListFragment : Fragment() {
             )
         }
 
-        tracksResultsAdapter = SinglePlayListAdapter(playListTracks) { track, longClick ->
+        tracksResultsAdapter = SinglePlayListAdapter { track, longClick ->
             when (longClick) {
                 false -> onClick(track)
                 true -> onLongClick(track.trackId)
@@ -178,17 +177,16 @@ class SinglePlayListFragment : Fragment() {
             }.show()
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun setValues(state: SinglePlayListState) {
         if (state.currentPlayList.trackCount > 0) {
             playListTracks.clear()
             playListTracks.addAll(state.currentPlayListTracks)
-            tracksResultsAdapter.notifyDataSetChanged()
+            tracksResultsAdapter.setData(state.currentPlayListTracks)
             binding.playListTracksRecycler.isVisible = true
             binding.emptyPlaylist.isVisible = false
         } else {
             playListTracks.clear()
-            tracksResultsAdapter.notifyDataSetChanged()
+            tracksResultsAdapter.setData(emptyList())
             binding.playListTracksRecycler.isVisible = false
             binding.emptyPlaylist.isVisible = true
         }

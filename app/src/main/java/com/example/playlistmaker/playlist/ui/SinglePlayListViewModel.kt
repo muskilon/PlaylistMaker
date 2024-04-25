@@ -6,21 +6,21 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.MyApplication
 import com.example.playlistmaker.R
-import com.example.playlistmaker.medialibrary.domain.FilesInteractor
+import com.example.playlistmaker.medialibrary.domain.FilesInterActor
 import com.example.playlistmaker.medialibrary.domain.PlayList
-import com.example.playlistmaker.medialibrary.domain.PlayListInteractor
+import com.example.playlistmaker.medialibrary.domain.PlayListInterActor
 import com.example.playlistmaker.playlist.domain.SinglePlayListState
 import com.example.playlistmaker.search.domain.Track
-import com.example.playlistmaker.search.domain.TracksInteractor
-import com.example.playlistmaker.settings.domain.SharingInteractor
+import com.example.playlistmaker.search.domain.TracksInterActor
+import com.example.playlistmaker.settings.domain.SharingInterActor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class SinglePlayListViewModel(
-    private val sharingInteractor: SharingInteractor,
-    private val filesInteractor: FilesInteractor,
-    private val playListInteractor: PlayListInteractor,
-    private val tracksInterActor: TracksInteractor
+    private val sharingInterActor: SharingInterActor,
+    private val filesInterActor: FilesInterActor,
+    private val playListInterActor: PlayListInterActor,
+    private val tracksInterActor: TracksInterActor
 ) : ViewModel() {
     private var liveState = MutableLiveData<SinglePlayListState>()
     private lateinit var currentPlayList: PlayList
@@ -29,11 +29,11 @@ class SinglePlayListViewModel(
     fun getPlayList(playlistId: Long) {
         viewModelScope.launch {
             var totalTime = 0
-            playListInteractor.updatePlayLists()
-            playListInteractor.updateAllPlayListsTracks()
-            currentPlayList = playListInteractor.getSinglePlayList(playlistId)
+            playListInterActor.updatePlayLists()
+            playListInterActor.updateAllPlayListsTracks()
+            currentPlayList = playListInterActor.getSinglePlayList(playlistId)
             currentPlayListTracks =
-                playListInteractor.getTracksForSinglePlayList(currentPlayList.tracks)
+                playListInterActor.getTracksForSinglePlayList(currentPlayList.tracks)
             currentPlayListTracks.forEach { track ->
                 val units = track.trackTime.split(':')
                 val newDuration = (units[0].toInt() * 60) + units[1].toInt()
@@ -51,22 +51,26 @@ class SinglePlayListViewModel(
 
     fun deletePlayList() {
         viewModelScope.launch(Dispatchers.IO) {
-            playListInteractor.deletePlayList(liveState.value!!.currentPlayList)
-            if (liveState.value!!.currentPlayList.cover.toString().isEmpty()) {
-                filesInteractor.deletePlayListCover(liveState.value!!.currentPlayList.cover!!)
+            liveState.value?.let { value ->
+                playListInterActor.deletePlayList(value.currentPlayList)
+                value.currentPlayList.cover?.let { uri ->
+                    filesInterActor.deletePlayListCover(uri)
+                }
             }
         }
     }
 
     fun deleteTrackFromPlayList(trackId: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            playListInteractor.deleteTrackFromPlayList(trackId, liveState.value!!.currentPlayList)
-            getPlayList(liveState.value!!.currentPlayList.id)
+            liveState.value?.let { value ->
+                playListInterActor.deleteTrackFromPlayList(trackId, value.currentPlayList)
+                getPlayList(value.currentPlayList.id)
+            }
         }
     }
 
     fun sharePlayList() {
-        sharingInteractor.sharePlaylist(messageGenerator())
+        sharingInterActor.sharePlaylist(messageGenerator())
     }
 
     private fun messageGenerator(): String {

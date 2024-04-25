@@ -9,17 +9,17 @@ import com.example.playlistmaker.search.domain.SearchHistory
 import com.example.playlistmaker.search.domain.SearchScreenState
 import com.example.playlistmaker.search.domain.SearchState
 import com.example.playlistmaker.search.domain.Track
-import com.example.playlistmaker.search.domain.TracksInteractor
+import com.example.playlistmaker.search.domain.TracksInterActor
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    private val tracksInteractor: TracksInteractor,
+    private val tracksInterActor: TracksInterActor,
 ) : ViewModel() {
     private var liveState = MutableLiveData<SearchScreenState>()
     private val liveHistorySongs = MutableLiveData<List<Track>>()
-    private val songsHistory = tracksInteractor.getSongsHistory()
+    private val songsHistory = tracksInterActor.getSongsHistory()
     private var lastSearch = EMPTY
     private var searchJob: Job? = null
 
@@ -28,7 +28,7 @@ class SearchViewModel(
         liveState.postValue(SearchScreenState.Loading)
         lastSearch = term
         viewModelScope.launch {
-            tracksInteractor.searchSongs(term)
+            tracksInterActor.searchSongs(term)
                 .collect { result -> processResult(result) }
         }
     }
@@ -49,10 +49,10 @@ class SearchViewModel(
                     )
                 )
                 else {
-                    tracksInteractor.setSongsStorage(foundSongs.value)
+                    tracksInterActor.setSongsStorage(foundSongs.value)
                     liveState.postValue(
                         SearchScreenState.Content(
-                            tracksInteractor.getSongsStorage().toList(),
+                            tracksInterActor.getSongsStorage().toList(),
                         )
                     )
                 }
@@ -76,25 +76,25 @@ class SearchViewModel(
     fun getSongsHistory(): LiveData<List<Track>> = liveHistorySongs
 
     fun getSongsHistoryFromStorage() {
-        if (tracksInteractor.readHistory().songsHistorySaved.isNotEmpty()) {
+        if (tracksInterActor.readHistory().songsHistorySaved.isNotEmpty()) {
             songsHistory.clear()
-            songsHistory.addAll(tracksInteractor.readHistory().songsHistorySaved)
+            songsHistory.addAll(tracksInterActor.readHistory().songsHistorySaved)
             liveHistorySongs.postValue(songsHistory)
         }
     }
 
     fun clearHistory() {
-        tracksInteractor.clearHistory()
+        tracksInterActor.clearHistory()
         songsHistory.clear()
         liveHistorySongs.postValue(songsHistory)
-        liveState.postValue(SearchScreenState.Content(tracksInteractor.getSongsStorage().toList()))
+        liveState.postValue(SearchScreenState.Content(tracksInterActor.getSongsStorage().toList()))
     }
 
     fun onTrackClick(track: Track) {
         when {
             songsHistory.isEmpty() -> {
                 songsHistory.add(track)
-                tracksInteractor.writeHistory(SearchHistory(songsHistory.toList()))
+                tracksInterActor.writeHistory(SearchHistory(songsHistory.toList()))
             }
 
             songsHistory.contains(track) -> {
@@ -102,7 +102,7 @@ class SearchViewModel(
                     remove(track)
                     add(0, track)
                 }
-                tracksInteractor.writeHistory(SearchHistory(songsHistory.toList()))
+                tracksInterActor.writeHistory(SearchHistory(songsHistory.toList()))
             }
 
             songsHistory.size == HISTORY_SIZE -> {
@@ -110,16 +110,16 @@ class SearchViewModel(
                     removeLast()
                     add(0, track)
                 }
-                tracksInteractor.writeHistory(SearchHistory(songsHistory.toList()))
+                tracksInterActor.writeHistory(SearchHistory(songsHistory.toList()))
             }
 
             else -> {
                 songsHistory.add(0, track)
-                tracksInteractor.writeHistory(SearchHistory(songsHistory.toList()))
+                tracksInterActor.writeHistory(SearchHistory(songsHistory.toList()))
             }
         }
         liveHistorySongs.postValue(songsHistory)
-        tracksInteractor.setCurrentTrack(track)
+        tracksInterActor.setCurrentTrack(track)
     }
 
     companion object {

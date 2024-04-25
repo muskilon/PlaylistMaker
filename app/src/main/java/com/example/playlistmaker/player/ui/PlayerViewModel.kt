@@ -7,11 +7,11 @@ import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.MyApplication
 import com.example.playlistmaker.R
 import com.example.playlistmaker.medialibrary.domain.PlayList
-import com.example.playlistmaker.medialibrary.domain.PlayListInteractor
+import com.example.playlistmaker.medialibrary.domain.PlayListInterActor
 import com.example.playlistmaker.player.data.MusicPlayer
 import com.example.playlistmaker.player.data.OnStateChangeListener
-import com.example.playlistmaker.player.domain.CurrentTrackInteractor
-import com.example.playlistmaker.player.domain.FavoritesInteractor
+import com.example.playlistmaker.player.domain.CurrentTrackInterActor
+import com.example.playlistmaker.player.domain.FavoritesInterActor
 import com.example.playlistmaker.player.domain.MusicPlayerState
 import com.example.playlistmaker.player.domain.PlayStatus
 import kotlinx.coroutines.Dispatchers
@@ -21,9 +21,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class PlayerViewModel(
-    private val favoritesInteractor: FavoritesInteractor,
-    private val currentTrackInteractor: CurrentTrackInteractor,
-    private val playListInteractor: PlayListInteractor,
+    private val favoritesInterActor: FavoritesInterActor,
+    private val currentTrackInterActor: CurrentTrackInterActor,
+    private val playListInterActor: PlayListInterActor,
     private val mplayer: MusicPlayer
 ) : ViewModel() {
     private val timerZero = MyApplication.getAppResources().getString(R.string.timer_zero)
@@ -32,7 +32,7 @@ class PlayerViewModel(
     private var musicPlayerState = MusicPlayerState.STATE_DEFAULT
     private var livePlayStatus = MutableLiveData<PlayStatus>()
     private var livePlayLists = MutableLiveData<List<PlayList>>()
-    private var currentTrack = currentTrackInteractor.getCurrentTrack()
+    private var currentTrack = currentTrackInterActor.getCurrentTrack()
     private var isUserPaused: Boolean = false
 
     init {
@@ -46,7 +46,7 @@ class PlayerViewModel(
     }
 
     fun updateCurrentTrack() {
-        currentTrack = currentTrackInteractor.getCurrentTrack()
+        currentTrack = currentTrackInterActor.getCurrentTrack()
         livePlayStatus.value = getCurrentPlayStatus().copy(
             currentTrack = currentTrack,
             isFavorites = isFavorites(),
@@ -138,13 +138,13 @@ class PlayerViewModel(
     }
 
     private fun isFavorites(): Boolean {
-        return favoritesInteractor.getFavorites().contains(currentTrack)
+        return favoritesInterActor.getFavorites().contains(currentTrack)
     }
 
     fun addToFavorites() {
         viewModelScope.launch(Dispatchers.IO) {
-            if (isFavorites()) favoritesInteractor.deleteSongFromFavorites(currentTrack)
-            else favoritesInteractor.addSongToFavorites(currentTrack)
+            if (isFavorites()) favoritesInterActor.deleteSongFromFavorites(currentTrack)
+            else favoritesInterActor.addSongToFavorites(currentTrack)
             withContext(Dispatchers.Main) {
                 livePlayStatus.value = getCurrentPlayStatus().copy(isFavorites = isFavorites())
             }
@@ -153,8 +153,8 @@ class PlayerViewModel(
 
     fun updatePlaylists() {
         viewModelScope.launch {
-            playListInteractor.updatePlayLists()
-            livePlayLists.postValue(playListInteractor.getPlayLists())
+            playListInterActor.updatePlayLists()
+            livePlayLists.postValue(playListInterActor.getPlayLists())
         }
     }
 
@@ -165,7 +165,7 @@ class PlayerViewModel(
             false
         } else {
             viewModelScope.launch {
-                playListInteractor.addTrackToPlayList(playList, currentTrack)
+                playListInterActor.addTrackToPlayList(playList, currentTrack)
             }
             true
         }

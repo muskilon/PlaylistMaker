@@ -5,26 +5,26 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.medialibrary.domain.FilesInteractor
+import com.example.playlistmaker.medialibrary.domain.FilesInterActor
 import com.example.playlistmaker.medialibrary.domain.PlayList
-import com.example.playlistmaker.medialibrary.domain.PlayListInteractor
+import com.example.playlistmaker.medialibrary.domain.PlayListInterActor
 import kotlinx.coroutines.launch
 
 class EditPlayListViewModel(
-    private val filesInteractor: FilesInteractor,
-    private val playListInteractor: PlayListInteractor,
+    private val filesInterActor: FilesInterActor,
+    private val playListInterActor: PlayListInterActor,
 ) : ViewModel() {
     private var currentPlayList = MutableLiveData<PlayList>()
     fun updatePlayList(title: String, description: String, uri: Uri?) {
         viewModelScope.launch {
             var newUri = uri
             if (uri != null && uri != currentPlayList.value?.cover) {
-                newUri = filesInteractor.saveFile(uri)
+                newUri = filesInterActor.saveFile(uri)
                 currentPlayList.value?.let { playList ->
-                    playList.cover?.let { filesInteractor.deletePlayListCover(it) }
+                    playList.cover?.let { filesInterActor.deletePlayListCover(it) }
                 }
             }
-            playListInteractor.updateSinglePlayList(
+            playListInterActor.updateSinglePlayList(
                 PlayList(
                     title = title,
                     description = description,
@@ -39,7 +39,7 @@ class EditPlayListViewModel(
 
     fun loadPlayList(playlistId: Long) {
         viewModelScope.launch {
-            currentPlayList.postValue(playListInteractor.getSinglePlayList(playlistId))
+            currentPlayList.postValue(playListInterActor.getSinglePlayList(playlistId))
         }
     }
 

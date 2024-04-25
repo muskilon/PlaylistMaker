@@ -1,6 +1,6 @@
 package com.example.playlistmaker.settings.domain
 
-interface SettingsInteractor {
+interface SettingsInterActor {
     fun getThemeSettings(): Boolean
     fun updateThemeSetting(settings: Boolean)
 }

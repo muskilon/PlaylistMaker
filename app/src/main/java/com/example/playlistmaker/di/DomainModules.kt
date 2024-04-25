@@ -2,41 +2,41 @@ package com.example.playlistmaker.di
 
 import com.example.playlistmaker.medialibrary.data.FilesRepositoryImpl
 import com.example.playlistmaker.medialibrary.data.PlayListRepositoryImpl
-import com.example.playlistmaker.medialibrary.domain.FilesInteractor
-import com.example.playlistmaker.medialibrary.domain.FilesInteractorImpl
+import com.example.playlistmaker.medialibrary.domain.FilesInterActor
+import com.example.playlistmaker.medialibrary.domain.FilesInterActorImpl
 import com.example.playlistmaker.medialibrary.domain.FilesRepository
-import com.example.playlistmaker.medialibrary.domain.PlayListInteractor
-import com.example.playlistmaker.medialibrary.domain.PlayListInteractorImpl
+import com.example.playlistmaker.medialibrary.domain.PlayListInterActor
+import com.example.playlistmaker.medialibrary.domain.PlayListInterActorImpl
 import com.example.playlistmaker.medialibrary.domain.PlayListRepository
 import com.example.playlistmaker.player.data.CurrentTrackRepositoryImpl
 import com.example.playlistmaker.player.data.FavoritesRepositoryImpl
-import com.example.playlistmaker.player.domain.CurrentTrackInteractor
-import com.example.playlistmaker.player.domain.CurrentTrackInteractorImpl
+import com.example.playlistmaker.player.domain.CurrentTrackInterActor
+import com.example.playlistmaker.player.domain.CurrentTrackInterActorImpl
 import com.example.playlistmaker.player.domain.CurrentTrackRepository
-import com.example.playlistmaker.player.domain.FavoritesInteractor
-import com.example.playlistmaker.player.domain.FavoritesInteractorImpl
+import com.example.playlistmaker.player.domain.FavoritesInterActor
+import com.example.playlistmaker.player.domain.FavoritesInterActorImpl
 import com.example.playlistmaker.player.domain.FavoritesRepository
 import com.example.playlistmaker.search.data.TrackRepositoryImpl
 import com.example.playlistmaker.search.domain.TrackRepository
-import com.example.playlistmaker.search.domain.TracksInteractor
-import com.example.playlistmaker.search.domain.TracksInteractorImpl
+import com.example.playlistmaker.search.domain.TracksInterActor
+import com.example.playlistmaker.search.domain.TracksInterActorImpl
 import com.example.playlistmaker.settings.data.SettingsRepositoryImpl
-import com.example.playlistmaker.settings.data.SharingInteractorImpl
-import com.example.playlistmaker.settings.domain.SettingsInteractor
-import com.example.playlistmaker.settings.domain.SettingsInteractorImpl
+import com.example.playlistmaker.settings.data.SharingInterActorImpl
+import com.example.playlistmaker.settings.domain.SettingsInterActor
+import com.example.playlistmaker.settings.domain.SettingsInterActorImpl
 import com.example.playlistmaker.settings.domain.SettingsRepository
-import com.example.playlistmaker.settings.domain.SharingInteractor
+import com.example.playlistmaker.settings.domain.SharingInterActor
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val domainModules = module {
 //  Settings
-    factory<SharingInteractor> { SharingInteractorImpl(externalNavigator = get()) }
-    factory<SettingsInteractor> { SettingsInteractorImpl(repository = get()) }
+    factory<SharingInterActor> { SharingInterActorImpl(externalNavigator = get()) }
+    factory<SettingsInterActor> { SettingsInterActorImpl(repository = get()) }
     single<SettingsRepository> { SettingsRepositoryImpl(settingsStorage = get()) }
 
 //  Search
-    factory<TracksInteractor> { TracksInteractorImpl(repository = get()) }
+    factory<TracksInterActor> { TracksInterActorImpl(repository = get()) }
     single<TrackRepository> {
         TrackRepositoryImpl(
             networkClient = get(),
@@ -45,10 +45,10 @@ val domainModules = module {
     }
 
 //  Player
-    factory<CurrentTrackInteractor> { CurrentTrackInteractorImpl(repository = get()) }
+    factory<CurrentTrackInterActor> { CurrentTrackInterActorImpl(repository = get()) }
     single<CurrentTrackRepository> { CurrentTrackRepositoryImpl() }
 
-    factory<FavoritesInteractor> { FavoritesInteractorImpl(repository = get()) }
+    factory<FavoritesInterActor> { FavoritesInterActorImpl(repository = get()) }
     single<FavoritesRepository> {
         FavoritesRepositoryImpl(
             appDatabase = get(),
@@ -56,9 +56,9 @@ val domainModules = module {
         )
     }
 //Medialibrary
-    factory<FilesInteractor> { FilesInteractorImpl(repository = get()) }
+    factory<FilesInterActor> { FilesInterActorImpl(repository = get()) }
     single<FilesRepository> { FilesRepositoryImpl(context = androidContext()) }
-    factory<PlayListInteractor> { PlayListInteractorImpl(repository = get()) }
+    factory<PlayListInterActor> { PlayListInterActorImpl(repository = get()) }
     single<PlayListRepository> {
         PlayListRepositoryImpl(
             appDatabase = get(),

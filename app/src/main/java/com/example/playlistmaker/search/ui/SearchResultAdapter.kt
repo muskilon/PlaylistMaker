@@ -29,7 +29,7 @@ class SearchResultAdapter(
     override fun getItemCount(): Int = tracks.size
 
     fun setData(newTracks: List<Track>) {
-        val diffCallback = DiffUtilCallback(tracks, newTracks)
+        val diffCallback = DiffUtilTrackCallback(tracks, newTracks)
         val diffResult = DiffUtil.calculateDiff(diffCallback)
         tracks.clear()
         tracks.addAll(newTracks)

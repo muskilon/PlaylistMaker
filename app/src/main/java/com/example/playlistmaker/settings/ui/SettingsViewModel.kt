@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.playlistmaker.MyApplication
-import com.example.playlistmaker.settings.domain.SettingsInteractor
-import com.example.playlistmaker.settings.domain.SharingInteractor
+import com.example.playlistmaker.settings.domain.SettingsInterActor
+import com.example.playlistmaker.settings.domain.SharingInterActor
 
 class SettingsViewModel(
-    private val sharingInteractor: SharingInteractor,
-    private val settingsInteractor: SettingsInteractor
+    private val sharingInterActor: SharingInterActor,
+    private val settingsInterActor: SettingsInterActor
 ) : ViewModel() {
     private var liveIsNightMode = MutableLiveData<Boolean>()
 
@@ -20,25 +20,25 @@ class SettingsViewModel(
     fun getThemeState(): LiveData<Boolean> = liveIsNightMode
 
     private fun getThemeSettings(): Boolean {
-        return settingsInteractor.getThemeSettings()
+        return settingsInterActor.getThemeSettings()
     }
 
     fun updateThemeSetting(isNightTheme: Boolean) {
         MyApplication.changeTheme(isNightTheme)
-        settingsInteractor.updateThemeSetting(isNightTheme)
+        settingsInterActor.updateThemeSetting(isNightTheme)
         liveIsNightMode.value = getThemeSettings()
     }
 
     fun openTerms() {
-        sharingInteractor.openTerms()
+        sharingInterActor.openTerms()
     }
 
     fun shareApp() {
-        sharingInteractor.shareApp()
+        sharingInterActor.shareApp()
     }
 
     fun openSupport() {
-        sharingInteractor.openSupport()
+        sharingInterActor.openSupport()
     }
 
 }

@@ -2,9 +2,9 @@ package com.example.playlistmaker.medialibrary.domain
 
 import com.example.playlistmaker.search.domain.Track
 
-class PlayListInteractorImpl(
+class PlayListInterActorImpl(
     private val repository: PlayListRepository
-) : PlayListInteractor {
+) : PlayListInterActor {
     override suspend fun addPlayList(playList: PlayList) {
         repository.addPlayList(playList)
     }

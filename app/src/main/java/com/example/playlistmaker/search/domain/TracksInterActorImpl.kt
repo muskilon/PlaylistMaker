@@ -3,7 +3,7 @@ package com.example.playlistmaker.search.domain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class TracksInteractorImpl(private val repository: TrackRepository) : TracksInteractor {
+class TracksInterActorImpl(private val repository: TrackRepository) : TracksInterActor {
 
     override fun updateHistoryTrack(track: Track) {
         repository.updateHistoryTrack(track)

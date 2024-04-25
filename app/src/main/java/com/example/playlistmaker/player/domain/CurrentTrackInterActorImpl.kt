@@ -3,9 +3,9 @@ package com.example.playlistmaker.player.domain
 import com.example.playlistmaker.search.domain.Track
 
 
-class CurrentTrackInteractorImpl(
+class CurrentTrackInterActorImpl(
     private val repository: CurrentTrackRepository
-) : CurrentTrackInteractor {
+) : CurrentTrackInterActor {
     override fun getCurrentTrack(): Track {
         return repository.getCurrentTrack()
     }
