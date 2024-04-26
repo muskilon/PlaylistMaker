@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.medialibrary.domain.PlayList
 import com.example.playlistmaker.medialibrary.domain.PlayListInterActor
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PlaylistsViewModel(
@@ -15,7 +16,7 @@ class PlaylistsViewModel(
     private val livePlayLists = MutableLiveData<List<PlayList>>()
 
     fun updatePlayLists() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             playListsInterActor.updatePlayLists()
             livePlayLists.postValue(playListsInterActor.getPlayLists())
         }

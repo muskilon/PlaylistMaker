@@ -6,8 +6,7 @@ import com.example.playlistmaker.medialibrary.domain.PlayList
 class DiffUtilPlayListCallback(
     private val oldList: List<PlayList>,
     private val newList: List<PlayList>
-) :
-    DiffUtil.Callback() {
+) : DiffUtil.Callback() {
 
     override fun getOldListSize(): Int = oldList.size
 

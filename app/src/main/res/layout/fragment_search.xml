@@ -41,7 +41,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/searchBarEdit"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="45dp"
             android:drawableStart="@drawable/search_icon"
             android:drawablePadding="8dp"
             android:drawableTint="?android:attr/textColorHintInverse"
