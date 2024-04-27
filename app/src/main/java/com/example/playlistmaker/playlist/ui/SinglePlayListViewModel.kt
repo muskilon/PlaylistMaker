@@ -1,5 +1,6 @@
 package com.example.playlistmaker.playlist.ui
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -15,6 +16,8 @@ import com.example.playlistmaker.search.domain.TracksInterActor
 import com.example.playlistmaker.settings.domain.SharingInterActor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.concurrent.TimeUnit
 
 class SinglePlayListViewModel(
     private val sharingInterActor: SharingInterActor,
@@ -26,24 +29,27 @@ class SinglePlayListViewModel(
     private lateinit var currentPlayList: PlayList
     private lateinit var currentPlayListTracks: List<Track>
 
+    @SuppressLint("SimpleDateFormat")
     fun getPlayList(playlistId: Long) {
         viewModelScope.launch {
-            var totalTime = 0
             playListInterActor.updatePlayLists()
             playListInterActor.updateAllPlayListsTracks()
+
             currentPlayList = playListInterActor.getSinglePlayList(playlistId)
             currentPlayListTracks =
                 playListInterActor.getTracksForSinglePlayList(currentPlayList.tracks)
+
+            var totalTime = 0L
+            val format = SimpleDateFormat("mmm:ss,z")
             currentPlayListTracks.forEach { track ->
-                val units = track.trackTime.split(':')
-                val newDuration = (units[0].toInt() * 60) + units[1].toInt()
-                totalTime += newDuration
+                totalTime += format.parse(track.trackTime + UTC)?.time ?: 0
             }
+
             liveState.postValue(
                 SinglePlayListState(
                     currentPlayList = currentPlayList,
                     currentPlayListTracks = currentPlayListTracks,
-                    totalTime = totalTime / 60
+                    totalTime = TimeUnit.MILLISECONDS.toMinutes(totalTime).toInt()
                 )
             )
         }
@@ -99,5 +105,9 @@ class SinglePlayListViewModel(
     fun getState(): LiveData<SinglePlayListState> = liveState
     fun onTrackClick(track: Track) {
         tracksInterActor.setCurrentTrack(track)
+    }
+
+    companion object {
+        private const val UTC = ",UTC"
     }
 }
