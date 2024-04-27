@@ -29,12 +29,11 @@ class SinglePlayListFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var tracksResultsAdapter: SinglePlayListAdapter
     private val viewModel by viewModel<SinglePlayListViewModel>()
-    private val playListTracks = ArrayList<Track>()
+    private var playListIsEmpty = true
     private var isClickAllowed = true
     private var bundleForEdit = bundleOf()
     private var bottomSheetPlayListMenuBehavior = BottomSheetBehavior<LinearLayout>()
     private var playListBottomSheetBehavior = BottomSheetBehavior<LinearLayout>()
-    private var bottomSheetMenuIsVisible = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -62,11 +61,9 @@ class SinglePlayListFragment : Fragment() {
                 when (newState) {
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         binding.overlay.isVisible = true
-                        bottomSheetMenuIsVisible = true
                     }
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         binding.overlay.isVisible = false
-                        bottomSheetMenuIsVisible = false
                     }
                     else -> {
                         Unit
@@ -84,23 +81,8 @@ class SinglePlayListFragment : Fragment() {
             bottomSheetPlayListMenuBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             deletePlayListDialog()
         }
-        binding.share.setOnClickListener {
-            if (playListTracks.isNotEmpty()) viewModel.sharePlayList()
-            else Snackbar.make(
-                view, getString(R.string.there_is_tracks_to_share), Snackbar.LENGTH_LONG
-            ).show()
-        }
-        binding.sharePlaylistFromMenu.setOnClickListener {
-            if (playListTracks.isNotEmpty()) {
-                viewModel.sharePlayList()
-                bottomSheetPlayListMenuBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            } else {
-                Snackbar.make(
-                    view, getString(R.string.there_is_tracks_to_share), Snackbar.LENGTH_LONG
-                ).show()
-                bottomSheetPlayListMenuBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-            }
-        }
+        binding.share.setOnClickListener { sharePlaylist(it) }
+        binding.sharePlaylistFromMenu.setOnClickListener { sharePlaylist(it) }
         binding.editInformation.setOnClickListener {
             findNavController().navigate(
                 R.id.action_singlePlayListFragment_to_editPlayListFragment, bundleForEdit
@@ -128,6 +110,17 @@ class SinglePlayListFragment : Fragment() {
                     exit()
                 }
             })
+    }
+
+    private fun sharePlaylist(view: View) {
+        if (playListIsEmpty) {
+            Snackbar.make(
+                view, getString(R.string.there_is_tracks_to_share), Snackbar.LENGTH_LONG
+            ).show()
+        } else viewModel.sharePlayList()
+        if (view === binding.sharePlaylistFromMenu) {
+            bottomSheetPlayListMenuBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        }
     }
 
 
@@ -178,15 +171,13 @@ class SinglePlayListFragment : Fragment() {
     }
 
     private fun setValues(state: SinglePlayListState) {
+        tracksResultsAdapter.setData(state.currentPlayListTracks)
         if (state.currentPlayList.trackCount > 0) {
-            playListTracks.clear()
-            playListTracks.addAll(state.currentPlayListTracks)
-            tracksResultsAdapter.setData(state.currentPlayListTracks)
+            playListIsEmpty = false
             binding.playListTracksRecycler.isVisible = true
             binding.emptyPlaylist.isVisible = false
         } else {
-            playListTracks.clear()
-            tracksResultsAdapter.setData(emptyList())
+            playListIsEmpty = true
             binding.playListTracksRecycler.isVisible = false
             binding.emptyPlaylist.isVisible = true
         }

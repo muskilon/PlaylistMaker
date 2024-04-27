@@ -155,7 +155,8 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="center_horizontal"
-            android:id="@+id/empty_playlist">
+            android:id="@+id/empty_playlist"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/no_tracks_playlist"
