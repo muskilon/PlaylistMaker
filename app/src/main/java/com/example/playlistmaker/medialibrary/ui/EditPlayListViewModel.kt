@@ -15,26 +15,27 @@ class EditPlayListViewModel(
     private val playListInterActor: PlayListInterActor,
 ) : ViewModel() {
     private var currentPlayList = MutableLiveData<PlayList>()
-    fun updatePlayList(title: String, description: String, uri: Uri?) {
-        viewModelScope.launch {
-            var newUri = uri
-            if (uri != null && uri != currentPlayList.value?.cover) {
-                newUri = filesInterActor.saveFile(uri)
-                currentPlayList.value?.let { playList ->
-                    playList.cover?.let { filesInterActor.deletePlayListCover(it) }
+    fun updatePlayList(title: String, description: String, uri: Uri?): Boolean {
+
+        currentPlayList.value?.let {
+            if (it.cover != uri || it.title != title || it.description != description) {
+                viewModelScope.launch {
+                    var newUri = uri
+                    if (uri != null && uri != it.cover) {
+                        newUri = filesInterActor.saveFile(uri)
+                        it.cover?.let { oldCover -> filesInterActor.deletePlayListCover(oldCover) }
+                    }
+                    playListInterActor.updateSinglePlayList(
+                        it.copy(
+                            title = title,
+                            description = description,
+                            cover = newUri
+                        )
+                    )
                 }
-            }
-            playListInterActor.updateSinglePlayList(
-                PlayList(
-                    title = title,
-                    description = description,
-                    cover = newUri,
-                    id = currentPlayList.value!!.id,
-                    trackCount = currentPlayList.value!!.trackCount,
-                    tracks = currentPlayList.value!!.tracks
-                )
-            )
-        }
+                return true
+            } else return false
+        } ?: return false
     }
 
     fun loadPlayList(playlistId: Long) {

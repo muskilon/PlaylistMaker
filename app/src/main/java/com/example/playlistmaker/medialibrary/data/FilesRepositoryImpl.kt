@@ -19,7 +19,7 @@ class FilesRepositoryImpl(
 ) : FilesRepository {
     override suspend fun saveFile(uri: Uri): Uri {
         val filePath = File(
-            context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), "playListCovers"
+            context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), COVERS_FOLDER
         )
         if (!filePath.exists()) filePath.mkdirs()
         val file = File(filePath, "${UUID.randomUUID()}$DEFAULT_FILE_TYPE")
@@ -43,5 +43,6 @@ class FilesRepositoryImpl(
 
     companion object {
         private const val DEFAULT_FILE_TYPE = ".jpg"
+        private const val COVERS_FOLDER = "PlayListCovers"
     }
 }

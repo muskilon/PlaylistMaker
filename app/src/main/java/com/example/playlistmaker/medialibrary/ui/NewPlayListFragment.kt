@@ -21,7 +21,6 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 open class NewPlayListFragment : Fragment() {
     private var _binding: FragmentNewPlayListBinding? = null
     private val binding get() = _binding!!
-
     private val viewModel by viewModel<NewPlayListViewModel>()
 
     private var title: String = EMPTY

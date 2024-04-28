@@ -69,11 +69,15 @@ class EditPlayListFragment : Fragment() {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
         binding.createButton.setOnClickListener {
-            viewModel.updatePlayList(title, description, newUri)
-            Snackbar.make(view, getString(R.string.playlist_updated, title), Snackbar.LENGTH_LONG)
-                .show()
-            findNavController().navigateUp()
-//            TODO надо разобраться с навигацией
+            if (viewModel.updatePlayList(title, description, newUri)) {
+                Snackbar.make(
+                    view,
+                    getString(R.string.playlist_updated, title),
+                    Snackbar.LENGTH_LONG
+                )
+                    .show()
+            }
+            exit()
         }
 
         val textWatcherTitle = object : TextWatcher {
