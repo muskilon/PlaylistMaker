@@ -196,9 +196,10 @@ class SinglePlayListFragment : Fragment() {
         state.currentPlayList.cover?.let { binding.cover.setImageURI(it) }
             ?: binding.cover.setImageResource(R.drawable.placeholder)
 
-        val screenHeight = binding.root.measuredHeight
+        binding.root.measure(View.MeasureSpec.getSize(4), View.MeasureSpec.getSize(4))
 
         binding.shareLine.doOnNextLayout {
+            val screenHeight = binding.root.measuredHeight
             playListBottomSheetBehavior.setPeekHeight(
                 screenHeight - binding.shareLine.bottom, true
             )

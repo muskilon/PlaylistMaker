@@ -36,26 +36,19 @@ class SearchViewModel(
     private fun processResult(foundSongs: Resource<List<Track>>) {
         when (foundSongs) {
             is Resource.ConnectionError -> liveState.postValue(
-                SearchScreenState.Error(
-                    SearchState.NO_CONNECTIONS,
-                )
+                SearchScreenState.Error(SearchState.NO_CONNECTIONS)
             )
 
-            is Resource.NotFound -> liveState.postValue(SearchScreenState.Error(SearchState.NOT_FOUND))
+            is Resource.NotFound -> liveState.postValue(
+                SearchScreenState.Error(SearchState.NOT_FOUND)
+            )
             is Resource.Data -> {
-                if (foundSongs.value.isEmpty()) liveState.postValue(
-                    SearchScreenState.Error(
-                        SearchState.NOT_FOUND,
-                    )
-                )
-                else {
                     tracksInterActor.setSongsStorage(foundSongs.value)
                     liveState.postValue(
                         SearchScreenState.Content(
-                            tracksInterActor.getSongsStorage().toList(),
+                            tracksInterActor.getSongsStorage().toList()
                         )
                     )
-                }
             }
         }
     }
