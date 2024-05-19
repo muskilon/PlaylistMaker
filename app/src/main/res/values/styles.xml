@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <style name="MyAlertDialog" parent="@style/ThemeOverlay.Material3.MaterialAlertDialog">
+        <item name="materialAlertDialogTitleTextStyle">@style/MyAlertDialog.Title</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/MyAlertDialog.Body</item>
+        <item name="buttonBarNegativeButtonStyle">@style/MyAlertDialog.Text</item>
+        <item name="buttonBarPositiveButtonStyle">@style/MyAlertDialog.Text</item>
+        <item name="alertDialogStyle">@style/MyAlertDialog.Style</item>
+    </style>
+
+    <style name="MyAlertDialog.Style" parent="@style/MaterialAlertDialog.Material3">
+        <item name="backgroundTint">@color/yp_white</item>
+        <item name="shapeAppearance">@style/ShapeAppearance.Material3.Corner.ExtraSmall</item>
+    </style>
+
+    <style name="MyAlertDialog.Title" parent="@style/MaterialAlertDialog.Material3.Title.Text">
+        <item name="android:textColor">@color/yp_black</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="MyAlertDialog.Body" parent="@style/MaterialAlertDialog.Material3.Body.Text">
+        <item name="android:textColor">@color/yp_black</item>
+    </style>
+
+    <style name="MyAlertDialog.Text" parent="@style/Widget.Material3.Button.TextButton.Dialog">
+        <item name="android:textColor">@color/yp_blue</item>
+    </style>
+
     <style name="MySnackbar" parent="Widget.MaterialComponents.Snackbar">
         <item name="android:backgroundTint">?attr/black_ypDayWhite_ypNight</item>
         <item name="elevation">0dp</item>
@@ -13,7 +39,6 @@
         <item name="fontFamily">@font/ys_display_regular</item>
         <item name="android:textSize">@dimen/font_size_14</item>
     </style>
-
 
     <style name="createButton" parent="Widget.MaterialComponents.Button.UnelevatedButton">
         <item name="android:padding">0dp</item>

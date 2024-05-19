@@ -25,21 +25,22 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment(), RenderState {
-    private lateinit var binding: FragmentSearchBinding
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
+
     private val viewModel by viewModel<SearchViewModel>()
     private var searchInput: String = EMPTY
 
     private lateinit var searchResultsAdapter: SearchResultAdapter
     private lateinit var songsHistoryAdapter: SearchResultAdapter
 
-    private val songs = ArrayList<Track>()
     private val songsHistory = ArrayList<Track>()
 
     private var isClickAllowed = true
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSearchBinding.inflate(inflater, container, false)
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -48,33 +49,16 @@ class SearchFragment : Fragment(), RenderState {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.getSongsHistory().observe(viewLifecycleOwner) { liveSongsHistory ->
-            songsHistory.clear()
-            songsHistory.addAll(liveSongsHistory)
+            with(songsHistory) {
+                clear()
+                addAll(liveSongsHistory)
+            }
         }
 
         val imm =
             requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
-        searchResultsAdapter = SearchResultAdapter(songs) { track ->
-            if (clickDebounce()) {
-                viewModel.onTrackClick(track)
-                findNavController().navigate(
-                    R.id.action_searchFragment_to_playerFragment
-                )
-            }
-        }
-
-        songsHistoryAdapter = SearchResultAdapter(songsHistory) { track ->
-            if (clickDebounce()) {
-                viewModel.onTrackClick(track)
-                findNavController().navigate(
-                    R.id.action_searchFragment_to_playerFragment
-                )
-            }
-        }
-
-        binding.searchResultsRecyclerView.adapter = searchResultsAdapter
-        binding.youSearchedIncl.songsHistoryRecyclerView.adapter = songsHistoryAdapter
+        setAdapters()
 
         viewModel.getState().observe(viewLifecycleOwner) { state ->
             when (state) {
@@ -86,8 +70,7 @@ class SearchFragment : Fragment(), RenderState {
                     render(state.error)
                 }
                 is SearchScreenState.Content -> {
-                    songs.clear()
-                    songs.addAll(state.songs)
+                    searchResultsAdapter.setData(state.songs)
                     render(SearchState.SEARCH)
                 }
             }
@@ -95,9 +78,7 @@ class SearchFragment : Fragment(), RenderState {
 
         viewModel.getSongsHistoryFromStorage()
 
-        binding.youSearchedIncl.clearHistoryButton.setOnClickListener {
-            viewModel.clearHistory()
-        }
+        binding.youSearchedIncl.clearHistoryButton.setOnClickListener { viewModel.clearHistory() }
 
         binding.noConnectionPlaceholder.refreshButton.setOnClickListener {
             viewModel.searchSongs(searchInput)
@@ -107,8 +88,7 @@ class SearchFragment : Fragment(), RenderState {
             binding.searchBarEdit.text?.clear()
             imm.hideSoftInputFromWindow(binding.searchBarEdit.windowToken, 0)
             binding.searchBarEdit.clearFocus()
-            songs.clear()
-            searchResultsAdapter.notifyDataSetChanged()
+            searchResultsAdapter.setData(emptyList())
         }
 
         binding.searchBarEdit.setOnEditorActionListener { _, actionId, _ ->
@@ -168,6 +148,28 @@ class SearchFragment : Fragment(), RenderState {
         binding.searchBarEdit.addTextChangedListener(simpleTextWatcher)
     }
 
+    private fun setAdapters() {
+        searchResultsAdapter = SearchResultAdapter { track ->
+            if (clickDebounce()) {
+                viewModel.onTrackClick(track)
+                findNavController().navigate(
+                    R.id.action_searchFragment_to_playerFragment
+                )
+            }
+        }
+        songsHistoryAdapter = SearchResultAdapter { track ->
+            if (clickDebounce()) {
+                viewModel.onTrackClick(track)
+                findNavController().navigate(
+                    R.id.action_searchFragment_to_playerFragment
+                )
+            }
+        }
+
+        binding.youSearchedIncl.songsHistoryRecyclerView.adapter = songsHistoryAdapter
+        binding.searchResultsRecyclerView.adapter = searchResultsAdapter
+    }
+
     private fun clickDebounce(): Boolean {
         val current = isClickAllowed
         if (isClickAllowed) {
@@ -180,26 +182,22 @@ class SearchFragment : Fragment(), RenderState {
         return current
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun onResume() {
         super.onResume()
-        songsHistoryAdapter.notifyDataSetChanged()
+        songsHistoryAdapter.setData(songsHistory)
     }
 
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun showSearch() {
-        searchResultsAdapter.notifyDataSetChanged()
         binding.notFoundPlaceholder.notFoundPlaceholder.isVisible = false
         binding.noConnectionPlaceholder.noConnectionPlaceholder.isVisible = false
-        binding.searchResultsRecyclerView.isVisible = true
         binding.youSearchedIncl.searchHistory.isVisible = false
         binding.progressBar.isVisible = false
+        binding.searchResultsRecyclerView.isVisible = true
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     override fun showHistory() {
-        songsHistoryAdapter.notifyDataSetChanged()
+        songsHistoryAdapter.setData(songsHistory)
         binding.notFoundPlaceholder.notFoundPlaceholder.isVisible = false
         binding.noConnectionPlaceholder.noConnectionPlaceholder.isVisible = false
         binding.searchResultsRecyclerView.isVisible = false
@@ -238,6 +236,11 @@ class SearchFragment : Fragment(), RenderState {
             SearchState.NO_CONNECTIONS -> showNetworkError()
             SearchState.PROGRESS_BAR -> showProgressBar()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 

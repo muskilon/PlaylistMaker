@@ -40,6 +40,9 @@
         <action
             android:id="@+id/action_medialibraryFragment_to_playerFragment"
             app:destination="@id/playerFragment" />
+        <action
+            android:id="@+id/action_medialibraryFragment_to_singlePlayListFragment"
+            app:destination="@id/singlePlayListFragment" />
     </fragment>
     <fragment
         android:id="@+id/newPlayListFragment"
@@ -54,5 +57,28 @@
         <action
             android:id="@+id/action_playerFragment_to_newPlayListFragment"
             app:destination="@id/newPlayListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/singlePlayListFragment"
+        android:name="com.example.playlistmaker.playlist.ui.SinglePlayListFragment"
+        android:label="fragment_single_playlist"
+        tools:layout="@layout/fragment_single_playlist">
+        <action
+            android:id="@+id/action_singlePlayListFragment_to_playerFragment"
+            app:destination="@id/playerFragment" />
+        <action
+            android:id="@+id/action_singlePlayListFragment_to_editPlayListFragment"
+            app:destination="@id/editPlayListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editPlayListFragment"
+        android:name="com.example.playlistmaker.medialibrary.ui.EditPlayListFragment"
+        android:label="EditPlayListFragment"
+        tools:layout="@layout/fragment_new_play_list">
+        <action
+            android:id="@+id/action_editPlayListFragment_to_singlePlayListFragment"
+            app:popUpTo="@+id/singlePlayListFragment"
+            app:popUpToInclusive="true"
+            app:destination="@id/singlePlayListFragment" />
     </fragment>
 </navigation>

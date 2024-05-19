@@ -2,7 +2,6 @@ package com.example.playlistmaker.player.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,10 +12,11 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.MyApplication
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlayerBinding
 import com.example.playlistmaker.medialibrary.domain.PlayList
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.playlistmaker.player.domain.PlayStatus
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.delay
@@ -25,17 +25,17 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlayerFragment : Fragment() {
 
-    private lateinit var binding: FragmentPlayerBinding
+    private var _binding: FragmentPlayerBinding? = null
+    private val binding get() = _binding!!
     private val viewModel by viewModel<PlayerViewModel>()
     private var isClickAllowed = true
-    private lateinit var navBar: BottomNavigationView
     private lateinit var bottomSheetAdapter: BottomSheetAdapter
     private val playLists = ArrayList<PlayList>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentPlayerBinding.inflate(inflater, container, false)
+        _binding = FragmentPlayerBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -44,8 +44,10 @@ class PlayerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         if (savedInstanceState == null) {
-            viewModel.setListener()
-            viewModel.preparePlayer()
+            with(viewModel) {
+                setListener()
+                preparePlayer()
+            }
         }
 
         val bottomSheetBehavior = BottomSheetBehavior.from(binding.playerBottomSheet)
@@ -68,7 +70,7 @@ class PlayerFragment : Fragment() {
                     }
 
                     else -> {
-                        // none
+                        Unit
                     }
                 }
             }
@@ -76,18 +78,18 @@ class PlayerFragment : Fragment() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
 
-        navBar = requireActivity().findViewById(R.id.bottomNavigationView)
-        navBar.isVisible = false
-
-        bottomSheetAdapter = BottomSheetAdapter(playLists) { playList, position ->
+        bottomSheetAdapter = BottomSheetAdapter(playLists) { playList, _ ->
             if (viewModel.addTrackToPlayList(playList)) {
-                Snackbar.make(view, "Добавлено в плейлист ${playList.title}", Snackbar.LENGTH_LONG)
+                Snackbar.make(
+                    view,
+                    getString(R.string.added_to_playlist, playList.title), Snackbar.LENGTH_LONG
+                )
                     .show()
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             } else {
                 Snackbar.make(
                     view,
-                    "Трек уже добавлен в плейлист ${playList.title}",
+                    getString(R.string.track_already_in_playlist, playList.title),
                     Snackbar.LENGTH_LONG
                 )
                     .show()
@@ -101,41 +103,16 @@ class PlayerFragment : Fragment() {
                 playLists.clear()
                 binding.playListsRecycler.isVisible = false
             } else {
-                playLists.clear()
-                playLists.addAll(lifePlayLists)
+                with(playLists) {
+                    clear()
+                    addAll(lifePlayLists)
+                }
                 bottomSheetAdapter.notifyDataSetChanged()
                 binding.playListsRecycler.isVisible = true
             }
         }
 
-        viewModel.getPlayStatus().observe(viewLifecycleOwner) { status ->
-            binding.timeElapsed.text = status.timeElapsed
-            binding.playButton.isClickable = status.playButtonClickableState
-            binding.playButton.setImageResource(PlayerButtons.valueOf(status.playButtonImage).button)
-            if (status.isFavorites) {
-                binding.addToFavorites.setImageResource(R.drawable.favorite_button_on)
-            } else {
-                binding.addToFavorites.setImageResource(R.drawable.favorite_button_off)
-            }
-
-            Glide.with(this)
-                .load(status.currentTrack.artworkUrl512)
-                .placeholder(R.drawable.placeholder_big)
-                .transform(
-                    RoundedCorners(
-                        view.resources.getDimension(R.dimen.player_album_cover_corner_radius)
-                            .toInt()
-                    )
-                )
-                .into(binding.albumCover)
-            binding.trackName.text = status.currentTrack.trackName
-            binding.artistName.text = status.currentTrack.artistName
-            binding.trackDuration.text = status.currentTrack.trackTime
-            binding.album.text = status.currentTrack.collectionName
-            binding.year.text = status.currentTrack.year
-            binding.genre.text = status.currentTrack.primaryGenreName
-            binding.country.text = status.currentTrack.country
-        }
+        viewModel.getPlayStatus().observe(viewLifecycleOwner) { status -> setValues(status) }
 
         binding.playButton.setOnClickListener { viewModel.playbackControl() }
 
@@ -148,9 +125,8 @@ class PlayerFragment : Fragment() {
             if (clickDebounce()) viewModel.addToFavorites()
         }
 
-        binding.arrowBack.setOnClickListener {
-            exit()
-        }
+        binding.arrowBack.setOnClickListener { exit() }
+
         requireActivity().onBackPressedDispatcher.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
@@ -177,27 +153,53 @@ class PlayerFragment : Fragment() {
         return current
     }
 
+    private fun setValues(status: PlayStatus) {
+        if (status.isFavorites) {
+            binding.addToFavorites.setImageResource(R.drawable.favorite_button_on)
+        } else {
+            binding.addToFavorites.setImageResource(R.drawable.favorite_button_off)
+        }
+        binding.timeElapsed.text = status.timeElapsed
+        binding.playButton.isClickable = status.playButtonClickableState
+        binding.playButton.setImageResource(PlayerButtons.valueOf(status.playButtonImage).button)
+        binding.trackName.text = status.currentTrack.trackName
+        binding.artistName.text = status.currentTrack.artistName
+        binding.trackDuration.text = status.currentTrack.trackTime
+        binding.album.text = status.currentTrack.collectionName
+        binding.year.text = status.currentTrack.year
+        binding.genre.text = status.currentTrack.primaryGenreName
+        binding.country.text = status.currentTrack.country
+        Glide.with(this)
+            .load(status.currentTrack.artworkUrl512)
+            .placeholder(R.drawable.placeholder_big)
+            .transform(
+                RoundedCorners(
+                    MyApplication.getAppResources()
+                        .getDimension(R.dimen.player_album_cover_corner_radius)
+                        .toInt()
+                )
+            )
+            .into(binding.albumCover)
+    }
+
     fun exit() {
         viewModel.pausePlayer()
         findNavController().navigateUp()
     }
 
     override fun onPause() {
-        Log.d("TAG", "Paused")
         super.onPause()
         viewModel.pausePlayer()
     }
 
     override fun onDestroy() {
-        Log.d("TAG", "Destroyed")
         super.onDestroy()
         viewModel.pausePlayer()
-        navBar.isVisible = true
+        _binding = null
     }
 
     override fun onResume() {
         super.onResume()
-        navBar.isVisible = false
         viewModel.updateCurrentTrack()
     }
 

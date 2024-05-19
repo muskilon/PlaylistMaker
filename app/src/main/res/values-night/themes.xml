@@ -2,6 +2,7 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.PlaylistMaker" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
+        <item name="materialAlertDialogTheme">@style/MyAlertDialog</item>
         <item name="snackbarStyle">@style/MySnackbar</item>
         <item name="snackbarTextViewStyle">@style/MySnackbarTextView</item>
 

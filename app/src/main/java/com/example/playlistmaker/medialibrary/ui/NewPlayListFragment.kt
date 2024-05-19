@@ -1,31 +1,26 @@
 package com.example.playlistmaker.medialibrary.ui
 
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentNewPlayListBinding
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NewPlayListFragment : Fragment() {
-    private lateinit var binding: FragmentNewPlayListBinding
-    private lateinit var navBar: BottomNavigationView
+open class NewPlayListFragment : Fragment() {
+    private var _binding: FragmentNewPlayListBinding? = null
+    private val binding get() = _binding!!
     private val viewModel by viewModel<NewPlayListViewModel>()
 
     private var title: String = EMPTY
@@ -36,24 +31,19 @@ class NewPlayListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentNewPlayListBinding.inflate(inflater, container, false)
+        _binding = FragmentNewPlayListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        navBar = requireActivity().findViewById(R.id.bottomNavigationView)
-        navBar.isVisible = false
 
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
-                if (uri != null) {
+                uri?.let {
                     binding.playListCover.setImageURI(uri)
                     binding.imageContainer.foreground = null
                     newUri = uri
-                } else {
-                    Log.d("PhotoPicker", "No media selected")
                 }
             }
 
@@ -163,7 +153,7 @@ class NewPlayListFragment : Fragment() {
 
     override fun onDestroy() {
         super.onDestroy()
-        navBar.isVisible = true
+        _binding = null
     }
 
     companion object {

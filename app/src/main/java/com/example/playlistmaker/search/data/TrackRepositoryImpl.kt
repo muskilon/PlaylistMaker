@@ -76,7 +76,8 @@ class TrackRepositoryImpl(
                             year = it.year
                         )
                     }
-                    emit(Resource.Data(data))
+                    if (data.isEmpty()) emit(Resource.NotFound("not_found"))
+                    else emit(Resource.Data(data))
                 }
             }
 
