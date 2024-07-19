@@ -13,6 +13,9 @@
 ![Static Badge](https://img.shields.io/badge/Jetpack_Navigation_Component-blue)
 ![Static Badge](https://img.shields.io/badge/MediaPlayer-blue)
 
-### Приложение позволяет искать превью треков на iTunes и вопроизводить их.</br>Треки можно добавить в плейлисты и сохранять их на устройстве.</br>Плейлисты и данные о треках в них сохраняются в локальную базу.
+### Приложение позволяет искать превью треков на iTunes и вопроизводить их.</br>Треки можно добавить в плейлисты и в избранное.</br>Плейлисты и данные о треках в них сохраняются в локальную базу.
 
-![Play](![play.jpg](app%2Fsrc%2Fmain%2Fres%2Fscreenshots%2Fplay.jpg))
+<img src="https://github.com/muskilon/PlaylistMaker/blob/dev/app/src/main/res/screenshots/play.jpg" width="200px"/> <img src="https://github.com/muskilon/PlaylistMaker/blob/dev/app/src/main/res/screenshots/playlist.jpg" width="200px"/>
+<img src="https://github.com/muskilon/PlaylistMaker/blob/dev/app/src/main/res/screenshots/playlists.jpg" width="200px"/>
+<img src="https://github.com/muskilon/PlaylistMaker/blob/dev/app/src/main/res/screenshots/search.jpg" width="200px"/>
+<img src="https://github.com/muskilon/PlaylistMaker/blob/dev/app/src/main/res/screenshots/favorites.jpg" width="200px"/>
