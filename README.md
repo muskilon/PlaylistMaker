@@ -14,3 +14,5 @@
 ![Static Badge](https://img.shields.io/badge/MediaPlayer-blue)
 
 ### Приложение позволяет искать превью треков на iTunes и вопроизводить их.</br>Треки можно добавить в плейлисты и сохранять их на устройстве.</br>Плейлисты и данные о треках в них сохраняются в локальную базу.
+
+![Play](![play.jpg](app%2Fsrc%2Fmain%2Fres%2Fscreenshots%2Fplay.jpg))
